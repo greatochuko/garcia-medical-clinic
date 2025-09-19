@@ -6,6 +6,9 @@ import dayjs from "dayjs";
 import NavLink from "@/Components/NavLink";
 import ReminderModal from "@/Components/ReminderModal";
 import FlashMessage from "@/Components/FlashMessage";
+import LeftDashboard from "@/Components/dashboard/LeftDashboard";
+import RightDashboard from "@/Components/dashboard/RightDashboard";
+import MiddleDashboard from "@/Components/dashboard/MiddleDashboard";
 export default function Dashboard({
     auth,
     summary,
@@ -195,14 +198,7 @@ export default function Dashboard({
     };
 
     return (
-        <AuthenticatedLayout
-            user={auth.user}
-            header={
-                <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                    Dashboard
-                </h2>
-            }
-        >
+        <AuthenticatedLayout user={auth.user}>
             <VitalSignsModal
                 isOpen={isModalOpen}
                 setIsOpen={setIsModalOpen}
@@ -216,11 +212,15 @@ export default function Dashboard({
             <Head title="Dashboard" />
 
             <FlashMessage />
-            <div
-                className="mt-1 text-center"
-                style={{ color: "#429ABF", fontWeight: 800 }}
-            >
-                Dashboard Overview
+            <div className="mx-auto flex w-[90%] max-w-7xl flex-col gap-4 text-accent">
+                <h1 className="py-4 text-center text-sm font-bold">
+                    CLINIC DASHBOARD
+                </h1>
+                <div className="flex gap-6">
+                    <LeftDashboard />
+                    <MiddleDashboard />
+                    <RightDashboard />
+                </div>
             </div>
         </AuthenticatedLayout>
     );
