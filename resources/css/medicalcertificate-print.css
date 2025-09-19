@@ -1,0 +1,44 @@
+@media print {
+   @page {
+    size: A5 landscape;
+    margin: 0.2cm 1cm 1cm 1cm; /* top, right, bottom, left */
+}
+
+
+    body {
+        background: white !important;
+    }
+
+    /* Hide other screen elements if any */
+    .no-print {
+        display: none !important;
+    }
+.page {
+    /* width: 188mm; */
+    /* height: 105mm; */
+    /* padding: 10mm; */
+    /* margin:auto; */
+    box-sizing: border-box;
+    position: relative;
+    page-break-after: always;
+}
+
+    /* Optional: Force full width and height */
+    html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    .text-14px {
+    font-size: 14px;
+}
+ .text-12px {
+    font-size: 12px;
+}
+
+ .text-20px {
+    font-size: 12px;
+}
+
+}

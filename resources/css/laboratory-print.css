@@ -1,0 +1,131 @@
+@media print {
+  @page {
+    size: A6 portrait;
+    margin: 0.2cm 1cm 1cm 1cm; /* top, right, bottom, left */
+    /* margin: 10mm; */
+  }
+
+  body {
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  header, footer {
+    display: none !important;
+  }
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-family: Arial, sans-serif;
+}
+
+.page {
+    width: 108mm;
+    height: 105mm;
+    /* padding: 10mm; */
+    margin:auto;
+    box-sizing: border-box;
+    position: relative;
+    page-break-after: always;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 5mm;
+}
+
+.logo {
+    width: 60mm;
+    margin: 0 auto 5mm;
+    display: block;
+}
+
+.patient-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    margin-bottom: 2mm;
+}
+
+.patient-info {
+    text-align: left;
+    flex: 1;
+}
+
+.patient-meta {
+    text-align: right;
+    flex-shrink: 0;
+    margin-left: 10mm;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #000;
+    margin: 2mm 0 3mm;
+}
+
+.rx-icon {
+    width: 15mm;
+    height: auto;
+    display: block;
+    margin: 0 0 5mm;
+}
+
+/* Content */
+.content {
+    font-size: 10px;
+    margin-bottom: 25mm;
+}
+
+.medication-item {
+    margin-bottom: 5mm;
+}
+
+.med-line {
+    display: flex;
+    font-size:0.7rem;
+    justify-content: space-between;
+    /* font-weight: bold; */
+}
+
+.sig-line {
+    margin-left: 5mm;
+}
+
+.tab-count {
+    margin-left: 5mm;
+    white-space: nowrap;
+}
+
+/* Doctor Signature */
+.doctor-signature {
+    position: fixed;
+    bottom: 10mm;
+    right: 10mm;
+    font-size: 9px;
+    text-align: right;
+    background: white;
+    padding: 2mm;
+    box-sizing: border-box;
+    width: 55mm;
+}
+
+.doctor-signature hr {
+    border: none;
+    border-top: 1px solid #000;
+    margin: 0 0 2mm 0;
+}
+
+.doc-name {
+    font-weight: bold;
+    margin: 0 0 2mm;
+}
+
+

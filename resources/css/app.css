@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alice&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* button {
+    @apply active:shadow-inner active:shadow-[inset_0_6px_10px_rgba(0,0,0,0.5)] transition-shadow duration-150;
+  } */
+}
+.patient-template {
+  max-height: 20rem;
+  overflow: auto;
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE 10+ */
+}
+
+.save-button{
+  background-color: #429ABF;
+}
+.save-button:active {
+  box-shadow:
+    inset 0 6px 10px -4px #1a5d75,   /* stronger inner top shadow */
+    inset 0 2px 3px rgba(0, 0, 0, 0.2); /* slight extra depth */
+}
+.save-button:hover{
+  background-color: #39AAD9;
+}
+
+
+.cancel-button{
+  background-color: white;
+  outline:1px solid #39AAD9;
+  color:#39AAD9;
+}
+.cancel-button:active {
+  box-shadow:
+    inset 0 6px 10px -4px #1a5d75,   /* stronger inner top shadow */
+    inset 0 2px 3px rgba(0, 0, 0, 0.2); /* slight extra depth */
+}
+.cancel-button:hover{
+  background-color: #39AAD9;
+  color:white;
+}
+
+
+.patient-template::-webkit-scrollbar {
+  display: none;               /* Chrome, Safari, Opera */
+}
+
+.patient-template-2 {
+  max-height: 12rem;
+  /* margin-top:5rem; */
+  overflow: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.patient-template-2::-webkit-scrollbar {
+  display: none;
+}
+
+.patient-template:hover{
+  cursor : pointer;
+}
+
+
+.patient-template-2:hover{
+  cursor : pointer;
+}
+
+
+html{
+     font-family: 'Poppins', sans-serif;
+}
+/* Plan List Styles */
+.add-templates-btn {
+    background-color: #429ABF;
+    transition: background-color 0.3s ease;
+}
+.main-screen{
+height:85vh;
+}
+.add-templates-btn:hover {
+    background-color: #3789AE;
+}
+
+.template-modal-content {
+    padding: 2rem;
+    position: relative;
+}
+
+.template-label {
+    color: #666666;
+}
+
+.template-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #666666;
+    transition: border-color 0.3s ease;
+}
+
+.template-input:focus {
+    outline: none;
+    border-color: #429ABF;
+}
+
+.template-confirm-btn {
+    background-color: #429ABF;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.template-confirm-btn:hover {
+    background-color: #3789AE;
+}
+
+.template-confirm-btn:disabled {
+    /* background-color: #A0AEC0; */
+    cursor: not-allowed;
+}
+
+.clean-select {
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    padding: 0 1em 0 0;
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    line-height: inherit;
+    outline: none;
+    color: #666666;
+}
+
+.custom-text-color {
+    color: #666666;
+}
+
+.status-active {
+    background-color: #E6F4EA;
+    color: #1E8E3E;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.status-inactive {
+    background-color: #FEE8E7;
+    /* color: #D93025; */
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.content-min-height {
+    min-height: 650px;
+}
+
+.action-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.no-highlight-button {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .delete-modal-content {
+    color: #D82000;  
+    font-weight: 700;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+}
+.delete-modal-cancel-button {
+    color: #666666;
+    font-weight: 400;
+    font-size: 12px;
+    font-family: 'Poppins', sans-serif;
+    color: #429ABF;
+    border: 1px solid #429ABF;
+}
+.delete-modal-delete-button:hover {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Login page styles */
+.login-card {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.edit-prescription-modal{
+height:70vh;
+width:90vw;
+}
+.temp-table{
+  /* height:30vh; */
+  overflow:auto;
+}
+
+
+

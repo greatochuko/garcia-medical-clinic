@@ -1,0 +1,92 @@
+/* Laboratory Test List Styles */
+.lab-test-container {
+    min-height: 650px;
+}
+
+.lab-test-header {
+    font-size: 14px;
+    color: #666666;
+    font-weight: 600;
+}
+
+.lab-test-table-header {
+    height: 54px;
+    background-color: #F6FCFF;
+    align-items: center;
+}
+
+.lab-test-row {
+    height: 54px;
+    color: #666666;
+    align-items: center;
+}
+
+.lab-test-row-even {
+    background-color: #FFFFFF;
+}
+
+.lab-test-row-odd {
+    background-color: #F6FCFF;
+}
+
+.lab-test-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0px;
+    color: #429ABF;
+}
+
+.lab-test-text {
+    color: #666666;
+    font-size: 14px;
+}
+
+.lab-test-close-btn {
+    line-height: 0;
+}
+
+.lab-test-modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    font-size: 20px;
+    color: #429ABF;
+}
+
+.lab-test-add-btn {
+    background-color: #429ABF;
+    transition: background-color 0.3s ease;
+}
+
+.lab-test-add-btn:hover {
+    background-color: #3789AE;
+}
+
+.lab-test-action-menu {
+    position: relative;
+    display: inline-block;
+}
+
+.lab-test-action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.lab-test-dropdown {
+    position: absolute;
+    right: 0;
+    mt-2: 8px;
+    width: 128px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #E5E7EB;
+    z-index: 10;
+} 
+
+.lab-test-text-custome {
+    font-size: 14px;
+}

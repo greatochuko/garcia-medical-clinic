@@ -1,0 +1,109 @@
+body, html, #app {
+  font-family: 'Poppins', sans-serif;
+}
+.font-light-blue{
+    color:#429ABF;
+}
+.font-full-blue{
+    color:#1D7498;
+}
+.font-light-grey{
+    color:#999999;
+}
+.head-text{
+/* font-family: Poppins; */
+font-weight: 700;
+font-size: 16px;
+line-height: 100%;
+}
+.font-700{
+font-weight:700;
+font-size:20px;
+}
+.print-buttons{
+    background-color: #1D7498;
+}
+.print-buttons:hover{
+    background-color: #429ABF;
+}
+.print-buttons-light{
+    background-color:#429ABF;
+}
+.print-buttons-light:hover{
+    background-color:#6ac9f1;
+}
+.border-box{
+border-left:2px solid #EAEAEA;
+padding-left:10px;
+}
+.card-screen{
+ height: 200px;
+ overflow-y: auto;
+}
+
+.textboxs {
+    border:1px solid #1D7498;
+  /* transition: outline 0.2s ease; */
+}
+
+
+/* Apply to the whole page */
+html {
+  /* For Firefox */
+  scrollbar-width: bold;
+  scrollbar-color: #1D7498 #D4D4D4
+}
+
+/* For WebKit browsers (Chrome, Safari, Edge) */
+html::-webkit-scrollbar {
+  width: 8px;
+}
+
+html::-webkit-scrollbar-track {
+  /* background: #145c75; */
+  border-radius: 3px;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: #3aa0d7;
+  border-radius: 3px;
+  /* border: 2px solid #145c75; */
+}
+
+/* button:active {
+  background-color: red;
+  color: white;
+} */
+
+
+
+
+/* style.css */
+
+textarea,
+input,
+select {
+  border: 1px solid #666666;
+  outline: none; /* Optional: remove default focus outline */
+  padding: 4px 8px; /* Optional: some padding */
+  border-radius: 4px; /* Optional: rounded corners */
+  font-size: 1rem; /* Optional: consistent font size */
+  box-sizing: border-box; /* ensure padding doesn't affect width */
+}
+
+/* Optional: focus state for better accessibility */
+textarea:focus,
+input:focus,
+select:focus {
+  border-color: #444444;
+}
+@media screen and (max-height: 780px) {
+  .plan-buttons-2{
+    width:75px;
+    font-size:9px;
+  }
+  .plan-buttons-1{
+    width:95px;
+    font-size:9px;
+  }
+}

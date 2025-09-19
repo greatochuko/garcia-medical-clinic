@@ -1,0 +1,50 @@
+.all-patients-table-screen{
+    height:60vh;
+    overflow-y:auto;
+}
+.all-patients-table-body{
+     height:60vh;
+     overflow-y:auto;
+}
+/* .all-patients-table-body{
+    height:95vh;
+    overflow-y:auto;
+ */
+/* } */
+.bg-gar-blue{
+    background-color:#429ABF;
+}
+.bg-gar-blue:hover{
+    background-color:#39AAD9;
+}
+.row-even {
+    background-color: #FFFFFF;
+}
+
+.row-odd {
+    background-color: #F6FCFF;
+}
+table{
+    border: none;
+}
+.main-screen-all-patients{
+height:85vh;
+overflow-y:auto;
+}
+.save-section{
+margin-top:3rem
+}
+
+@media screen and (max-width:790px){
+    .all-patients-table-screen{
+    height:50vh;
+    overflow-y:auto;
+}
+.main-screen-all-patients{
+height:auto;
+}
+
+.save-section{
+margin-top:50px
+}
+}

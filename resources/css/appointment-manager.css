@@ -1,0 +1,810 @@
+.max-w-9xl {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.appointment-manager-table-screen {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.appointment-container {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /* background-color: #fff; */
+    /* padding: 1.5rem; */
+}
+
+.appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-input {
+    border: 1px solid #E5E7EB;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 14px;
+    width: 300px;
+}
+
+.search-button {
+    background-color: #429ABF;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.register-button {
+    background-color: #429ABF;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    min-width: fit-content;
+}
+
+.appointment-table {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 1200px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.appointment-table th,
+.appointment-table td {
+    text-align: left;
+    vertical-align: middle;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.header-content {
+    padding: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #666666;
+    text-transform: uppercase;
+    white-space: nowrap;
+    height: 45px;
+    display: flex;
+    align-items: center;
+}
+
+/* Column widths for perfect alignment */
+.appointment-table th:first-child,
+.appointment-table td:first-child { 
+    width: 50px;
+}
+
+.appointment-table th:nth-child(2),
+.appointment-table td:nth-child(2) { 
+    width: 130px;
+}
+
+.appointment-table th:nth-child(3),
+.appointment-table td:nth-child(3) { 
+    width: 280px;
+}
+
+.appointment-table th:nth-child(4),
+.appointment-table td:nth-child(4) { 
+    width: 220px;
+}
+
+.appointment-table th:nth-child(5),
+.appointment-table td:nth-child(5) { 
+    width: 130px;
+}
+
+.appointment-table th:nth-child(6),
+.appointment-table td:nth-child(6) { 
+    width: 240px;
+}
+
+.appointment-table th:nth-child(7),
+.appointment-table td:nth-child(7) { 
+    width: 130px;
+}
+
+.appointment-table th:last-child,
+.appointment-table td:last-child { 
+    width: 50px;
+}
+
+.table-cell-default {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: 'Poppins', sans-serif;
+}
+
+.queue-cell {
+    font-family: 'Poppins', sans-serif;
+}
+
+.table-header {
+    background: #F6FCFF;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.atable-header th {
+    background: #F6FCFF;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: none;
+}
+
+.table-row {
+    height: 50px;
+}
+
+.table-row:nth-child(even) {
+    background: #F6FCFF;
+    border-radius: 8px;
+    margin: 4px 0;
+}
+
+.table-row:nth-child(even) td {
+    background: #F6FCFF;
+}
+
+.table-row:nth-child(even) td:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.table-row:nth-child(even) td:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.table-row:hover {
+    background-color: #F9FAFB;
+}
+
+.table-row:hover td {
+    background-color: #F9FAFB;
+}
+
+/* Menu dots column */
+.table-row td:first-child {
+    width: 80px;
+    color: #9CA3AF;
+    font-size: 16px;
+    cursor: move;
+}
+
+/* Queue number column */
+.queue-cell {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1D7498;
+    width: 80px;
+}
+
+.queue-cell.type-s {
+    color:#FF8000;
+    ;
+}
+
+/* Patient info column */
+.patient-info {
+    width: 250px;
+}
+
+.patient-name {
+    color: #429ABF;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    margin-bottom: 2px;
+    display: block;
+}
+
+.patient-details {
+    color: #6B7280;
+    font-size: 12px;
+}
+
+/* Services column */
+.services-cell {
+    color: #374151;
+    font-size: 12px;
+    width: 250px;
+}
+
+/* Status badges */
+.status-badge {
+
+    padding: 2px 0px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    /* min-width: 110px;
+    min-width: 110px; */
+    /* width: 50%; */
+    text-align: center;
+}
+
+.status-waiting {
+    background: #6F9AAB;
+    color: white;
+}
+
+.status-for-billing {
+    background: #2B4E64;
+    color: white;
+}
+
+.status-checked-in {
+    background: #429ABF;
+    color: white;
+}
+
+.status-checked-out {
+    background-color: #E5E7EB;
+    color: #6B7280;
+}
+
+.status-on-hold {
+    background-color: #E5E7EB;
+    color: #6B7280;
+}
+/* Action buttons container */
+.action-buttons {
+    display: flex;
+    gap: 4px;
+    background: #E5E7EB;
+    padding: 4px;
+    border-radius: 6px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+/* Individual action button */
+.action-button {
+    display: flex;
+    padding: 4px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    border: none;
+    background: transparent;
+    color: #9CA3AF;
+    cursor: pointer;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+/* Active state */
+.action-button.active {
+    background-color: #2B4E64;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Disabled state */
+.action-button:disabled {
+    opacity: 0.5;
+    /* cursor: not-allowed; */
+    color: #9CA3AF;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Add Record button */
+.add-record-button {
+    display: flex;
+    width: 100%;
+    background: #EAEAEA;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.add-record-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: #429ABF;
+    border-radius: 4px;
+    color: white;
+    font-size: 12px;
+    font-weight: 400;
+    width: 100%;
+}
+
+.add-record-button:hover .add-record-content {
+    background: #3b8bae;
+}
+
+/* Remove old styles */
+.add-record-button .plus-icon {
+    display: none;
+}
+
+/* More actions menu */
+.more-actions-cell {
+    position: relative;
+}
+
+.more-actions {
+    color: #6B7280;
+    padding: 4px;
+    font-size: 18px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 998;
+}
+
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+    z-index: 1000;
+    margin-top: 4px;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    color: #374151;
+    font-size: 14px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    cursor: pointer;
+    gap: 8px;
+}
+
+.dropdown-item:hover {
+    background-color: #F3F4F6;
+}
+
+.dropdown-item.delete {
+    color: #DC2626;
+}
+
+.dropdown-item.delete:hover {
+    background-color: #FEE2E2;
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 500px;
+    padding: 1.5rem;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6B7280;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.modal-close:hover {
+    color: #374151;
+}
+
+.modal-body {
+    margin-bottom: 1.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+.modal-button {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-button.cancel {
+    /* background-color: #E5E7EB;
+    color: #374151; */
+}
+
+.modal-button.cancel:hover {
+    /* background-color: #D1D5DB; */
+}
+
+.modal-button.confirm {
+    background-color: #429ABF;
+    color: white;
+}
+
+.modal-button.confirm:hover {
+    background-color: #3B82F6;
+}
+
+.modal-button.delete {
+    /* background-color: #DC2626; */
+    color: white;
+}
+
+.modal-button.delete:hover {
+    /* background-color: #B91C1C; */
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 14px;
+    color: #6B7280;
+}
+
+.rows-per-page {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rows-select {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #E5E7EB;
+    border-radius: 4px;
+    color: #6B7280;
+    background-color: white;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pagination-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #429ABF;
+    font-size: 14px;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+}
+
+.pagination-button:hover:not(:disabled) {
+    opacity: 0.8;
+}
+
+.pagination-button:disabled {
+    color: #D1D5DB;
+    cursor: not-allowed;
+}
+
+/* Add the three dots menu on the left */
+.row-menu {
+    display: flex;
+    gap: 2px;
+    opacity: 0.6;
+}
+
+.row-menu span {
+    width: 4px;
+    height: 4px;
+    background-color: #6B7280;
+    border-radius: 50%;
+}
+
+.table-row:hover .row-menu {
+    opacity: 1;
+}
+
+.appointment-grid {
+    /* flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; */
+    height:60vh;
+    /* overflow-y:auto; */
+    width: 100%;
+}
+
+.grid-header {
+    display: grid;
+    grid-template-columns: minmax(50px, 4%) minmax(130px, 4%) minmax(280px, 22%) minmax(220px, 17%) minmax(130px, 10%) minmax(240px, 19%) minmax(130px, 10%) minmax(60px, 8%);
+    background: #F6FCFF;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+}
+
+.grid-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 600px;
+    /* max-height: calc(75vh - 200px); */
+    height:89.1%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.grid-row {
+    display: grid;
+    grid-template-columns: minmax(50px, 4%) minmax(130px, 4%) minmax(280px, 22%) minmax(220px, 17%) minmax(130px, 10%) minmax(240px, 19%) minmax(130px, 10%) minmax(60px, 8%);
+    /* min-height: 50px; */
+    width: 100%;
+    min-width: fit-content;
+}
+
+.grid-row:nth-child(even) {
+    background: #F6FCFF;
+}
+
+.grid-cell {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+    overflow: visible;
+    position: relative;
+}
+
+/* Make text content responsive */
+.grid-cell > * {
+    width: 100%;
+    /* overflow: hidden; */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.grid-header .grid-cell {
+    font-weight: 700;
+    font-size: 14px;
+    color: #666666;
+    text-transform: uppercase;
+    padding: 16px 12px;
+}
+
+/* Keep existing styles for components inside cells */
+
+/* Make the container responsive */
+@media screen and (max-width: 1400px) {
+    .appointment-container {
+        padding: 1rem;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .appointment-container {
+        padding: 0.5rem;
+    }
+}
+
+/* Ensure content stays centered */
+/* .py-3 {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background: white;
+} */
+
+/* Ensure the search and register section is responsive */
+.appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+}
+
+/* Make the search container responsive */
+.flex.items-center.w-full.max-w-md {
+    flex: 1;
+    min-width: 280px;
+}
+
+/* Make buttons responsive */
+.register-button, 
+.action-button,
+.add-record-button {
+    white-space: nowrap;
+    min-width: fit-content;
+}
+
+/* Responsive pagination */
+.relative.flex.items-center.mt-4.px-4.py-4 {
+    margin-top: auto;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+}
+
+/* Ensure content stays visible during zoom */
+.grid-cell .patient-info,
+.grid-cell .services-cell,
+.grid-cell .status-badge {
+    min-width: 0;
+    flex-shrink: 1;
+}
+
+/* Adjust status badge to prevent breaking */
+.status-badge {
+    min-width: 110px;
+    max-width: 100%;
+    text-align: center;
+}
+
+/* Make action buttons container responsive */
+.action-buttons {
+    display: flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+    min-width: fit-content;
+}
+
+/* Ensure content fills available space */
+.text-center.m-0.pt-4.pb-5.bg-white {
+    width: 100%;
+}
+
+/* Make sure the table body takes available space */
+.grid-body {
+    min-height: 0;
+    flex: 1;
+    overflow: auto;
+}
+
+/* Ensure proper text overflow in cells */
+.grid-cell > * {
+    /* overflow: hidden; */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+.appmgr-action-dropdown {
+    position: relative;
+    z-index: 200;
+}
+
+.appmgr-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: white;
+    border: 1px solid #E5E7EB;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 120px;
+    z-index: 1000;
+}
+
+.vital-signs-wrapper {
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    padding: 6px;
+    max-width: 300px;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+}
+
+.add-vital-signs-button {
+    width: 100%;
+    padding: 6px 0;
+    border: none;
+    border-radius: 8px;
+    background: #FFFFFF;
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vital-signs-content {
+    color: #429ABF;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    padding: 0; /* prevent vertical imbalance */
+}
+
+
+.add-vital-signs-button:hover {
+    background: #F8F9FA;
+}
