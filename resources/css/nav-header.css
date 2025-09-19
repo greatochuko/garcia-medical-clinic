@@ -1,63 +1,60 @@
-
-
-.min-h-screen,body{
-    background-color: #E9F9FF;
-}
-.dashboard-item{
-    background-color:#429ABF;
-    color:#FFFFFF;
-    height:34px;
-    border-radius:10px;
-    
-}
-.nav-item{
-    background-color:white;
-    color:#429ABF;
-    height:34px;
-    font-size:14px;
-    border-radius:10px;
-    
-}
-.nav-item:hover{
-    background-color:white;
-    color:#6ac9f1;
-    
-}
-.nav-item-active{
-    background-color:#429ABF;
-    color:#FFFFFF;
-    height:34px;
-    border-radius:10px;
-}
-.nav-item-active:hover{
-    background-color:#6ac9f1;
-    color:#FFFFFF;
-    height:34px;
-    border-radius:10px;
-}
-.navicon{
-    height:18px;
-}
-.medical_records ul{
-    border-radius:10px;
+.min-h-screen,
+body {
+    /* background-color: #E9F9FF; */
 }
 
-.medical_records li{
-text-align:center;
-list-style: none;
-text-decoration: none;
+.dashboard-item {
+    background-color: #429abf;
+    color: #ffffff;
+    height: 34px;
+    border-radius: 10px;
+}
+.nav-item {
+    background-color: white;
+    color: #429abf;
+    height: 34px;
+    font-size: 14px;
+    border-radius: 10px;
+}
+.nav-item:hover {
+    background-color: white;
+    color: #6ac9f1;
+}
+.nav-item-active {
+    background-color: #429abf;
+    color: #ffffff;
+    height: 34px;
+    border-radius: 10px;
+}
+.nav-item-active:hover {
+    background-color: #6ac9f1;
+    color: #ffffff;
+    height: 34px;
+    border-radius: 10px;
+}
+.navicon {
+    height: 18px;
+}
+.medical_records ul {
+    border-radius: 10px;
+}
+
+.medical_records li {
+    text-align: center;
+    list-style: none;
+    text-decoration: none;
 }
 .medicallist2:hover {
-    background-color: #429ABF;
+    background-color: #429abf;
     color: white;
     border-radius: 0 0 10px 10px; /* Adjust 8px to your preferred radius */
 }
 
 .medicallist:hover {
-    background-color: #429ABF;
+    background-color: #429abf;
     color: white;
     border-radius: 10px 10px 0px 0px; /* Adjust 8px to your preferred radius */
 }
-.medical_records li:hover{
+.medical_records li:hover {
     /* border-radius:10px; */
 }

@@ -1,5 +1,9 @@
-export default function ApplicationLogo(props) {
+export default function ApplicationLogo() {
     return (
-        <img src="/assets/logo/logo.svg" alt="" />
+        <img
+            src="/assets/logo/official-logo.svg"
+            alt="Garcia logo"
+            width={216}
+        />
     );
 }
