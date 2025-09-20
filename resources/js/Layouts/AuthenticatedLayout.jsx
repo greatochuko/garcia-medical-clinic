@@ -1,12 +1,12 @@
-import { useState } from "react";
+import React from "react";
+
 import { usePage } from "@inertiajs/react";
 import Footer from "@/Components/layout/Footer";
 import Header from "@/Components/layout/Header";
+import PropTypes from "prop-types";
 
 export default function AuthenticatedLayout({ children }) {
     const { auth } = usePage().props;
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
 
     return (
         <>
@@ -364,3 +364,7 @@ export default function AuthenticatedLayout({ children }) {
     //     </div>
     // );
 }
+
+AuthenticatedLayout.propTypes = {
+    children: PropTypes.node.isRequired,
+};

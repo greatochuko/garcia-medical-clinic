@@ -22,9 +22,9 @@ export function AppointmentsView() {
     const [currentTab, setCurrentTab] = useState("check-up");
 
     return (
-        <div className="shadowmd rounded-lg bg-white">
+        <div className="rounded-lg bg-white shadow-md">
             <div className="relative flex flex-col items-center gap-2 p-4 pb-0 text-center">
-                <h2 className="text-sm font-bold">PATIENT QUICKVIEW</h2>
+                <h2 className="text-sm font-bold">APPOINTMENTS VIEW</h2>
                 <div className="z-10 flex gap-2 rounded-lg bg-accent-200 p-1 text-xs">
                     <button
                         onClick={() => setCurrentTab("check-up")}

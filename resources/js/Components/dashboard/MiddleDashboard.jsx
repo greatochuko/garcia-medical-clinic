@@ -1,5 +1,6 @@
 import React from "react";
 import Calendar from "./Calendar";
+import PropTypes from "prop-types";
 
 const totalStats = [
     {
@@ -13,15 +14,15 @@ const totalStats = [
         icon: "/assets/icons/doctors-icon-white.svg",
     },
     {
-        title: "Appointments",
+        title: "Total Appointments",
         value: 1530,
         icon: "/assets/icons/doctors-icon-white.svg",
     },
 ];
 
-export default function MiddleDashboard() {
+export default function MiddleDashboard({ className }) {
     return (
-        <div className="flex flex-[1.5] flex-col gap-6">
+        <div className={`flex flex-[1.5] flex-col gap-6 ${className}`}>
             <TotalCounts />
             <Calendar />
         </div>
@@ -35,7 +36,7 @@ function TotalCounts() {
                 <h2 className="text-sm font-bold">TOTAL COUNTS</h2>
             </div>
             <div className="p-4">
-                <div className="flex gap-4">
+                <div className="flex items-center gap-4">
                     <img
                         src="/images/dashboard-image.png"
                         alt=""
@@ -47,11 +48,11 @@ function TotalCounts() {
                         today.
                     </p>
                 </div>
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-4">
                     {totalStats.map((stat, i) => (
                         <div
                             key={i}
-                            className="flex flex-1 items-center gap-4 rounded-lg bg-accent-200 p-2 py-4"
+                            className="flex flex-1 items-center gap-4 whitespace-nowrap rounded-lg bg-accent-200 p-2 py-4"
                         >
                             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent">
                                 <img
@@ -76,3 +77,7 @@ function TotalCounts() {
         </div>
     );
 }
+
+MiddleDashboard.propTypes = {
+    className: PropTypes.string,
+};

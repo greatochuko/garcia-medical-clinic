@@ -10,20 +10,16 @@ const getDaysInPreviousMonth = (month, year) => {
     return new Date(year, month, 0).getDate();
 };
 
-// Helper function to get the number of days in the next month
-const getDaysInNextMonth = (month, year) => {
-    return new Date(year, month + 1, 0).getDate();
+const appointments = {
+    15: 20,
+    19: 3,
+    22: 1,
 };
 
 export default function Calendar() {
     const today = new Date();
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
-    const [appointments, setAppointments] = useState({
-        15: 20,
-        19: 3,
-        22: 1,
-    });
 
     // Get the current month's details
     const daysInMonth = getDaysInMonth(currentMonth + 1, currentYear);
@@ -36,7 +32,6 @@ export default function Calendar() {
     );
 
     // Get the number of days in the next month (used for ghost days after the current month)
-    const daysInNextMonth = getDaysInNextMonth(currentMonth, currentYear);
 
     const handlePrevMonth = () => {
         if (currentMonth === 0) {
@@ -84,14 +79,14 @@ export default function Calendar() {
             days.push(
                 <div
                     key={i}
-                    className={`group relative flex cursor-pointer items-center justify-center rounded-lg bg-white p-2 duration-200 hover:bg-accent-200`}
+                    className={`group relative flex cursor-pointer items-center justify-center rounded-lg bg-white duration-200 hover:bg-accent-200`}
                 >
                     {(appointmentsForDay > 0 || isToday) && (
-                        <div className="invisible absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-[50%] whitespace-nowrap rounded bg-black/90 p-2 text-xs text-white opacity-0 duration-300 group-hover:visible group-hover:-translate-y-[60%] group-hover:opacity-100">
+                        <div className="invisible absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-[55%] whitespace-nowrap rounded bg-black/90 p-2 text-xs text-white opacity-0 duration-300 group-hover:visible group-hover:-translate-y-[65%] group-hover:opacity-100">
                             {isToday && (
                                 <div className="flex items-center gap-1">
                                     <div className="h-2 w-2 rounded-full bg-[#48BBD4]" />
-                                    Today's Date
+                                    Today&apos;s Date
                                 </div>
                             )}
                             {appointmentsForDay > 0 && (
@@ -138,7 +133,7 @@ export default function Calendar() {
     };
 
     return (
-        <div className="mx-auto flex w-full flex-1 flex-col overflow-hidden rounded-xl bg-white shadow-lg">
+        <div className="mx-auto flex w-full flex-1 flex-col rounded-xl bg-white shadow-lg">
             <div className="flex items-center justify-between p-4 pb-0">
                 <button onClick={handlePrevMonth} className="p-2 text-xl">
                     <img

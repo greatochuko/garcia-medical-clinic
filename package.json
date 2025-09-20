@@ -5,12 +5,16 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@eslint/js": "^9.36.0",
         "@headlessui/react": "^1.4.2",
         "@inertiajs/react": "^1.0.0",
         "@tailwindcss/forms": "^0.5.3",
         "@vitejs/plugin-react": "^3.0.0",
         "autoprefixer": "^10.4.12",
         "axios": "^1.1.2",
+        "eslint": "^9.36.0",
+        "eslint-plugin-react": "^7.37.5",
+        "globals": "^16.4.0",
         "laravel-vite-plugin": "^0.7.8",
         "lodash": "^4.17.19",
         "postcss": "^8.4.18",
@@ -22,9 +26,11 @@
         "vite": "^4.5.14"
     },
     "dependencies": {
+        "@amcharts/amcharts4": "^4.10.40",
         "@heroicons/react": "^2.2.0",
         "dayjs": "^1.11.13",
         "lucide-react": "^0.513.0",
+        "prop-types": "^15.8.1",
         "react": "^19.1.0",
         "react-beautiful-dnd": "^13.1.1",
         "react-dom": "^19.1.0",

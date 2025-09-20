@@ -16,7 +16,7 @@ export function PatientQuickView() {
     const [currentTab, setCurrentTab] = useState("vital-signs");
 
     return (
-        <div className="rounded-lg bg-white shadow shadow-black/20">
+        <div className="rounded-lg bg-white shadow-md">
             <div className="relative mb-2 border-b-2 border-accent-200 px-4 pb-5 pt-3 text-center">
                 <h2 className="text-sm font-bold">PATIENT QUICKVIEW</h2>
                 <div className="absolute bottom-0 left-1/2 flex w-full -translate-x-1/2 translate-y-1/2 items-center justify-center">
