@@ -1,28 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Footer from "@/Components/layout/Footer";
 import Header from "@/Components/layout/Header";
 import PropTypes from "prop-types";
+import FlashMessage from "@/Components/FlashMessage";
+import { Head } from "@inertiajs/react";
 
-export default function AuthenticatedLayout({ children, user, setUser }) {
+const demoDoctorUser = {
+    id: 2,
+    first_name: "Royce",
+    last_name: "Garcia",
+    middle_initial: "A",
+    email: "john.doe@example.com",
+    login_id: "johndoe",
+    role: "admin", // admin, doctor or secretary
+    profile_picture: "/images/doctor-profile-picture.png",
+    created_at: "2025-09-19T14:30:47.000000Z",
+    updated_at: "2025-09-19T14:30:47.000000Z",
+};
+
+export default function AuthenticatedLayout({ children, pageTitle }) {
+    const [user, setUser] = useState(demoDoctorUser);
+
     return (
-        <>
+        <div className="flex min-h-screen flex-col">
             <Header user={user} setUser={setUser} />
-            <main>{children}</main>
+            <Head title={pageTitle} />
+            <FlashMessage />
+            <main className="flex flex-1">{children}</main>
             <Footer />
-        </>
+        </div>
     );
 }
 
 AuthenticatedLayout.propTypes = {
     children: PropTypes.node.isRequired,
-    user: PropTypes.shape({
-        first_name: PropTypes.string,
-        last_name: PropTypes.string,
-        role: PropTypes.string,
-        profile_picture: PropTypes.string,
-    }).isRequired,
-    setUser: PropTypes.func,
+    pageTitle: PropTypes.string,
 };
 
 // return (

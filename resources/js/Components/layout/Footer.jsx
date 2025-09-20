@@ -11,7 +11,7 @@ const footerLinks = [
 export default function Footer() {
     return (
         <div className="bg-accent-200 p-4 text-[#15475B70]">
-            <div className="max-w-8xl mx-auto flex w-[90%] flex-wrap items-center justify-center gap-6 gap-y-2 text-xs">
+            <div className="mx-auto flex w-[90%] max-w-screen-2xl flex-wrap items-center justify-center gap-6 gap-y-2 text-xs">
                 <p>
                     Copyright {new Date().getFullYear()} &copy; Klinicare
                     Solutions

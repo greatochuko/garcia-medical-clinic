@@ -58,12 +58,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'show'])->name('home');
     Route::get('/queue-user', [DashboardController::class, 'get_queue_user'])->name('queue.user');
 
-    
+
     Route::get('/appointments', [AppointmentManagerController::class, 'index'])->name('appointments.index');
+    Route::get('/appointments/select-patient', [AppointmentManagerController::class, 'selectPatient'])->name('appointments.select_patient');
     Route::get('/appointment-manager', [AppointmentManagerController::class, 'index'])->name('appointments.index');
-    
-// });
-    
+
+    // });
+
     // All Patients Routes
     Route::get('/allpatients', [AllPatientController::class, 'index'])->name('allpatients');
     Route::post('/allpatients/add/register', [AllPatientController::class, 'patientadd'])->name('allpatients.register');
@@ -74,25 +75,25 @@ Route::middleware('auth')->group(function () {
     // Route::get('/doctor/create', [UserAccountController::class, 'doctorCreate'])->name('doctor.create');
 
 
-    
+
     Route::get('/billingrecord', [BillingController::class, 'index'])->name('billingrecord');
     Route::get('/vitalsignsmodal/{id}', [VitalSignsModalController::class, 'index'])->name('vitalsignsmodal');
     Route::put('/vitalsignsmodal/update/{id}', [VitalSignsModalController::class, 'update'])->name('vitalsignsmodal.update');
     Route::post('/vitalsignsmodal/add', [VitalSignsModalController::class, 'AddPatientVitals'])->name('vitalsignsmodal.add');
-    
-    
+
+
     // Route::middleware(['auth', 'verified', 'role:admin,doctor'])->group(function () {
-        
-    
-    
-    
-    
+
+
+
+
+
     Route::get('/medicalrecords/patientvisitform/{patient_id}/{appointment_id}', [PatientVisitController::class, 'index'])->name('patientvisitform.index');
     Route::get('/patientvisitform/{patient_id}/{appointment_id}', [PatientVisitController::class, 'check_status'])->name('patientvisitform.status');
     Route::put('/patientvisitform/{patient_id}/{appointment_id}', [PatientVisitController::class, 'update_status'])->name('patientvisitform.updatestatus');
     Route::get('/medicalhistory/{patient_id}', [PatientVisitController::class, 'get_medical_history'])->name('patientvisitform.get_medical_history');
     Route::post('/medicalhistory/add', [PatientVisitController::class, 'add_medical_history'])->name('patientvisitform.add_medical_history');
-    
+
 
     Route::post('/patient/prescription/add', [PatientVisitController::class, 'patientprescription_add'])->name('patientvisitform.patientprescriptionadd');
     Route::put('/patient/prescription/update', [PatientVisitController::class, 'patientprescription_update'])->name('patientvisitform.patientprescriptionadd');
@@ -217,7 +218,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/laboratory-tests/patient/{patientId}/{app_id}', [PatientLaboratoryTestController::class, 'getPatientTests'])->name('laboratory.patient.tests');
     Route::put('/laboratory-tests/{id}/{pid}', [PatientLaboratoryTestController::class, 'updatePatientTests'])->name('laboratory.patient.tests.update');
     Route::post('/laboratory-tests', [PatientLaboratoryTestController::class, 'store'])->name('laboratory.patient.store');
-    
+
     Route::post('/laboratory-requests', [LaboratoryRequestController::class, 'store'])->name('laboratory.store');
     Route::get('/laboratory-requests/{patientId}/{app_id}', [LaboratoryRequestController::class, 'getPatientRequests'])->name('laboratory.patient');
 
@@ -229,12 +230,11 @@ Route::middleware('auth')->group(function () {
 });
 
 
-    Route::middleware(['auth', 'verified', 'role:admin,doctor'])->group(function () {
-       
-        Route::get('/medicalrecords/unfinisheddocs', [UnfinishedDocsController::class, 'index'])->name('medicalrecords.unfinisheddocs');
-        Route::delete('/patient/{id}', [AllPatientController::class, 'destroy'])->name('patient.destroy');
-    
-    });
+Route::middleware(['auth', 'verified', 'role:admin,doctor'])->group(function () {
+
+    Route::get('/medicalrecords/unfinisheddocs', [UnfinishedDocsController::class, 'index'])->name('medicalrecords.unfinisheddocs');
+    Route::delete('/patient/{id}', [AllPatientController::class, 'destroy'])->name('patient.destroy');
+});
 
 
 

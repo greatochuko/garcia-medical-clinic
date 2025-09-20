@@ -1,9 +1,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
 import React, { useState } from "react";
 import VitalSignsModal from "@/Components/VitalSignsModal";
 import ReminderModal from "@/Components/ReminderModal";
-import FlashMessage from "@/Components/FlashMessage";
 import LeftDashboard from "@/Components/dashboard/LeftDashboard";
 import RightDashboard from "@/Components/dashboard/RightDashboard";
 import MiddleDashboard from "@/Components/dashboard/MiddleDashboard";
@@ -25,13 +23,13 @@ const demoDoctorUser = {
 export default function Dashboard() {
     // const { auth } = usePage().props;
 
-    const [user, setUser] = useState(demoDoctorUser);
+    const user = demoDoctorUser;
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
 
     return (
-        <AuthenticatedLayout user={user} setUser={setUser}>
+        <AuthenticatedLayout>
             <VitalSignsModal
                 isOpen={isModalOpen}
                 setIsOpen={setIsModalOpen}
@@ -42,10 +40,8 @@ export default function Dashboard() {
                 onClose={() => setIsReminderModalOpen(false)}
                 onSubmit={() => {}}
             />
-            <Head title="Dashboard" />
 
-            <FlashMessage />
-            <div className="max-w-8xl mx-auto flex w-[95%] flex-col gap-4 bg-accent-100 px-4 py-6 text-accent md:px-6">
+            <div className="mx-auto flex w-[95%] max-w-screen-2xl flex-col gap-4 bg-accent-100 px-4 py-6 text-accent md:px-6">
                 <h1 className="text-center text-sm font-bold">
                     CLINIC DASHBOARD
                 </h1>

@@ -364,6 +364,15 @@ class AppointmentManagerController extends Controller
     //     return response()->json($queueNumbers);
     // }
 
+    public function selectPatient()
+    {
+        $patients = Patient::select('id', 'first_name', 'last_name')->get();
+
+        return Inertia::render('Appointments/SelectPatient', [
+            'patients' => $patients,
+        ]);
+    }
+
 
     public function createAppointment(Request $request)
     {
@@ -376,13 +385,12 @@ class AppointmentManagerController extends Controller
         // })
         // ->prepend(['id' => '', 'name' => 'Select service type']);
 
-        $id = $request->query('id');
+        $patientData = Patient::find($request->query('id'));
 
-        if (!$id) {
-            $patientData = Patient::find($id);
-        } else {
-            $patientData = Patient::find($request->id);
+        if (!$patientData) {
+            return redirect()->back()->withErrors(['id' => 'Invalid patient ID']);
         }
+
         $serviceTypes = ServiceCharge::select('id', 'name', 'charge')->where('patient_type', $patientData->patient_type)
             ->get();
         // dd($patientData);
