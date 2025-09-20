@@ -45,8 +45,9 @@ const navLinks = [
 export default function Header({ user, setUser }) {
     const pathname = window.location.pathname;
 
-    function linkIsActive(linkId) {
-        return pathname === linkId;
+    function linkIsActive(linkHref) {
+        if (linkHref === "/" && pathname === "/dashboard") return true;
+        return pathname === linkHref;
     }
 
     return (
@@ -127,7 +128,7 @@ function UserDropdown({ user, setUser }) {
                 alt={userFullName + " profile picture"}
                 height={45}
                 width={45}
-                className={`overflow-hidden rounded-full border-2 object-cover ${user.role === "admin" ? "border-accent-orange" : "border-white"}`}
+                className={`overflow-hidden rounded-full border-2 object-cover ${user.role !== "secretary" ? "border-accent-orange" : "border-white"}`}
             />
 
             <div
@@ -143,17 +144,22 @@ function UserDropdown({ user, setUser }) {
                     </Link>
                 ))}
 
-                <button
-                    className="p-3 text-left duration-200 hover:bg-accent-300"
-                    onClick={() =>
-                        setUser((prev) => ({
-                            ...prev,
-                            role: user.role === "admin" ? "doctor" : "admin",
-                        }))
-                    }
-                >
-                    Switch to {user.role === "admin" ? "doctor" : "admin"}
-                </button>
+                {["admin", "doctor", "secretary"]
+                    .filter((role) => role !== user.role)
+                    .map((role) => (
+                        <button
+                            key={role}
+                            className="p-3 text-left duration-200 hover:bg-accent-300"
+                            onClick={() =>
+                                setUser((prev) => ({
+                                    ...prev,
+                                    role,
+                                }))
+                            }
+                        >
+                            Switch to {role}
+                        </button>
+                    ))}
             </div>
         </div>
     );

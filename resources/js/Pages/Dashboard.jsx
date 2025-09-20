@@ -16,7 +16,7 @@ const demoDoctorUser = {
     middle_initial: "A",
     email: "john.doe@example.com",
     login_id: "johndoe",
-    role: "doctor",
+    role: "admin", // admin, doctor or secretary
     profile_picture: "/images/doctor-profile-picture.png",
     created_at: "2025-09-19T14:30:47.000000Z",
     updated_at: "2025-09-19T14:30:47.000000Z",

@@ -28,7 +28,7 @@ export function PatientQuickView({ userRole }) {
                         >
                             Vital Signs
                         </button>
-                        {userRole === "admin" && (
+                        {userRole !== "secretary" && (
                             <button
                                 onClick={() => setCurrentTab("medical-history")}
                                 className={`rounded-md px-3 py-1.5 duration-100 ${currentTab === "medical-history" ? "bg-accent text-white" : "text-accent-500"}`}

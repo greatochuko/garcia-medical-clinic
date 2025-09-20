@@ -115,7 +115,7 @@ export default function RightDashboard({ className, userRole }) {
                             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-left">
                                 <span className="text-xs">PHP</span>
                                 <p className="text-2xl">
-                                    {userRole === "admin"
+                                    {userRole !== "secretary"
                                         ? totalProfessionalFeeEarnings
                                         : 500}
                                 </p>
@@ -147,7 +147,7 @@ export default function RightDashboard({ className, userRole }) {
                                 <p className="line-clamp-1 flex-1 text-sm">
                                     {income.category}
                                 </p>
-                                {userRole === "admin" && (
+                                {userRole !== "secretary" && (
                                     <p className="ml-auto whitespace-nowrap">
                                         PHP {income.price.toLocaleString()}
                                     </p>
