@@ -4,7 +4,7 @@ import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import PropTypes from "prop-types";
 
-const dailyIncomeReport = [
+const dailyProfessionalIncomeReport = [
     {
         category: "Regular Check Up",
         price: 2400,
@@ -56,11 +56,31 @@ const dailyIncomeReport = [
     },
 ];
 
-const totalEarnings = dailyIncomeReport.reduce(
+const totalProfessionalFeeEarnings = dailyProfessionalIncomeReport.reduce(
     (acc, curr) => acc + curr.price,
     0,
 );
-export default function RightDashboard({ className }) {
+
+const dailyMedicineIncomeReport = [
+    { value: 8, medicine: "Co-Amoxiclav", price: 2400 },
+    { value: 2, medicine: "Cetirizine", price: 1000 },
+    { value: 5, medicine: "Paracetamol 25mg", price: 1250 },
+    { value: 1, medicine: "Levocetirizine 10mg", price: 500 },
+    { value: 2, medicine: "Omeprazole 40mg", price: 600 },
+    { value: 1, medicine: "Hyoscine N-Butylbromide 10mg/tab", price: 50 },
+    { value: 1, medicine: "Celecoxib 200mg tab", price: 40 },
+    { value: 8, medicine: "Co-Amoxiclav", price: 2400 },
+    { value: 2, medicine: "Cetirizine", price: 1000 },
+    { value: 5, medicine: "Paracetamol 25mg", price: 1250 },
+    { value: 1, medicine: "Levocetirizine 10mg", price: 500 },
+    { value: 2, medicine: "Omeprazole 40mg", price: 600 },
+];
+
+const totalMedicineEarnings = dailyMedicineIncomeReport.reduce(
+    (acc, curr) => acc + curr.price,
+    0,
+);
+export default function RightDashboard({ className, userRole }) {
     const [currentTab, setCurrentTab] = useState("professional-fee");
 
     return (
@@ -84,45 +104,94 @@ export default function RightDashboard({ className }) {
                     </div>
                 </div>
             </div>
-
-            <div className="p-4 text-center">
-                <h3 className="text-sm font-bold">Today&apos;s Earnings</h3>
-                <div className="relative">
-                    <PieChart />
-                    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-left">
-                        <span className="text-xs">PHP</span>
-                        <p className="text-2xl">{totalEarnings}</p>
+            {currentTab === "professional-fee" ? (
+                <>
+                    <div className="p-4 text-center">
+                        <h3 className="text-sm font-bold">
+                            Today&apos;s Earnings
+                        </h3>
+                        <div className="relative">
+                            <PieChart />
+                            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-left">
+                                <span className="text-xs">PHP</span>
+                                <p className="text-2xl">
+                                    {userRole === "admin"
+                                        ? totalProfessionalFeeEarnings
+                                        : 500}
+                                </p>
+                            </div>
+                        </div>
+                        <p className="flex items-center justify-center gap-1 text-xs">
+                            <img
+                                src="/assets/icons/info-icon.svg"
+                                alt="Info icon"
+                            />
+                            Daily earnings per category: professional fee.
+                        </p>
                     </div>
-                </div>
-                <p className="flex items-center justify-center gap-1 text-xs">
-                    <img src="/assets/icons/info-icon.svg" alt="Info icon" />
-                    Daily earnings per category: professional fee.
-                </p>
-            </div>
 
-            <hr className="border-2 border-accent-200" />
+                    <hr className="border-2 border-accent-200" />
 
-            <ul className="flex flex-col gap-4 p-4">
-                {dailyIncomeReport.map((income, i) => (
-                    <li key={i} className="flex items-center gap-4">
-                        <span
-                            className="flex h-6 w-6 items-center justify-center rounded-md text-xs"
-                            style={{
-                                backgroundColor: income.color,
-                                color: income.foreground,
-                            }}
-                        >
-                            {income.value}
-                        </span>
-                        <p className="line-clamp-1 flex-1 text-sm">
-                            {income.category}
+                    <ul className="flex flex-col gap-4 p-4">
+                        {dailyProfessionalIncomeReport.map((income, i) => (
+                            <li key={i} className="flex items-center gap-4">
+                                <span
+                                    className="flex h-6 w-6 items-center justify-center rounded-md text-xs"
+                                    style={{
+                                        backgroundColor: income.color,
+                                        color: income.foreground,
+                                    }}
+                                >
+                                    {income.value}
+                                </span>
+                                <p className="line-clamp-1 flex-1 text-sm">
+                                    {income.category}
+                                </p>
+                                {userRole === "admin" && (
+                                    <p className="ml-auto whitespace-nowrap">
+                                        PHP {income.price.toLocaleString()}
+                                    </p>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            ) : (
+                <>
+                    <div className="flex flex-col gap-2 p-4 text-center">
+                        <h3 className="text-sm font-bold">
+                            Today&apos;s Earnings
+                        </h3>
+                        <p className="text-4xl font-bold">
+                            {totalMedicineEarnings.toLocaleString()}
                         </p>
-                        <p className="ml-auto whitespace-nowrap">
-                            PHP {income.price.toLocaleString()}
+                        <p className="flex items-center justify-center gap-1 text-xs">
+                            <img
+                                src="/assets/icons/info-icon.svg"
+                                alt="Info icon"
+                            />
+                            Daily earnings per category: medicine.
                         </p>
-                    </li>
-                ))}
-            </ul>
+                    </div>
+
+                    <hr className="border-2 border-accent-200" />
+                    <ul className="flex flex-col gap-4 p-4">
+                        {dailyMedicineIncomeReport.map((income, i) => (
+                            <li key={i} className="flex items-center gap-4">
+                                <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#BCBEBD] text-xs">
+                                    {income.value}
+                                </span>
+                                <p className="line-clamp-1 flex-1 text-sm">
+                                    {income.medicine}
+                                </p>
+                                <p className="ml-auto whitespace-nowrap">
+                                    PHP {income.price.toLocaleString()}
+                                </p>
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
         </div>
     );
 }
@@ -137,7 +206,7 @@ function PieChart() {
         chart.margin(0, 0, 0, 0);
 
         // Sample data
-        chart.data = dailyIncomeReport.map((service) => ({
+        chart.data = dailyProfessionalIncomeReport.map((service) => ({
             category: service.category,
             value: service.price,
         }));
@@ -146,7 +215,7 @@ function PieChart() {
         let pieSeries = chart.series.push(new am4charts.PieSeries());
         pieSeries.dataFields.value = "value";
         pieSeries.dataFields.category = "category";
-        pieSeries.colors.list = dailyIncomeReport.map((income) =>
+        pieSeries.colors.list = dailyProfessionalIncomeReport.map((income) =>
             am4core.color(income.color),
         );
 
@@ -173,4 +242,5 @@ function PieChart() {
 
 RightDashboard.propTypes = {
     className: PropTypes.string,
+    userRole: PropTypes.string,
 };

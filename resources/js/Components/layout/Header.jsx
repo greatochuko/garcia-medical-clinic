@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
 import ApplicationLogo from "../ApplicationLogo";
+import PropTypes from "prop-types";
 
 const navLinks = [
     {
@@ -41,10 +42,8 @@ const navLinks = [
     },
 ];
 
-export default function Header({ user }) {
+export default function Header({ user, setUser }) {
     const pathname = window.location.pathname;
-
-    const userFullName = user.first_name + " " + (user.last_name || "");
 
     function linkIsActive(linkId) {
         return pathname === linkId;
@@ -82,21 +81,85 @@ export default function Header({ user }) {
                     </li>
                 ))}
             </ul>
-            <div className="flex items-center gap-2">
-                <div className="">
-                    <h4 className="text-xs text-white">{userFullName}</h4>
-                    <p className="text-[10px] text-accent-orange">
-                        {user.role.toUpperCase()}
-                    </p>
-                </div>
-                <img
-                    src="/images/profile-picture.jpg"
-                    alt={userFullName + " profile picture"}
-                    height={45}
-                    width={45}
-                    className="rounded-full border-2 border-accent-orange object-cover"
-                />
-            </div>
+            <UserDropdown user={user} setUser={setUser} />
         </header>
     );
 }
+
+export const userPropType = PropTypes.shape({
+    first_name: PropTypes.string,
+    last_name: PropTypes.string,
+    role: PropTypes.string,
+    profile_picture: PropTypes.string,
+}).isRequired;
+
+Header.propTypes = {
+    user: userPropType,
+    setUser: PropTypes.func,
+};
+
+const dropdownLinks = [
+    { text: "Reports", href: "#" },
+    { text: "Settings", href: "#" },
+    { text: "Logout", href: "#" },
+];
+
+function UserDropdown({ user, setUser }) {
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const userFullName = user.first_name + " " + (user.last_name || "");
+
+    return (
+        <div
+            className="relative flex cursor-pointer items-center gap-2"
+            onClick={() => setDropdownOpen((prev) => !prev)}
+        >
+            <div className="flex flex-col items-end">
+                <h4 className="text-xs text-white">{userFullName}</h4>
+                <p className="text-[10px] text-accent-orange">
+                    {user.role.toUpperCase()}
+                </p>
+            </div>
+            <img
+                src={
+                    user.profile_picture || "/images/admin-profile-picture.jpg"
+                }
+                alt={userFullName + " profile picture"}
+                height={45}
+                width={45}
+                className={`overflow-hidden rounded-full border-2 object-cover ${user.role === "admin" ? "border-accent-orange" : "border-white"}`}
+            />
+
+            <div
+                className={`absolute bottom-0 right-0 z-10 flex w-40 flex-col divide-y divide-accent-200 overflow-hidden rounded-md bg-white text-xs shadow-md duration-200 ${dropdownOpen ? "translate-y-[calc(100%+.5rem)]" : "invisible translate-y-[calc(100%+.8rem)] opacity-0"} `}
+            >
+                {dropdownLinks.map((link, i) => (
+                    <Link
+                        key={i}
+                        href={link.href}
+                        className="p-3 duration-200 hover:bg-accent-300"
+                    >
+                        {link.text}
+                    </Link>
+                ))}
+
+                <button
+                    className="p-3 text-left duration-200 hover:bg-accent-300"
+                    onClick={() =>
+                        setUser((prev) => ({
+                            ...prev,
+                            role: user.role === "admin" ? "doctor" : "admin",
+                        }))
+                    }
+                >
+                    Switch to {user.role === "admin" ? "doctor" : "admin"}
+                </button>
+            </div>
+        </div>
+    );
+}
+
+UserDropdown.propTypes = {
+    user: userPropType,
+    setUser: PropTypes.func,
+};

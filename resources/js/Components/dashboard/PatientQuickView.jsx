@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 
 const patientStats = [
@@ -12,7 +13,7 @@ const patientStats = [
 const patientMedicalHistory =
     "Pneumonia, Asthma, Myocardial Infarction, Hyperlipidemia, Hypertension, AKI, CKD, CVA, Pneumonia, Asthma, Myocardial Infarction, Hyperlipidemia, Hypertension, AKI, CKD, CVA";
 
-export function PatientQuickView() {
+export function PatientQuickView({ userRole }) {
     const [currentTab, setCurrentTab] = useState("vital-signs");
 
     return (
@@ -27,12 +28,14 @@ export function PatientQuickView() {
                         >
                             Vital Signs
                         </button>
-                        <button
-                            onClick={() => setCurrentTab("medical-history")}
-                            className={`rounded-md px-3 py-1.5 duration-100 ${currentTab === "medical-history" ? "bg-accent text-white" : "text-accent-500"}`}
-                        >
-                            Medical History
-                        </button>
+                        {userRole === "admin" && (
+                            <button
+                                onClick={() => setCurrentTab("medical-history")}
+                                className={`rounded-md px-3 py-1.5 duration-100 ${currentTab === "medical-history" ? "bg-accent text-white" : "text-accent-500"}`}
+                            >
+                                Medical History
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -76,3 +79,7 @@ export function PatientQuickView() {
         </div>
     );
 }
+
+PatientQuickView.propTypes = {
+    userRole: PropTypes.string,
+};

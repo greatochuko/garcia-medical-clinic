@@ -9,12 +9,29 @@ import RightDashboard from "@/Components/dashboard/RightDashboard";
 import MiddleDashboard from "@/Components/dashboard/MiddleDashboard";
 import PropTypes from "prop-types";
 
+const demoDoctorUser = {
+    id: 2,
+    first_name: "Royce",
+    last_name: "Garcia",
+    middle_initial: "A",
+    email: "john.doe@example.com",
+    login_id: "johndoe",
+    role: "doctor",
+    profile_picture: "/images/doctor-profile-picture.png",
+    created_at: "2025-09-19T14:30:47.000000Z",
+    updated_at: "2025-09-19T14:30:47.000000Z",
+};
+
 export default function Dashboard() {
+    // const { auth } = usePage().props;
+
+    const [user, setUser] = useState(demoDoctorUser);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout user={user} setUser={setUser}>
             <VitalSignsModal
                 isOpen={isModalOpen}
                 setIsOpen={setIsModalOpen}
@@ -34,9 +51,15 @@ export default function Dashboard() {
                 </h1>
 
                 <div className="grid h-full items-stretch gap-6 md:grid-cols-2 xl:grid-cols-[1fr_1.5fr_1fr]">
-                    <MiddleDashboard className="col-span-2 xl:order-2 xl:col-span-1" />
-                    <LeftDashboard className="xl:order-1" />
-                    <RightDashboard className="xl:order-3" />
+                    <MiddleDashboard className="md:col-span-2 xl:order-2 xl:col-span-1" />
+                    <LeftDashboard
+                        className="xl:order-1"
+                        userRole={user.role}
+                    />
+                    <RightDashboard
+                        className="xl:order-3"
+                        userRole={user.role}
+                    />
                 </div>
             </div>
         </AuthenticatedLayout>
