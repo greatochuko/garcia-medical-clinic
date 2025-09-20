@@ -157,6 +157,9 @@ function PieChart() {
         pieSeries.labels.template.disabled = true;
         pieSeries.ticks.template.disabled = true;
 
+        // Customize tooltip text and font size
+        pieSeries.tooltip.label.fontSize = 12;
+
         // Disable padding
         chart.padding(0, 0, 0, 0);
 
