@@ -1,7 +1,7 @@
 import React from "react";
 
 import Footer from "@/Components/layout/Footer";
-import Header, { userPropType } from "@/Components/layout/Header";
+import Header from "@/Components/layout/Header";
 import PropTypes from "prop-types";
 
 export default function AuthenticatedLayout({ children, user, setUser }) {
@@ -16,7 +16,12 @@ export default function AuthenticatedLayout({ children, user, setUser }) {
 
 AuthenticatedLayout.propTypes = {
     children: PropTypes.node.isRequired,
-    user: userPropType,
+    user: PropTypes.shape({
+        first_name: PropTypes.string,
+        last_name: PropTypes.string,
+        role: PropTypes.string,
+        profile_picture: PropTypes.string,
+    }).isRequired,
     setUser: PropTypes.func,
 };
 
