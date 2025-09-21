@@ -36,6 +36,6 @@ class Appointment extends Model
 
     public function serviceCharge()
     {
-        return $this->hasOne(ServiceCharge::class, 'name', 'service');
+        return $this->hasOne(ServiceCharge::class, 'id', 'service');
     }
 }

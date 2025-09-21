@@ -52,9 +52,9 @@ class AppointmentManagerController extends Controller
 
         $appointments = $query
             ->select('appointments.*')
-            ->orderBy('appointments.order_number') // asc by default
-            ->whereDate('appointments.appointment_date', Carbon::now()->toDateString())
+            ->orderBy('appointments.created_at', 'desc') // order by date
             ->paginate($perPage, ['*'], 'page', $page);
+
 
         // Transform the data
         $transformedData = $appointments->through(function ($appointment) {
@@ -62,6 +62,7 @@ class AppointmentManagerController extends Controller
                 'id' => $appointment->id,
                 'order_number' => $appointment->order_number,
                 'queue_type' => $appointment->queue_type,
+                'appointment_date' => $appointment->appointment_date,
                 'queue_number' => $appointment->queue_number,
                 'patient' => [
                     'name' => $appointment->patient->first_name . ', ' . $appointment->patient->middle_initial . ' ' . $appointment->patient->last_name,
@@ -572,10 +573,16 @@ class AppointmentManagerController extends Controller
 
     public function activeDelete($id)
     {
-        $appointment = Appointment::find($id);
-        $appointment->delete();
-        return redirect()->back()->with('success', 'Appointment deleted successfully');
+        try {
+            $appointment = Appointment::findOrFail($id); // throws exception if not found
+            $appointment->delete();
+
+            return redirect()->back()->with('success', 'Appointment deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete appointment. Please try again.');
+        }
     }
+
 
 
     public function checkOut($id)

@@ -4,7 +4,6 @@ import { Link } from "@inertiajs/react";
 import React, { useState } from "react";
 
 export default function SelectPatient({ patients }) {
-    console.log({ patients });
     const [searchQuery, setSearchQuery] = useState("");
 
     const filteredPatients = patients.filter(

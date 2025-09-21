@@ -6,6 +6,8 @@ import { toast } from "react-toastify";
 import { route } from "ziggy-js";
 
 export default function CreateAppointment({ patientData, serviceTypes }) {
+    console.log(new Date());
+    console.log(new Date().toISOString().split("T")[0]);
     const isOver60 = parseInt(patientData.age) > 59;
 
     const [validationErrors, setValidationErrors] = useState([]);

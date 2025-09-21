@@ -1,57 +1,65 @@
-import React, { useState } from "react";
+import { AppointmentDateSection } from "@/Components/appointmentManager/AppointmentDateSection";
+import AppointmentsHeader from "@/Components/appointmentManager/AppointmentsHeader";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Link } from "@inertiajs/react";
+import React, { useCallback, useMemo, useState } from "react";
 
 export default function AppointmentManager({ appointments }) {
     const [currentTab, setCurrentTab] = useState("active");
+    const [appointmentList, setAppointmentList] = useState(appointments.data);
+
+    const uniqueDates = useMemo(
+        () => [
+            ...new Set(
+                appointmentList.map((a) => a.appointment_date.split("T")[0]),
+            ),
+        ],
+        [],
+    );
+
+    const getAppointmentsByDate = useCallback(
+        (date) => {
+            const targetDate =
+                typeof date === "string"
+                    ? date
+                    : date.toISOString().split("T")[0];
+
+            return appointmentList.filter(
+                (appointment) =>
+                    appointment.appointment_date &&
+                    appointment.appointment_date.split("T")[0] === targetDate,
+            );
+        },
+        [appointmentList],
+    );
 
     return (
-        <AuthenticatedLayout pageTitle={"Appointments"}>
-            <div className="mx-auto flex h-full w-[95%] max-w-screen-2xl flex-col gap-4 bg-accent-100 px-4 py-6 text-accent md:px-6">
-                <div className="relative mb-2 border-b-2 border-accent-200 px-4 pb-6 pt-3 text-center">
-                    <h1 className="text-center text-sm font-bold">
-                        APPOINTMENTS MANAGER
-                    </h1>
-                    <div className="absolute left-1/2 top-full flex -translate-x-1/2 -translate-y-1/2 gap-2 rounded-lg bg-accent-200 p-1 text-xs">
-                        <button
-                            onClick={() => setCurrentTab("active")}
-                            className={`rounded-md px-3 py-1.5 duration-100 ${currentTab === "active" ? "bg-accent text-white" : "text-accent-500"}`}
-                        >
-                            Active
-                        </button>
-                        <button
-                            onClick={() => setCurrentTab("completed")}
-                            className={`rounded-md px-3 py-1.5 duration-100 ${currentTab === "completed" ? "bg-accent text-white" : "text-accent-500"}`}
-                        >
-                            Completed
-                        </button>
+        <AuthenticatedLayout pageTitle="Appointments">
+            <div className="max-w-full flex-1 pt-6">
+                <div className="mx-auto flex h-full w-[95%] max-w-screen-2xl flex-col gap-4 bg-white text-accent">
+                    <AppointmentsHeader
+                        currentTab={currentTab}
+                        setCurrentTab={setCurrentTab}
+                    />
+                    <div className="text-sm">
+                        {appointmentList.length > 0 ? (
+                            <div className="flex flex-col gap-6 overflow-x-auto">
+                                {uniqueDates.map((date) => (
+                                    <AppointmentDateSection
+                                        key={date}
+                                        date={date}
+                                        appointments={getAppointmentsByDate(
+                                            date,
+                                        )}
+                                        setAppointments={setAppointmentList}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="p-4 text-center text-accent-500">
+                                There are no appointments right now
+                            </p>
+                        )}
                     </div>
-
-                    <div className="absolute right-4 top-full flex -translate-y-1/2 items-center gap-4">
-                        <Link
-                            href="/appointments/select-patient"
-                            className="flex items-center gap-2 rounded-[10px] border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300"
-                        >
-                            <img
-                                src="/assets/icons/plus-icon.svg"
-                                alt="plus icon"
-                                width={14}
-                                height={14}
-                            />
-                            Create Appointment
-                        </Link>
-                        <button className="flex items-center gap-2 rounded-[10px] border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300">
-                            <img
-                                src="/assets/icons/walk-in-icon.svg"
-                                alt="walk in "
-                                width={16}
-                                height={16}
-                            />
-                        </button>
-                    </div>
-                </div>
-                <div className="p-4 text-center text-sm text-accent-500">
-                    <p>There are no appointments right now</p>
                 </div>
             </div>
         </AuthenticatedLayout>
