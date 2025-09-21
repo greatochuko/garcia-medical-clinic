@@ -54,7 +54,7 @@ export default function SelectPatient({ patients }) {
                                                     (patient) => (
                                                         <li key={patient.id}>
                                                             <Link
-                                                                href={`/appointments/create?id=${patient.id}`}
+                                                                href={`/appointments/create?id=${patient.patient_id}`}
                                                                 key={patient.id}
                                                                 className="block p-3 duration-200 hover:bg-accent-200"
                                                             >

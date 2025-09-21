@@ -24,12 +24,15 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         // Create 1 admin user
-        User::factory()->admin()->create([
-            'first_name' => 'Admin',
-            'last_name' => 'User',
-            'login_id' => 'admin',
-            'password' => bcrypt('password'),
-        ]);
+        User::firstOrCreate(
+            ['login_id' => 'admin'], // check by login_id
+            [
+                'first_name' => 'Admin',
+                'last_name'  => 'User',
+                'password'   => bcrypt('password'),
+                'role'       => 'admin',
+            ]
+        );
 
         // Create 15 doctors with their user accounts
         Doctor::factory()->count(15)->create();

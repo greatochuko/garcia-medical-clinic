@@ -32,12 +32,12 @@ class ListMedicationTempleteFactory extends Factory
         $amounts = ['1 bottle', '10 tablets', '5 nebules', '20 tablets', '1 box'];
 
         return [
-            'name' => $this->faker->randomElement($medications) . ' ' . $this->faker->word,
-            'dose' => $this->faker->randomElement($doses),
-            'frequency' => $this->faker->randomElement($frequencies),
-            'duration' => $this->faker->randomElement($durations),
-            'amount' => $this->faker->randomElement($amounts),
-            'template_id' => MedicationTemplate::factory()
+            'medication_name' => $this->faker->word(),
+            'dosage' => $this->faker->randomElement(['5 mg', '10 mg', '1 neb', '10 mL']), // FIXED (was "dose")
+            'frequency' => $this->faker->randomElement(['once daily', 'every 6 hours', 'every 12 hours']),
+            'duration' => $this->faker->randomElement(['3 days', '5 days', '7 days']),
+            'amount' => $this->faker->randomElement(['10 tablets', '20 tablets', '5 nebules']),
+            'medication_template_id' => null, // will be set in seeder
         ];
     }
-} 
+}

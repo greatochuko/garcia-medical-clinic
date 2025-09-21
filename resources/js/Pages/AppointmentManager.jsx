@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Link } from "@inertiajs/react";
 
-export default function AppointmentManager() {
+export default function AppointmentManager(props) {
+    console.log(props);
     const [currentTab, setCurrentTab] = useState("active");
 
     return (

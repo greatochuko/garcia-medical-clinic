@@ -16,8 +16,8 @@ class ListMedicationTempleteSeeder extends Seeder
         // For each template, create 3-5 medications
         foreach ($templates as $template) {
             ListMedicationTemplete::factory(rand(3, 5))->create([
-                'template_id' => $template->id
+                'medication_template_id' => $template->id
             ]);
         }
     }
-} 
+}

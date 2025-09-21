@@ -8,7 +8,6 @@ const FlashMessage = () => {
     const { flash } = usePage().props;
     const shown = useRef(false);
 
-    console.log(flash);
     useEffect(() => {
         if (!shown.current) {
             if (flash?.success) {

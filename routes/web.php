@@ -59,9 +59,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/queue-user', [DashboardController::class, 'get_queue_user'])->name('queue.user');
 
 
-    Route::get('/appointments', [AppointmentManagerController::class, 'index'])->name('appointments.index');
-    Route::get('/appointments/select-patient', [AppointmentManagerController::class, 'selectPatient'])->name('appointments.select_patient');
-    Route::get('/appointments/create', [AppointmentManagerController::class, 'createAppointment'])->name('appointments.create');
     Route::get('/appointment-manager', [AppointmentManagerController::class, 'index'])->name('appointments.index');
 
     // });
@@ -186,8 +183,10 @@ Route::middleware('auth')->group(function () {
 
     // Appointment routes
     Route::post('/appointments/reorder', [AppointmentManagerController::class, 'reorder'])->name('appointments.reorder');
-    Route::get('/create-appointment', [AppointmentManagerController::class, 'createAppointment'])->name('appointments.create');
-    Route::post('/appointments/store', [AppointmentManagerController::class, 'appointmentStore'])->name('appointments.store');
+    Route::get('/appointments', [AppointmentManagerController::class, 'index'])->name('appointments.index');
+    Route::get('/appointments/select-patient', [AppointmentManagerController::class, 'selectPatient'])->name('appointments.select_patient');
+    Route::get('/appointments/create', [AppointmentManagerController::class, 'createAppointment'])->name('appointments.create');
+    Route::post('/appointments/create-new', [AppointmentManagerController::class, 'createNewAppointment'])->name('appointments.create_new');
     Route::get('/queue-numbers/{age}', [AppointmentManagerController::class, 'getQueueNumbers'])->name('api.queue-numbers');
     Route::get('/closed-appointments', [AppointmentManagerController::class, 'closedAppointments'])->name('appointments.closed');
     Route::delete('/closed/appointments/{id}', [AppointmentManagerController::class, 'closedDelete'])->name('appointments.destroy.closed');

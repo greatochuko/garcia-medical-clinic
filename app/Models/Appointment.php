@@ -14,17 +14,16 @@ class Appointment extends Model
         'order_number',
         'patient_id',
         'appointment_date',
-        'service',
+        'service',        // now a string (e.g. "check-up")
         'status',
         'queue_type',
         'queue_number'
     ];
 
     protected $casts = [
-        // 'appointment_date' => 'date',
-        // 'order_number' => 'integer',
-        // 'service' => 'integer',
-        // 'queue_number' => 'integer'
+        'appointment_date' => 'date',
+        'order_number'     => 'integer',
+        'queue_number'     => 'integer',
     ];
 
     /**
@@ -35,12 +34,8 @@ class Appointment extends Model
         return $this->belongsTo(Patient::class, 'patient_id', 'patient_id');
     }
 
-    /**
-     * Get the service associated with the appointment.
-     */
-    public function serviceCharge(): BelongsTo
+    public function serviceCharge()
     {
-        return $this->belongsTo(ServiceCharge::class, 'service', 'id');
+        return $this->hasOne(ServiceCharge::class, 'name', 'service');
     }
-
-} 
+}

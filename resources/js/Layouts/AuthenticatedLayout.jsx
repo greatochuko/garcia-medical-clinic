@@ -27,7 +27,7 @@ export default function AuthenticatedLayout({ children, pageTitle }) {
             <Header user={user} setUser={setUser} />
             <Head title={pageTitle} />
             <FlashMessage />
-            <main className="flex flex-1">{children}</main>
+            <main className="flex flex-1 text-accent">{children}</main>
             <Footer />
         </div>
     );

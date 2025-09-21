@@ -69,7 +69,7 @@ class AppointmentManagerController extends Controller
                     'patient_id' => $appointment->patient->patient_id,
                     'gender' => $appointment->patient->gender
                 ],
-                'services' => [$appointment->serviceCharge->name ?? ''],
+                // 'services' => [$appointment->serviceCharge->name ?? ''],
                 'status' => $appointment->status,
                 'actions' => ['Check In', 'Check Out']
             ];
@@ -172,7 +172,7 @@ class AppointmentManagerController extends Controller
                     'patient_id' => $appointment->patient->patient_id,
                     'gender' => $appointment->patient->gender
                 ],
-                'services' => [$appointment->serviceCharge->name ?? ''],
+                // 'services' => [$appointment->serviceCharge->name ?? ''],
                 'status' => $appointment->status,
                 'actions' => ['Check In', 'Check Out']
             ];
@@ -366,7 +366,7 @@ class AppointmentManagerController extends Controller
 
     public function selectPatient()
     {
-        $patients = Patient::select('id', 'first_name', 'last_name')->get();
+        $patients = Patient::select('id', 'first_name', 'last_name', 'patient_id')->get();
 
         return Inertia::render('Appointments/SelectPatient', [
             'patients' => $patients,
@@ -385,7 +385,7 @@ class AppointmentManagerController extends Controller
         // })
         // ->prepend(['id' => '', 'name' => 'Select service type']);
 
-        $patientData = Patient::find($request->query('id'));
+        $patientData = Patient::where('patient_id', $request->query('id'))->first();
 
         if (!$patientData) {
             return redirect()->back()->withErrors(['id' => 'Invalid patient ID']);
@@ -407,67 +407,64 @@ class AppointmentManagerController extends Controller
     }
 
 
-    public function appointmentStore(Request $request)
+    public function createNewAppointment(Request $request)
     {
         $request->validate([
-            'patient_id' => 'required',
+            'patient_id'       => 'required',
             'appointment_date' => 'required|date',
-            'service_type' => 'required',
-            'status' => 'required',
-            'queue_number' => 'required'
+            'service_type'          => 'required|string|exists:service_charges,name',
+            'status'           => 'required',
+            'queue_number'     => 'required'
         ]);
+
 
         preg_match('/^([A-Z]+)(\d+)$/i', $request->queue_number, $matches);
         $queue_type = $matches[1];
-        $queue_number = $matches[2];
+        $queue_number = (int) $matches[2];
+
+        try {
+            DB::transaction(function () use ($request, $queue_type, $queue_number) {
+                $latestOrderNumber = DB::table('appointments')
+                    ->lockForUpdate()
+                    ->max('order_number') ?? 0;
+
+                $newOrderNumber = $latestOrderNumber + 1;
+
+                $exists = Appointment::where('queue_type', $queue_type)
+                    ->where('queue_number', $queue_number)
+                    ->where('appointment_date', $request->appointment_date)
+                    ->exists();
+
+                if ($exists) {
+                    throw new \Exception('That queue number is already assigned for this date.');
+                }
+
+                Appointment::create([
+                    'order_number'     => $newOrderNumber,
+                    'patient_id'       => $request->patient_id,
+                    'appointment_date' => $request->appointment_date,
+                    'service'          => $request->service_type,
+                    'status'           => strtolower($request->status),
+                    'queue_type'       => $queue_type,
+                    'queue_number'     => $queue_number,
+                ]);
 
 
+                Patient::where('patient_id', $request->patient_id)->update([
+                    'last_visit_date' => $request->appointment_date,
+                ]);
+            });
 
-        // $latestOrderNumber = Appointment::max('order_number') ?? 0; // fallback to 0 if null
-        // $newOrderNumber = $latestOrderNumber + 1;
-        // // dd($newOrderNumber);  
-        // Appointment::create([
-        //     'order_number' => $newOrderNumber,
-        //     'patient_id' => $request->patient_id,
-        //     'appointment_date' => $request->appointment_date,
-        //     'service' => $request->service_type,
-        //     'status' => strtolower($request->status),
-        //     'queue_type' => $queue_type,
-        //     'queue_number' => $queue_number
-        // ]);
-
-
-
-        DB::transaction(function () use ($request, $queue_type, $queue_number) {
-            // Lock the table to prevent race conditions
-            $latestOrderNumber = DB::table('appointments')
-                ->lockForUpdate()
-                ->max('order_number') ?? 0;
-
-            $newOrderNumber = $latestOrderNumber + 1;
-
-            $exists = Appointment::where('queue_type', $queue_type)->where('queue_number', $queue_number)->where('appointment_date', $request->appointment_date)->exists();
-            if ($exists) {
-                return redirect()->route('appointments.index');
-            }
-
-            Appointment::create([
-                'order_number' => $newOrderNumber,
-                'patient_id' => $request->patient_id,
-                'appointment_date' => $request->appointment_date,
-                'service' => $request->service_type,
-                'status' => strtolower($request->status),
-                'queue_type' => $queue_type,
-                'queue_number' => $queue_number
-            ]);
-
-            Patient::where('patient_id', $request->patient_id)->update([
-                'last_visit_date' => $request->appointment_date
-            ]);
-        });
-
-        return redirect()->route('appointments.index')->with('success', 'Appointment created successfully');
+            return redirect()
+                ->route('appointments.index')
+                ->with('success', 'Appointment created successfully');
+        } catch (\Exception $e) {
+            return back()
+                ->withErrors(['queue_number' => $e->getMessage()])
+                ->withInput();
+        }
     }
+
 
     public function closedAppointments(Request $request)
     {
@@ -603,7 +600,7 @@ class AppointmentManagerController extends Controller
             'name' => $appointment->patient->first_name . ', ' . $appointment->patient->middle_initial . ' ' . $appointment->patient->last_name,
             'age' => $appointment->patient->age,
             'gender' => $appointment->patient->gender,
-            'service' => $appointment->serviceCharge->name,
+            // 'service' => $appointment->serviceCharge->name,
             'status' => 'checked_out'
         ]);
 
