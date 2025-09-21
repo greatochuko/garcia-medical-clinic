@@ -55,8 +55,11 @@ export default function Header({ user, setUser }) {
     const pathname = window.location.pathname;
 
     function linkIsActive(linkHref) {
-        if (linkHref === "/" && pathname === "/dashboard") return true;
-        return pathname === linkHref;
+        if (linkHref === "/") {
+            return pathname === "/" || pathname === "/dashboard";
+        } else {
+            return pathname.startsWith(linkHref);
+        }
     }
 
     return (

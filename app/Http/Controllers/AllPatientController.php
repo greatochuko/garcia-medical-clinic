@@ -14,7 +14,7 @@ class AllPatientController extends Controller
         $perPage = (int) $request->input('perPage', 10);
         $page = (int) $request->input('page', 1);
         $search = $request->input('search', '');
-    
+
         // Base query
         $query = Patient::select(
             'id',
@@ -27,24 +27,23 @@ class AllPatientController extends Controller
             'age',
             'gender'
         );
-    
+
         // Apply search filter
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('first_name', 'like', "%{$search}%")
-                  ->orWhere('last_name', 'like', "%{$search}%")
-                  ->orWhere('patient_id', 'like', "%{$search}%")
-                  ->orWhere('patient_type', 'like', "%{$search}%")
-                  ->orWhere('gender', 'like', "%{$search}%")
-                  ->orWhereRaw("FROM_UNIXTIME(last_visit_date, '%M %d, %Y') LIKE ?", ["%{$search}%"])
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('patient_id', 'like', "%{$search}%")
+                    ->orWhere('patient_type', 'like', "%{$search}%")
+                    ->orWhere('gender', 'like', "%{$search}%")
+                    ->orWhereRaw("FROM_UNIXTIME(last_visit_date, '%M %d, %Y') LIKE ?", ["%{$search}%"])
                     ->orWhereRaw("FROM_UNIXTIME(last_visit_date, '%Y-%m-%d') LIKE ?", ["%{$search}%"]);
-
             });
         }
-    
+
         // Paginate result
         $patients = $query->paginate($perPage, ['*'], 'page', $page);
-    
+
         // Transform data
         $patients->getCollection()->transform(function ($patient) {
             return [
@@ -57,7 +56,7 @@ class AllPatientController extends Controller
                 'gender' => $patient->gender
             ];
         });
-    
+
         return Inertia::render('AllPatients', [
             'patient' => $patients,
             'auth' => [
@@ -65,7 +64,7 @@ class AllPatientController extends Controller
                 'role' => auth()->user()->role
             ]
         ]);
-        
+
         // $perPage = $request->input('perPage', 10);
 
         // $patients = Patient::select(
@@ -78,7 +77,7 @@ class AllPatientController extends Controller
         //     'age',
         //     'gender'
         // )->paginate($perPage);
-    
+
         // $patients->getCollection()->transform(function ($patient) {
         //     return [
         //         'id' => $patient->id,
@@ -90,7 +89,7 @@ class AllPatientController extends Controller
         //         'gender' => $patient->gender
         //     ];
         // });
-    
+
         // return Inertia::render('AllPatients', [
         //     'patient' => $patients,
         //     'auth' => [
@@ -102,8 +101,13 @@ class AllPatientController extends Controller
 
     public function PatientAddform()
     {
-        return Inertia::render('AllPatientsAddForm');
+        do {
+            $patientId = random_int(100000, 999999);
+        } while (\App\Models\Patient::where('patient_id', $patientId)->exists());
+
+        return Inertia::render('AddPatientPage', ["patientId" => $patientId]);
     }
+
 
     public function latest_id()
     {
@@ -161,7 +165,7 @@ class AllPatientController extends Controller
     public function edit(Request $request)
     {
         $patient = Patient::find($request->id);
-        return Inertia::render('AllPatientsAddForm', ['patient' => $patient]);
+        return Inertia::render('AddPatientPage', ['patient' => $patient]);
     }
 
     public function update(Request $request)
@@ -198,17 +202,16 @@ class AllPatientController extends Controller
         return redirect()->route('allpatients')->with('success', 'Patient updated successfully!');
     }
 
-  public function destroy(Request $request)
-{
-    $patient = Patient::find($request->id);
+    public function destroy(Request $request)
+    {
+        $patient = Patient::find($request->id);
 
-    if ($patient) {
-        DB::table('appointments')->where('patient_id', $patient->patient_id)->delete();
-        $patient->delete();
-        return redirect()->route('allpatients')->with('success', 'Patient and related appointments deleted successfully!');
+        if ($patient) {
+            DB::table('appointments')->where('patient_id', $patient->patient_id)->delete();
+            $patient->delete();
+            return redirect()->route('allpatients')->with('success', 'Patient and related appointments deleted successfully!');
+        }
+
+        return redirect()->route('allpatients')->with('error', 'Patient not found.');
     }
-
-    return redirect()->route('allpatients')->with('error', 'Patient not found.');
-}
-
 }

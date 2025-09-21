@@ -61,14 +61,15 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/appointments', [AppointmentManagerController::class, 'index'])->name('appointments.index');
     Route::get('/appointments/select-patient', [AppointmentManagerController::class, 'selectPatient'])->name('appointments.select_patient');
+    Route::get('/appointments/create', [AppointmentManagerController::class, 'createAppointment'])->name('appointments.create');
     Route::get('/appointment-manager', [AppointmentManagerController::class, 'index'])->name('appointments.index');
 
     // });
 
     // All Patients Routes
     Route::get('/allpatients', [AllPatientController::class, 'index'])->name('allpatients');
-    Route::post('/allpatients/add/register', [AllPatientController::class, 'patientadd'])->name('allpatients.register');
-    Route::get('/allpatients/add', [AllPatientController::class, 'patientaddform'])->name('allpatients.create');
+    Route::post('/allpatients/add/register', [AllPatientController::class, 'patientadd'])->name('patients.register');
+    Route::get('/patients/add', [AllPatientController::class, 'patientaddform'])->name('allpatients.create');
     Route::get('/allpatients/serial_id', [AllPatientController::class, 'latest_id'])->name('allpatients.latestpatient_id');
     Route::get('/patient/edit/{id}', [AllPatientController::class, 'edit'])->name('patient.edit');
     Route::put('/patient/update/{id}', [AllPatientController::class, 'update'])->name('patient.update');

@@ -393,7 +393,6 @@ class AppointmentManagerController extends Controller
 
         $serviceTypes = ServiceCharge::select('id', 'name', 'charge')->where('patient_type', $patientData->patient_type)
             ->get();
-        // dd($patientData);
 
         return Inertia::render('Appointments/CreateAppointment', [
             'serviceTypes' => $serviceTypes,

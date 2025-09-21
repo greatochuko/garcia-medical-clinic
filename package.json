@@ -34,7 +34,8 @@
         "react": "^19.1.0",
         "react-beautiful-dnd": "^13.1.1",
         "react-dom": "^19.1.0",
-        "react-toastify": "^11.0.5"
+        "react-toastify": "^11.0.5",
+        "ziggy-js": "^2.6.0"
     },
     "prettier": {
         "plugins": [
