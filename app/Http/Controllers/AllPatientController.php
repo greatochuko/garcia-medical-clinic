@@ -101,9 +101,7 @@ class AllPatientController extends Controller
 
     public function PatientAddform()
     {
-        do {
-            $patientId = random_int(100000, 999999);
-        } while (\App\Models\Patient::where('patient_id', $patientId)->exists());
+        $patientId = $this->latest_id();
 
         return Inertia::render('AddPatientPage', ["patientId" => $patientId]);
     }
@@ -155,7 +153,7 @@ class AllPatientController extends Controller
         ]);
 
         return redirect()
-            ->route('appointments.create', ['id' => $patient->id])
+            ->route('appointments.create', ['id' => $patient->patient_id])
             ->with('success', 'Patient registered successfully!')
             ->with('id', ['id' => $validated['patient_id'], 'age' => $validated['age']]);
         // ->with('age', $patient->age);

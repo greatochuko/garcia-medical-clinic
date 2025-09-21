@@ -49,7 +49,7 @@ const formFields = [
 ];
 
 export default function AddPatientForm({ patientId }) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing } = useForm({
         patient_id: patientId.toString(),
         first_name: "",
         last_name: "",
@@ -57,12 +57,13 @@ export default function AddPatientForm({ patientId }) {
         dob: "2000-01-01",
         age: "",
         gender: "",
-        patient_type: 1, // or default type
+        patient_type: 1,
         phone: "",
         address: "",
     });
     const [validationErrors, setValidationErrors] = useState([]);
     const [currentStage, setCurrentStage] = useState("form");
+    const [termsAccepted, setTermsAccepted] = useState(false);
 
     useEffect(() => {
         if (!data.dob) return;
@@ -81,52 +82,68 @@ export default function AddPatientForm({ patientId }) {
     }, [data.dob]);
 
     function handleBack() {
-        if (currentStage !== "form") {
-            setCurrentStage("form");
-        }
+        setCurrentStage("form");
     }
 
     function handleNext() {
-        let errors = [];
+        const errorList = validateFields();
+
+        if (errorList.length > 0) {
+            setValidationErrors(errorList);
+            return;
+        } else {
+            setValidationErrors([]);
+        }
+
+        setCurrentStage("terms");
+    }
+
+    function acceptTerms() {
+        setTermsAccepted(true);
+        setCurrentStage("form");
+    }
+
+    function validateFields() {
+        const errorList = [];
 
         if (!data.first_name.trim()) {
-            errors.push("First name is required.");
+            errorList.push("First name is required.");
         }
 
         if (!data.last_name.trim()) {
-            errors.push("Last name is required.");
+            errorList.push("Last name is required.");
         }
 
         if (!data.dob) {
-            errors.push("Date of birth is required.");
+            errorList.push("Date of birth is required.");
         }
 
         if (!data.gender) {
-            errors.push("Please select a gender.");
+            errorList.push("Please select a gender.");
         }
 
         if (!data.phone.trim()) {
-            errors.push("Phone number is required.");
+            errorList.push("Phone number is required.");
         } else if (!/^[0-9]+$/.test(data.phone)) {
-            errors.push("Phone number must contain digits only.");
+            errorList.push("Phone number must contain digits only.");
         }
 
         if (!data.address.trim()) {
-            errors.push("Address is required.");
+            errorList.push("Address is required.");
         }
 
-        if (errors.length > 0) {
-            setValidationErrors(errors);
-            return;
-        }
-
-        if (currentStage === "form") {
-            setCurrentStage("terms");
-        }
+        return errorList;
     }
 
     function handleRegisterPatient(e) {
         e.preventDefault();
+
+        const errorList = validateFields();
+
+        if (errorList.length > 0) {
+            setValidationErrors(errorList);
+            return;
+        }
 
         post(route("patients.register"), {
             onError: (serverErrors) => {
@@ -137,8 +154,6 @@ export default function AddPatientForm({ patientId }) {
             },
         });
     }
-
-    console.log({ errors });
 
     if (currentStage === "form")
         return (
@@ -262,10 +277,22 @@ export default function AddPatientForm({ patientId }) {
                     </button>
                     <button
                         disabled={processing}
-                        onClick={handleNext}
-                        className="rounded-md border border-accent bg-accent px-4 py-2 text-sm text-white duration-200 hover:bg-accent/90"
+                        onClick={
+                            termsAccepted ? handleRegisterPatient : handleNext
+                        }
+                        className="flex items-center gap-2 rounded-md border border-accent bg-accent px-4 py-2 text-sm text-white duration-200 hover:bg-accent/90"
                     >
-                        Register
+                        {termsAccepted ? (
+                            processing ? (
+                                <>
+                                    <LoadingIndicator /> Registering...
+                                </>
+                            ) : (
+                                "Register"
+                            )
+                        ) : (
+                            "Next"
+                        )}
                     </button>
                 </div>
             </>
@@ -349,16 +376,10 @@ export default function AddPatientForm({ patientId }) {
                     </button>
                     <button
                         disabled={processing}
-                        onClick={handleRegisterPatient}
+                        onClick={acceptTerms}
                         className="flex items-center gap-2 rounded-md border border-accent bg-accent px-4 py-2 text-sm text-white duration-200 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
                     >
-                        {processing ? (
-                            <>
-                                <LoadingIndicator /> Registering...
-                            </>
-                        ) : (
-                            "Agree"
-                        )}
+                        Agree
                     </button>
                 </div>
             </div>

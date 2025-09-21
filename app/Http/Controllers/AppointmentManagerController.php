@@ -376,15 +376,6 @@ class AppointmentManagerController extends Controller
 
     public function createAppointment(Request $request)
     {
-
-        // ->map(function($service) {
-        //     return [
-        //         'id' => $service->id,
-        //         'name' => $service->name
-        //     ];
-        // })
-        // ->prepend(['id' => '', 'name' => 'Select service type']);
-
         $patientData = Patient::where('patient_id', $request->query('id'))->first();
 
         if (!$patientData) {
@@ -412,7 +403,7 @@ class AppointmentManagerController extends Controller
         $request->validate([
             'patient_id'       => 'required',
             'appointment_date' => 'required|date',
-            'service_type'          => 'required|string|exists:service_charges,name',
+            'service_type'          => 'required|string|exists:service_charges,id',
             'status'           => 'required',
             'queue_number'     => 'required'
         ]);
