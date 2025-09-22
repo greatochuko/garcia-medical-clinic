@@ -20,21 +20,33 @@ export default function CreateAppointment({ patientData, serviceTypes }) {
     const [queueNumbers, setQueueNumbers] = useState([]);
 
     useEffect(() => {
-        fetch(route("api.queue-numbers", patientData.age))
+        const controller = new AbortController();
+
+        fetch(
+            route("api.queue-numbers", patientData.age) +
+                `?date=${data.appointment_date}`,
+            { signal: controller.signal },
+        )
             .then((res) => res.json())
             .then((data) => {
                 if (data && data.length) {
-                    setQueueNumbers(Object.values(data.map((d) => d.number)));
+                    setQueueNumbers(data.map((d) => d.number));
                     setData((prev) => ({
                         ...prev,
                         queue_number: data[0].number,
                     }));
                 }
             })
-            .catch((err) =>
-                console.error("Error fetching queue numbers:", err),
-            );
-    }, [patientData.age, setData]);
+            .catch((err) => {
+                if (err.name !== "AbortError") {
+                    console.error("Error fetching queue numbers:", err);
+                }
+            });
+
+        return () => {
+            controller.abort(); // aborts previous request when deps change
+        };
+    }, [data.appointment_date, patientData.age, setData]);
 
     function handleCreateAppointment(e) {
         e.preventDefault();
