@@ -7,18 +7,19 @@ PORT="65002"
 REMOTE_DIR="~/domains/garciamedicalclinic.site/public_html"
 ZIP_NAME="deploy.zip"
 
+# Step 0: Build the React code
+echo "Building React frontend..."
+# pnpm install
+pnpm build
+
 # Step 1: Zip the folders locally
 echo "Zipping public/ and resources/ into $ZIP_NAME..."
-ZIP_NAME="project-deploy.zip"
 
 zip -r $ZIP_NAME \
     app \
-    database \
     public \
     resources \
     routes/web.php \
-    composer.json \
-    composer.lock \
     package.json \
     pnpm-lock.yaml
 

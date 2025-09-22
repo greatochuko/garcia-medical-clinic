@@ -214,9 +214,6 @@ class AppointmentManagerController extends Controller
 
         $between = Appointment::whereBetween('order_number', [$min, $max])->get();
 
-        // return response()->json($request->all());
-        // return response()->json($between);
-        // $aaa = [];
         foreach ($between as $appointment) {
 
             if ($direction == 'up') {
@@ -239,10 +236,10 @@ class AppointmentManagerController extends Controller
         }
         // return response()->json($aaa);
 
-        // return response()->json([
-        //     'message' => 'Appointment reordered successfully',
-        //     'data' => $reorderData
-        // ]);
+        return response()->json([
+            'message' => 'Appointment reordered successfully',
+            'data' => $reorderData
+        ]);
     }
 
     // public function getQueueNumbers2($age = null)

@@ -9,9 +9,21 @@ export function AppointmentDateSection({
     setAppointments,
     isLastDate,
     userRole,
+    handleReorder,
 }) {
-    function onDragEnd() {
-        // drag & drop logic
+    function onDragEnd(result) {
+        const { source, destination } = result;
+        if (!destination) return;
+
+        const draggedIndex = source.index;
+        const replacedIndex = destination.index;
+        if (draggedIndex === replacedIndex) return;
+
+        const draggedAppointment = appointments[draggedIndex];
+        const replacedAppointment = appointments[replacedIndex];
+        const direction = draggedIndex < replacedIndex ? "down" : "up";
+
+        handleReorder(draggedAppointment, replacedAppointment, direction);
     }
 
     return (

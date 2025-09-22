@@ -3,7 +3,9 @@ import AppointmentsHeader from "@/Components/appointmentManager/AppointmentsHead
 import Paginator from "@/Components/layout/Paginator";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { usePage } from "@inertiajs/react";
+import axios from "axios";
 import React, { useCallback, useMemo, useState } from "react";
+import { route } from "ziggy-js";
 
 export default function AppointmentManager({ appointments }) {
     const { auth } = usePage().props;
@@ -15,7 +17,11 @@ export default function AppointmentManager({ appointments }) {
     const uniqueDates = useMemo(
         () => [
             ...new Set(
-                appointmentList.map((a) => a.appointment_date.split("T")[0]),
+                appointmentList
+                    .map((a) => a.appointment_date.split("T")[0])
+                    .sort(
+                        (a, b) => new Date(b).getTime() - new Date(a).getTime(),
+                    ),
             ),
         ],
         [appointmentList],
@@ -23,19 +29,68 @@ export default function AppointmentManager({ appointments }) {
 
     const getAppointmentsByDate = useCallback(
         (date) => {
-            const targetDate =
-                typeof date === "string"
-                    ? date
-                    : date.toISOString().split("T")[0];
+            const targetDate = new Date(date).toISOString().split("T")[0];
 
-            return appointmentList.filter(
-                (appointment) =>
-                    appointment.appointment_date &&
-                    appointment.appointment_date.split("T")[0] === targetDate,
-            );
+            return appointmentList
+                .filter(
+                    (appointment) =>
+                        appointment.appointment_date &&
+                        appointment.appointment_date.split("T")[0] ===
+                            targetDate,
+                )
+                .sort((a, b) => a.order_number - b.order_number);
         },
         [appointmentList],
     );
+
+    async function reorderAppointment(
+        draggedOrderNumber,
+        replacedOrderNumber,
+        direction,
+    ) {
+        try {
+            await axios.post(route("appointments.reorder"), {
+                reorderData: {
+                    draggedOrderNumber,
+                    replacedOrderNumber,
+                    direction,
+                },
+            });
+        } catch (error) {
+            console.error("Error reordering appointment:", error);
+        }
+    }
+
+    function handleReorder(draggedAppointment, replacedAppointment, direction) {
+        const updatedList = Array.from(appointmentList);
+
+        // Determine the range of affected appointments
+        const draggedOrderNumber = draggedAppointment.order_number;
+        const replacedOrderNumber = replacedAppointment.order_number;
+        const min = Math.min(draggedOrderNumber, replacedOrderNumber);
+        const max = Math.max(draggedOrderNumber, replacedOrderNumber);
+
+        updatedList.forEach((appointment) => {
+            if (
+                appointment.order_number >= min &&
+                appointment.order_number <= max
+            ) {
+                if (appointment.id === draggedAppointment.id) {
+                    appointment.order_number = replacedOrderNumber;
+                } else {
+                    appointment.order_number += direction === "down" ? -1 : 1;
+                }
+            }
+        });
+
+        // Sort so getAppointmentsByDate still works correctly
+        updatedList.sort((a, b) => a.order_number - b.order_number);
+
+        setAppointmentList(updatedList);
+
+        // Call backend
+        reorderAppointment(draggedOrderNumber, replacedOrderNumber, direction);
+    }
 
     return (
         <AuthenticatedLayout
@@ -64,6 +119,7 @@ export default function AppointmentManager({ appointments }) {
                                             index === uniqueDates.length - 1
                                         }
                                         userRole={user.role}
+                                        handleReorder={handleReorder}
                                     />
                                 ))}
                             </div>
