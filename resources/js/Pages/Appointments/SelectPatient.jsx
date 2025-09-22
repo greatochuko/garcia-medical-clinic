@@ -1,3 +1,4 @@
+import Input from "@/Components/layout/Input";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { router } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
@@ -28,13 +29,13 @@ export default function SelectPatient({ patients }) {
                                 already registered in your clinic.
                             </p>
                             <div className="relative flex w-[90%] max-w-sm">
-                                <input
+                                <Input
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) =>
                                         setSearchQuery(e.target.value)
                                     }
-                                    className="w-0 flex-1 rounded-[10px] border-accent-300 bg-accent-200 p-2 px-4 pr-10 text-sm duration-200 focus:border-inherit focus:ring-accent"
+                                    className="w-0 flex-1 pr-10"
                                     placeholder="Start typing..."
                                 />
                                 <img

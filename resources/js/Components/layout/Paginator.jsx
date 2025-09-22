@@ -48,40 +48,42 @@ export default function Paginator({
 
     return (
         <div className="grid grid-cols-2 gap-4 p-4 text-sm md:grid-cols-[112px_1fr_144px] md:flex-row md:items-center">
-            <div className="col-span-2 flex items-center justify-center gap-4 md:order-2 md:col-span-1">
-                <button
-                    onClick={gotoPreviousPage}
-                    disabled={currentPage < 2}
-                    className="rounded-md border border-transparent p-1.5 font-medium duration-200 hover:border-accent-300 hover:bg-accent-200 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-accent-500 md:px-3"
-                >
-                    <ChevronLeftIcon
-                        size={18}
-                        strokeWidth={3}
-                        className="md:hidden"
-                    />
-                    <span className="hidden md:inline">Previous</span>
-                </button>
+            <div className="col-span-2 flex items-center justify-center md:order-2 md:col-span-1">
+                <div className="flex divide-accent-300 rounded-md border text-[#089bab]">
+                    <button
+                        onClick={gotoPreviousPage}
+                        disabled={currentPage < 2}
+                        className="rounded-l-md p-1.5 font-medium outline-none ring-[#089bab]/50 duration-200 hover:bg-[#089bab] hover:text-white focus-visible:z-10 focus-visible:ring-4 active:ring-4 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-[#089bab] md:px-3"
+                    >
+                        <ChevronLeftIcon
+                            size={18}
+                            strokeWidth={3}
+                            className="md:hidden"
+                        />
+                        <span className="hidden md:inline">Previous</span>
+                    </button>
 
-                <div className="flex items-center gap-2">
-                    <PageNumbers
-                        currentPage={currentPage}
-                        pages={pages}
-                        gotoPage={gotoPage}
-                    />
+                    <div className="flex items-center">
+                        <PageNumbers
+                            currentPage={currentPage}
+                            pages={pages}
+                            gotoPage={gotoPage}
+                        />
+                    </div>
+
+                    <button
+                        onClick={gotoNextPage}
+                        disabled={currentPage >= totalPages}
+                        className="rounded-r-md p-1.5 font-medium outline-none ring-[#089bab]/50 duration-200 hover:bg-[#089bab] hover:text-white focus-visible:z-10 focus-visible:ring-4 active:ring-4 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-[#089bab] md:px-3"
+                    >
+                        <ChevronRightIcon
+                            size={18}
+                            strokeWidth={3}
+                            className="md:hidden"
+                        />
+                        <span className="hidden md:inline">Next</span>
+                    </button>
                 </div>
-
-                <button
-                    onClick={gotoNextPage}
-                    disabled={currentPage >= totalPages}
-                    className="rounded-md border border-transparent p-1.5 font-medium duration-200 hover:border-accent-300 hover:bg-accent-200 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-accent-500 md:px-3"
-                >
-                    <ChevronRightIcon
-                        size={18}
-                        strokeWidth={3}
-                        className="md:hidden"
-                    />
-                    <span className="hidden md:inline">Next</span>
-                </button>
             </div>
 
             <select
@@ -144,10 +146,10 @@ function PageNumbers({ pages, currentPage, gotoPage }) {
                 <button
                     onClick={() => gotoPage(page)}
                     key={page}
-                    className={`h-8 w-8 rounded-md border border-transparent duration-200 ${
+                    className={`h-8 w-10 outline-none ring-[#089bab]/50 duration-200 focus-visible:z-10 focus-visible:ring-4 active:ring-4 ${
                         isCurrent
-                            ? "bg-accent font-bold text-white"
-                            : "hover:border-accent-300 hover:bg-accent-200"
+                            ? "bg-[#089bab] font-bold text-white"
+                            : "hover:bg-[#089bab] hover:text-white"
                     }`}
                 >
                     {page}
