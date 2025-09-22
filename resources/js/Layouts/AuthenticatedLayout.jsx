@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import Footer from "@/Components/layout/Footer";
 import Header from "@/Components/layout/Header";
@@ -19,9 +19,12 @@ const demoDoctorUser = {
     updated_at: "2025-09-19T14:30:47.000000Z",
 };
 
-export default function AuthenticatedLayout({ children, pageTitle }) {
-    const [user, setUser] = useState(demoDoctorUser);
-
+export default function AuthenticatedLayout({
+    children,
+    pageTitle,
+    user = demoDoctorUser,
+    setUser = () => {},
+}) {
     return (
         <div className="flex min-h-screen flex-col">
             <Header user={user} setUser={setUser} />

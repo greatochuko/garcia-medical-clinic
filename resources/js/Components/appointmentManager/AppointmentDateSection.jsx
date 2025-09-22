@@ -7,6 +7,8 @@ export function AppointmentDateSection({
     date,
     appointments,
     setAppointments,
+    isLastDate,
+    userRole,
 }) {
     function onDragEnd() {
         // drag & drop logic
@@ -43,6 +45,11 @@ export function AppointmentDateSection({
                                         appointment={appointment}
                                         index={index}
                                         setAppointments={setAppointments}
+                                        isLast={
+                                            isLastDate &&
+                                            index === appointments.length - 1
+                                        }
+                                        userRole={userRole}
                                     />
                                 ))}
                                 {provided.placeholder}

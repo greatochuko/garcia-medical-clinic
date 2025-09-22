@@ -9,7 +9,19 @@ ZIP_NAME="deploy.zip"
 
 # Step 1: Zip the folders locally
 echo "Zipping public/ and resources/ into $ZIP_NAME..."
-zip -r $ZIP_NAME public resources
+ZIP_NAME="project-deploy.zip"
+
+zip -r $ZIP_NAME \
+    app \
+    database \
+    public \
+    resources \
+    routes/web.php \
+    composer.json \
+    composer.lock \
+    package.json \
+    pnpm-lock.yaml
+
 
 # Step 2: Upload the zip to the server
 echo "Uploading $ZIP_NAME to $USER@$HOST:$REMOTE_DIR..."

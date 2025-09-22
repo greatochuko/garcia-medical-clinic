@@ -1,11 +1,15 @@
 import { AppointmentDateSection } from "@/Components/appointmentManager/AppointmentDateSection";
 import AppointmentsHeader from "@/Components/appointmentManager/AppointmentsHeader";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { usePage } from "@inertiajs/react";
 import React, { useCallback, useMemo, useState } from "react";
 
 export default function AppointmentManager({ appointments }) {
+    const { auth } = usePage().props;
+
     const [currentTab, setCurrentTab] = useState("active");
     const [appointmentList, setAppointmentList] = useState(appointments.data);
+    const [user, setUser] = useState(auth.user);
 
     const uniqueDates = useMemo(
         () => [
@@ -33,7 +37,11 @@ export default function AppointmentManager({ appointments }) {
     );
 
     return (
-        <AuthenticatedLayout pageTitle="Appointments">
+        <AuthenticatedLayout
+            pageTitle="Appointments"
+            user={user}
+            setUser={setUser}
+        >
             <div className="max-w-full flex-1 pt-6">
                 <div className="mx-auto flex h-full w-[95%] max-w-screen-2xl flex-col gap-4 bg-white text-accent">
                     <AppointmentsHeader
@@ -41,13 +49,17 @@ export default function AppointmentManager({ appointments }) {
                         setCurrentTab={setCurrentTab}
                     />
                     {appointmentList.length > 0 ? (
-                        <div className="flex flex-col gap-6 overflow-x-auto overflow-y-hidden text-sm">
-                            {uniqueDates.map((date) => (
+                        <div className="flex flex-col gap-6 overflow-x-auto text-sm">
+                            {uniqueDates.map((date, index) => (
                                 <AppointmentDateSection
                                     key={date}
                                     date={date}
                                     appointments={getAppointmentsByDate(date)}
                                     setAppointments={setAppointmentList}
+                                    isLastDate={
+                                        index === uniqueDates.length - 1
+                                    }
+                                    userRole={user.role}
                                 />
                             ))}
                         </div>

@@ -563,17 +563,22 @@ class AppointmentManagerController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-
-        // dd($request->all());
+        // return response()->json(['success' => false, 'status' => "new"]);
         $appointment = Appointment::where('id', $id)->first();
 
         if (!$appointment) {
-            $appointment = Appointment::where('patient_id', $id)->first();
+            return response()->json(['error' => 'Appointment not found'], 404);
         }
+
         $appointment->status = $request->status;
         $appointment->save();
-        // return redirect()->route('appointments.index')->with('success', 'Appointment status updated successfully');
+
+        return;
+
+        // return response()->json(['success' => true, 'status' => $appointment->status]);
     }
+
+
     public function closedDelete($id)
     {
         $appointment = ClosedAppointment::find($id);

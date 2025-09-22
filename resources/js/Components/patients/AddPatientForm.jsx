@@ -1,7 +1,7 @@
 import { router } from "@inertiajs/react";
 import { useForm } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { route } from "ziggy-js";
 import LoadingIndicator from "../layout/LoadingIndicator";
 

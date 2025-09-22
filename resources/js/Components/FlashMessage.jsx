@@ -1,8 +1,9 @@
 import React from "react";
 import { usePage } from "@inertiajs/react";
 import { useEffect, useRef } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+import toast from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 
 const FlashMessage = () => {
     const { flash } = usePage().props;
@@ -21,7 +22,15 @@ const FlashMessage = () => {
         }
     }, [flash]);
 
-    return <ToastContainer position="top-right" autoClose={3000} />;
+    return (
+        <Toaster
+            position="top-right"
+            toastOptions={{
+                duration: 3000,
+                style: { fontSize: 14, maxWidth: "100%" },
+            }}
+        />
+    );
 };
 
 export default FlashMessage;

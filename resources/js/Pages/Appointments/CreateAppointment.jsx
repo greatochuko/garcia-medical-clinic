@@ -2,7 +2,7 @@ import LoadingIndicator from "@/Components/layout/LoadingIndicator";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { router, useForm } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import { route } from "ziggy-js";
 
 export default function CreateAppointment({ patientData, serviceTypes }) {

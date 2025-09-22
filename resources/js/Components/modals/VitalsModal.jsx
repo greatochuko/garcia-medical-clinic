@@ -3,7 +3,7 @@ import ModalContainer from "../layout/ModalContainer";
 import XIcon from "../icons/XIcon";
 import { useForm } from "@inertiajs/react";
 import { route } from "ziggy-js";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 import LoadingIndicator from "../layout/LoadingIndicator";
 
 const viatlSignsFields = [

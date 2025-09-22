@@ -4,6 +4,10 @@ import ReorderIcon from "../icons/ReorderIcon";
 import DeleteAppointmentModal from "../modals/DeleteAppointmentModal";
 import VitalsModal from "../modals/VitalsModal";
 import useClickOutside from "@/hooks/useClickOutside";
+import { route } from "ziggy-js";
+import { toast } from "react-hot-toast";
+import { Link, router } from "@inertiajs/react";
+import LoadingIndicator from "../layout/LoadingIndicator";
 
 function formatStatus(status) {
     return status
@@ -16,8 +20,12 @@ export function AppointmentRow({
     appointment: originalAppointment,
     setAppointments,
     index,
+    isLast,
+    userRole,
 }) {
     const [appointment, setAppointment] = useState(originalAppointment);
+    const [checkInLoading, setCheckInLoading] = useState(false);
+    const [checkOutLoading, setCheckOutLoading] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [vitalSignsModalOpen, setVitalSignsModalOpen] = useState(false);
 
@@ -48,6 +56,36 @@ export function AppointmentRow({
     function removeAppointmentFromList() {
         setAppointments((prev) =>
             prev.filter((app) => app.id !== appointment.id),
+        );
+    }
+
+    async function changeStatus(newStatus, setLoading) {
+        router.put(
+            route("appointments.update-status", { id: appointment.id }),
+            { status: newStatus },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onStart: () => {
+                    setLoading?.(true);
+                },
+                onSuccess: () => {
+                    setAppointment((prev) => ({
+                        ...prev,
+                        status: newStatus,
+                    }));
+
+                    toast.success(
+                        "You have changed the status of the patient!",
+                    );
+                    setLoading?.(false);
+                },
+                onError: (errors) => {
+                    console.log(errors);
+                    toast.error("An error occurred changing status");
+                    setLoading?.(false);
+                },
+            },
         );
     }
 
@@ -87,44 +125,88 @@ export function AppointmentRow({
                                 {formatStatus(appointment.status)}
                             </span>
                         </div>
-                        <div className="flex min-w-[300px] flex-[4] items-center justify-center space-x-2 p-4">
+                        <div className="flex min-w-80 flex-[4] items-center justify-center space-x-2 p-4">
                             <div className="flex items-center gap-1 rounded-md bg-[#EAEAEA] p-1 text-xs">
                                 <button
-                                    disabled={appointment.status !== "waiting"}
-                                    className="rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
+                                    onClick={() =>
+                                        changeStatus(
+                                            "checked_in",
+                                            setCheckInLoading,
+                                        )
+                                    }
+                                    disabled={
+                                        checkInLoading ||
+                                        appointment.status !== "waiting"
+                                    }
+                                    className={`flex items-center gap-1.5 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 ${checkInLoading ? "pointer-events-none" : "disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"}`}
                                 >
-                                    Check In
+                                    {checkInLoading ? (
+                                        <>
+                                            <LoadingIndicator color="#15475B" />{" "}
+                                            Checking In
+                                        </>
+                                    ) : (
+                                        "Check In"
+                                    )}
                                 </button>
                                 <button
+                                    onClick={() =>
+                                        changeStatus(
+                                            "checked_out",
+                                            setCheckOutLoading,
+                                        )
+                                    }
                                     disabled={
+                                        checkOutLoading ||
                                         appointment.status !== "checked_in"
                                     }
-                                    className="rounded-md border border-dashed border-[#8D2310] bg-white px-2 py-1.5 text-[#8D2310] duration-200 hover:bg-[#8D2310]/10 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
+                                    className={`flex items-center gap-1.5 rounded-md border border-dashed border-[#8D2310] bg-white px-2 py-1.5 text-[#8D2310] duration-200 hover:bg-[#8D2310]/5 ${checkOutLoading ? "pointer-events-none" : "disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"}`}
                                 >
-                                    Check Out
+                                    {checkOutLoading ? (
+                                        <>
+                                            <LoadingIndicator color="#8D2310" />{" "}
+                                            Checking Out
+                                        </>
+                                    ) : (
+                                        "Check Out"
+                                    )}
                                 </button>
-                                <button
-                                    onClick={() => setVitalSignsModalOpen(true)}
-                                    // disabled={appointment.status !== "on_hold"}
-                                    className="rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
-                                >
-                                    {appointment.patient.vitals
-                                        ? "Upate"
-                                        : "Add"}{" "}
-                                    Record
-                                </button>
+                                {userRole === "secretary" ? (
+                                    <button
+                                        onClick={() =>
+                                            setVitalSignsModalOpen(true)
+                                        }
+                                        disabled={
+                                            appointment.status !== "waiting"
+                                        }
+                                        className="rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
+                                    >
+                                        VS / Measurements
+                                    </button>
+                                ) : (
+                                    <Link
+                                        // href={`/medical-record/${appointment.patient.patient_id}`}
+                                        href={route("medicalrecords.view", {
+                                            id: appointment.patient.patient_id,
+                                        })}
+                                        aria-disabled={
+                                            appointment.status !== "checked_in"
+                                        }
+                                        className="rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 aria-disabled:border-none aria-disabled:bg-transparent aria-disabled:text-[#B4BBC2]"
+                                    >
+                                        Add Record
+                                    </Link>
+                                )}
                             </div>
                         </div>
                         <div className="flex min-w-28 flex-[2] items-center justify-center space-x-2 p-4">
                             <div className="flex gap-2">
                                 <EditButton
                                     currentStatus={appointment.status}
-                                    changeAppointmentStatus={(newStatus) =>
-                                        setAppointment((prev) => ({
-                                            ...prev,
-                                            status: newStatus,
-                                        }))
+                                    changeStatus={(newStatus, setLoading) =>
+                                        changeStatus(newStatus, setLoading)
                                     }
+                                    isLast={!!isLast}
                                 />
                                 <button
                                     onClick={() => setDeleteModalOpen(true)}
@@ -167,18 +249,14 @@ const dropdownActions = [
     { text: "On Hold", id: "on_hold" },
 ];
 
-function EditButton({ changeAppointmentStatus, currentStatus }) {
+function EditButton({ changeStatus, currentStatus, isLast }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [dropdownRef] = useClickOutside(() => setDropdownOpen(false));
 
     const canChangeStatus =
         currentStatus === "waiting" || currentStatus === "on_hold";
-
-    function changeStatus(newStatus) {
-        changeAppointmentStatus(newStatus);
-        setDropdownOpen(false);
-    }
 
     return (
         <div ref={dropdownRef} className="relative">
@@ -194,16 +272,18 @@ function EditButton({ changeAppointmentStatus, currentStatus }) {
                 />
             </button>
             <div
-                className={`absolute bottom-0 right-0 z-10 flex w-28 flex-col divide-y divide-accent-200 overflow-hidden rounded-md border border-accent-200 bg-white text-xs shadow-md duration-200 ${dropdownOpen ? "translate-y-[calc(100%+.5rem)]" : "invisible translate-y-[calc(100%+.8rem)] opacity-0"} `}
+                className={`absolute right-0 z-10 flex w-28 flex-col divide-y divide-accent-200 overflow-hidden rounded-md border border-accent-200 bg-white text-xs shadow-md duration-200 ${dropdownOpen ? "" : `${isLast ? "translate-y-2" : "-translate-y-2"} invisible opacity-0`} ${isLast ? "bottom-[calc(100%+.5rem)]" : "top-[calc(100%+.5rem)]"}`}
             >
                 {dropdownActions.map((action) => (
                     <button
-                        onClick={() => changeStatus(action.id)}
+                        onClick={() => changeStatus(action.id, setLoading)}
                         disabled={
-                            !canChangeStatus || currentStatus === action.id
+                            loading ||
+                            !canChangeStatus ||
+                            currentStatus === action.id
                         }
                         key={action.id}
-                        className="p-3 text-left duration-200 hover:bg-accent-200 disabled:pointer-events-none disabled:bg-[#EAEAEA] disabled:text-[#B4BBC2]"
+                        className={`p-3 text-left duration-200 hover:bg-accent-200 disabled:pointer-events-none disabled:bg-[#EAEAEA] disabled:text-[#B4BBC2]`}
                     >
                         {action.text}
                     </button>

@@ -6,30 +6,22 @@ import LeftDashboard from "@/Components/dashboard/LeftDashboard";
 import RightDashboard from "@/Components/dashboard/RightDashboard";
 import MiddleDashboard from "@/Components/dashboard/MiddleDashboard";
 import PropTypes from "prop-types";
-
-const demoDoctorUser = {
-    id: 2,
-    first_name: "Royce",
-    last_name: "Garcia",
-    middle_initial: "A",
-    email: "john.doe@example.com",
-    login_id: "johndoe",
-    role: "admin", // admin, doctor or secretary
-    profile_picture: "/images/doctor-profile-picture.png",
-    created_at: "2025-09-19T14:30:47.000000Z",
-    updated_at: "2025-09-19T14:30:47.000000Z",
-};
+import { usePage } from "@inertiajs/react";
 
 export default function Dashboard() {
-    // const { auth } = usePage().props;
+    const { auth } = usePage().props;
 
-    const user = demoDoctorUser;
+    const [user, setUser] = useState(auth.user);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout
+            pageTitle={"Dashboard"}
+            user={user}
+            setUser={setUser}
+        >
             <VitalSignsModal
                 isOpen={isModalOpen}
                 setIsOpen={setIsModalOpen}

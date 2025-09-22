@@ -194,6 +194,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/appointments/update-status/{id}', [AppointmentManagerController::class, 'updateStatus'])->name('appointments.update-status');
     Route::post('/appointments/check-out/{id}', [AppointmentManagerController::class, 'checkOut'])->name('appointments.check-out');
 
+
+    //Medical Records Route
     // Route::get('/medical-records/unfinished-docs', [UnfinishedDocsController::class, 'index'])->name('unfinished-docs');
     Route::get('/medical-records/{id}', [MedicalRecordController::class, 'view'])->name('medicalrecords.view');
     Route::get('/patient/medical-records/{id}/{appointment_id}', [MedicalRecordController::class, 'get_patient_medical_record'])->name('medicalrecords.medical_record_patient');
