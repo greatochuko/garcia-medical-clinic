@@ -40,26 +40,22 @@ export default function AppointmentManager({ appointments }) {
                         currentTab={currentTab}
                         setCurrentTab={setCurrentTab}
                     />
-                    <div className="text-sm">
-                        {appointmentList.length > 0 ? (
-                            <div className="flex flex-col gap-6 overflow-x-auto">
-                                {uniqueDates.map((date) => (
-                                    <AppointmentDateSection
-                                        key={date}
-                                        date={date}
-                                        appointments={getAppointmentsByDate(
-                                            date,
-                                        )}
-                                        setAppointments={setAppointmentList}
-                                    />
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="p-4 text-center text-accent-500">
-                                There are no appointments right now
-                            </p>
-                        )}
-                    </div>
+                    {appointmentList.length > 0 ? (
+                        <div className="flex flex-col gap-6 overflow-x-auto overflow-y-hidden text-sm">
+                            {uniqueDates.map((date) => (
+                                <AppointmentDateSection
+                                    key={date}
+                                    date={date}
+                                    appointments={getAppointmentsByDate(date)}
+                                    setAppointments={setAppointmentList}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="p-4 text-center text-accent-500">
+                            There are no appointments right now
+                        </p>
+                    )}
                 </div>
             </div>
         </AuthenticatedLayout>

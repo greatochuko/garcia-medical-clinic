@@ -76,7 +76,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/billingrecord', [BillingController::class, 'index'])->name('billingrecord');
     Route::get('/vitalsignsmodal/{id}', [VitalSignsModalController::class, 'index'])->name('vitalsignsmodal');
-    Route::put('/vitalsignsmodal/update/{id}', [VitalSignsModalController::class, 'update'])->name('vitalsignsmodal.update');
+    Route::put('/vitalsignsmodal/update/{id}', [VitalSignsModalController::class, 'updatePatientVitals'])->name('vitalsignsmodal.update');
     Route::post('/vitalsignsmodal/add', [VitalSignsModalController::class, 'AddPatientVitals'])->name('vitalsignsmodal.add');
 
 

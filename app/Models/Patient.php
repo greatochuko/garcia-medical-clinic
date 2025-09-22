@@ -22,11 +22,14 @@ class Patient extends Model
         'phone',
         'address',
     ];
-    
-public function appointments()
-{
-    return $this->hasMany(Appointment::class, 'patient_id', 'patient_id');
-}
 
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class, 'patient_id', 'patient_id');
+    }
 
+    public function vitals()
+    {
+        return $this->hasOne(VitalSignsModal::class, 'patient_id', 'patient_id');
+    }
 }

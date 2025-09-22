@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use App\Models\Patient;
 use App\Models\Appointment;
+use App\Models\VitalSignsModal;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ClosedAppointment;
 use App\Models\ServiceCharge;
@@ -31,7 +32,7 @@ class AppointmentManagerController extends Controller
         $page = (int) $request->input('page', 1);
         $search = $request->input('search', '');
 
-        $query = Appointment::with(['patient', 'serviceCharge']);
+        $query = Appointment::with(['patient.vitals', 'serviceCharge']);
 
         // Apply search on patient's name or patient ID
         if ($search) {
@@ -50,10 +51,16 @@ class AppointmentManagerController extends Controller
             });
         }
 
+
+        // $patientVitals = VitalSignsModal::all(); // or ->get()
+
+
         $appointments = $query
+            // ->with(['patient.vitals'])
             ->select('appointments.*')
             ->orderBy('appointments.created_at', 'desc') // order by date
             ->paginate($perPage, ['*'], 'page', $page);
+
 
 
         // Transform the data
@@ -68,13 +75,16 @@ class AppointmentManagerController extends Controller
                     'name' => $appointment->patient->first_name . ', ' . $appointment->patient->middle_initial . ' ' . $appointment->patient->last_name,
                     'age' => $appointment->patient->age,
                     'patient_id' => $appointment->patient->patient_id,
-                    'gender' => $appointment->patient->gender
+                    'gender' => $appointment->patient->gender,
+                    'vitals' => $appointment->patient->vitals ?? null
                 ],
-                // 'services' => [$appointment->serviceCharge->name ?? ''],
+                'services' => [$appointment->serviceCharge->name ?? ''],
                 'status' => $appointment->status,
                 'actions' => ['Check In', 'Check Out']
             ];
         });
+
+
 
         return Inertia::render('AppointmentManager', [
             'appointments' => [

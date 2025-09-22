@@ -6,7 +6,7 @@ export default function useClickOutside(cb) {
     useEffect(() => {
         function handleClickOutside(ev) {
             if (elementRef.current && !elementRef.current.contains(ev.target)) {
-                cb();
+                cb?.();
             }
         }
 

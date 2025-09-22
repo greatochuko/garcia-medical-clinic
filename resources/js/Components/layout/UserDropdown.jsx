@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
 import PropTypes from "prop-types";
+import useClickOutside from "@/hooks/useClickOutside";
 
 const dropdownLinks = [
     { text: "Reports", href: "#" },
@@ -11,10 +12,13 @@ const dropdownLinks = [
 export default function UserDropdown({ user, setUser }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
+    const [dropdownRef] = useClickOutside(() => setDropdownOpen(false));
+
     const userFullName = user.first_name + " " + (user.last_name || "");
 
     return (
         <div
+            ref={dropdownRef}
             className="relative flex cursor-pointer items-center gap-2"
             onClick={() => setDropdownOpen((prev) => !prev)}
         >

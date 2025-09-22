@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import ReorderIcon from "../icons/ReorderIcon";
 import DeleteAppointmentModal from "../modals/DeleteAppointmentModal";
+import VitalsModal from "../modals/VitalsModal";
+import useClickOutside from "@/hooks/useClickOutside";
 
 function formatStatus(status) {
     return status
@@ -10,8 +12,14 @@ function formatStatus(status) {
         .join(" ");
 }
 
-export function AppointmentRow({ appointment, setAppointments, index }) {
+export function AppointmentRow({
+    appointment: originalAppointment,
+    setAppointments,
+    index,
+}) {
+    const [appointment, setAppointment] = useState(originalAppointment);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [vitalSignsModalOpen, setVitalSignsModalOpen] = useState(false);
 
     let statusClassName = "";
 
@@ -96,23 +104,28 @@ export function AppointmentRow({ appointment, setAppointments, index }) {
                                     Check Out
                                 </button>
                                 <button
-                                    disabled={appointment.status !== "on_hold"}
+                                    onClick={() => setVitalSignsModalOpen(true)}
+                                    // disabled={appointment.status !== "on_hold"}
                                     className="rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
                                 >
-                                    Add Record
+                                    {appointment.patient.vitals
+                                        ? "Upate"
+                                        : "Add"}{" "}
+                                    Record
                                 </button>
                             </div>
                         </div>
                         <div className="flex min-w-28 flex-[2] items-center justify-center space-x-2 p-4">
                             <div className="flex gap-2">
-                                <button className="rounded-md border border-transparent p-2 duration-100 hover:border-accent-400 hover:bg-accent-300">
-                                    <img
-                                        src="/assets/icons/edit-icon.svg"
-                                        alt="Edit Icon"
-                                        width={16}
-                                        height={16}
-                                    />
-                                </button>
+                                <EditButton
+                                    currentStatus={appointment.status}
+                                    changeAppointmentStatus={(newStatus) =>
+                                        setAppointment((prev) => ({
+                                            ...prev,
+                                            status: newStatus,
+                                        }))
+                                    }
+                                />
                                 <button
                                     onClick={() => setDeleteModalOpen(true)}
                                     className="rounded-md border border-transparent p-2 duration-100 hover:border-accent-400 hover:bg-accent-300"
@@ -135,8 +148,67 @@ export function AppointmentRow({ appointment, setAppointments, index }) {
                         appointmentId={appointment.id}
                         removeAppointmentFromList={removeAppointmentFromList}
                     />
+                    <VitalsModal
+                        open={vitalSignsModalOpen}
+                        closeModal={() => {
+                            setVitalSignsModalOpen(false);
+                        }}
+                        appointmentId={appointment.id}
+                        patient={appointment.patient}
+                    />
                 </>
             )}
         </Draggable>
+    );
+}
+
+const dropdownActions = [
+    { text: "Waiting", id: "waiting" },
+    { text: "On Hold", id: "on_hold" },
+];
+
+function EditButton({ changeAppointmentStatus, currentStatus }) {
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    const [dropdownRef] = useClickOutside(() => setDropdownOpen(false));
+
+    const canChangeStatus =
+        currentStatus === "waiting" || currentStatus === "on_hold";
+
+    function changeStatus(newStatus) {
+        changeAppointmentStatus(newStatus);
+        setDropdownOpen(false);
+    }
+
+    return (
+        <div ref={dropdownRef} className="relative">
+            <button
+                onClick={() => setDropdownOpen((prev) => !prev)}
+                className="rounded-md border border-transparent p-2 duration-100 hover:border-accent-400 hover:bg-accent-300"
+            >
+                <img
+                    src="/assets/icons/edit-icon.svg"
+                    alt="Edit Icon"
+                    width={16}
+                    height={16}
+                />
+            </button>
+            <div
+                className={`absolute bottom-0 right-0 z-10 flex w-28 flex-col divide-y divide-accent-200 overflow-hidden rounded-md border border-accent-200 bg-white text-xs shadow-md duration-200 ${dropdownOpen ? "translate-y-[calc(100%+.5rem)]" : "invisible translate-y-[calc(100%+.8rem)] opacity-0"} `}
+            >
+                {dropdownActions.map((action) => (
+                    <button
+                        onClick={() => changeStatus(action.id)}
+                        disabled={
+                            !canChangeStatus || currentStatus === action.id
+                        }
+                        key={action.id}
+                        className="p-3 text-left duration-200 hover:bg-accent-200 disabled:pointer-events-none disabled:bg-[#EAEAEA] disabled:text-[#B4BBC2]"
+                    >
+                        {action.text}
+                    </button>
+                ))}
+            </div>
+        </div>
     );
 }
