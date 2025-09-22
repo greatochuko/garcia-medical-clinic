@@ -47,13 +47,13 @@ export default function Paginator({
     }
 
     return (
-        <div className="grid grid-cols-2 gap-4 p-4 text-sm md:grid-cols-[112px_1fr_144px] md:flex-row md:items-center">
+        <div className="grid grid-cols-2 gap-4 p-4 text-sm md:grid-cols-[128px_1fr_152px] md:flex-row md:items-center">
             <div className="col-span-2 flex items-center justify-center md:order-2 md:col-span-1">
-                <div className="flex divide-accent-300 rounded-md border text-[#089bab]">
+                <div className="flex divide-accent-300 rounded-md border text-accent">
                     <button
                         onClick={gotoPreviousPage}
                         disabled={currentPage < 2}
-                        className="rounded-l-md p-1.5 font-medium outline-none ring-[#089bab]/50 duration-200 hover:bg-[#089bab] hover:text-white focus-visible:z-10 focus-visible:ring-4 active:ring-4 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-[#089bab] md:px-3"
+                        className="rounded-l-md p-1.5 font-medium outline-none ring-accent/50 duration-200 hover:bg-accent hover:text-white focus-visible:z-10 focus-visible:ring-4 active:ring-4 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-accent md:px-3"
                     >
                         <ChevronLeftIcon
                             size={18}
@@ -74,7 +74,7 @@ export default function Paginator({
                     <button
                         onClick={gotoNextPage}
                         disabled={currentPage >= totalPages}
-                        className="rounded-r-md p-1.5 font-medium outline-none ring-[#089bab]/50 duration-200 hover:bg-[#089bab] hover:text-white focus-visible:z-10 focus-visible:ring-4 active:ring-4 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-[#089bab] md:px-3"
+                        className="rounded-r-md p-1.5 font-medium outline-none ring-accent/50 duration-200 hover:bg-accent hover:text-white focus-visible:z-10 focus-visible:ring-4 active:ring-4 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-accent md:px-3"
                     >
                         <ChevronRightIcon
                             size={18}
@@ -91,7 +91,7 @@ export default function Paginator({
                 id="per-page"
                 value={perPage}
                 onChange={handleChangePerPage}
-                className="w-28 cursor-pointer rounded-md px-3 py-1.5 text-sm focus-visible:border-inherit focus-visible:ring-accent"
+                className="w-32 cursor-pointer rounded-md px-3 py-1.5 text-sm focus-visible:border-inherit focus-visible:ring-accent"
             >
                 {[10, 15, 20, 30].map((num) => (
                     <option key={num} value={num}>
@@ -146,10 +146,10 @@ function PageNumbers({ pages, currentPage, gotoPage }) {
                 <button
                     onClick={() => gotoPage(page)}
                     key={page}
-                    className={`h-8 w-10 outline-none ring-[#089bab]/50 duration-200 focus-visible:z-10 focus-visible:ring-4 active:ring-4 ${
+                    className={`h-8 w-10 outline-none ring-accent/50 duration-200 focus-visible:z-10 focus-visible:ring-4 active:ring-4 ${
                         isCurrent
-                            ? "bg-[#089bab] font-bold text-white"
-                            : "hover:bg-[#089bab] hover:text-white"
+                            ? "bg-accent font-bold text-white"
+                            : "hover:bg-accent hover:text-white"
                     }`}
                 >
                     {page}
