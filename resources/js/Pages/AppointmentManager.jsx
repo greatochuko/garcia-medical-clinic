@@ -1,5 +1,6 @@
 import { AppointmentDateSection } from "@/Components/appointmentManager/AppointmentDateSection";
 import AppointmentsHeader from "@/Components/appointmentManager/AppointmentsHeader";
+import Paginator from "@/Components/layout/Paginator";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { usePage } from "@inertiajs/react";
 import React, { useCallback, useMemo, useState } from "react";
@@ -17,7 +18,7 @@ export default function AppointmentManager({ appointments }) {
                 appointmentList.map((a) => a.appointment_date.split("T")[0]),
             ),
         ],
-        [],
+        [appointmentList],
     );
 
     const getAppointmentsByDate = useCallback(
@@ -49,19 +50,29 @@ export default function AppointmentManager({ appointments }) {
                         setCurrentTab={setCurrentTab}
                     />
                     {appointmentList.length > 0 ? (
-                        <div className="flex flex-col gap-6 overflow-x-auto text-sm">
-                            {uniqueDates.map((date, index) => (
-                                <AppointmentDateSection
-                                    key={date}
-                                    date={date}
-                                    appointments={getAppointmentsByDate(date)}
-                                    setAppointments={setAppointmentList}
-                                    isLastDate={
-                                        index === uniqueDates.length - 1
-                                    }
-                                    userRole={user.role}
-                                />
-                            ))}
+                        <div>
+                            <div className="flex flex-col gap-6 overflow-x-auto text-sm">
+                                {uniqueDates.map((date, index) => (
+                                    <AppointmentDateSection
+                                        key={date}
+                                        date={date}
+                                        appointments={getAppointmentsByDate(
+                                            date,
+                                        )}
+                                        setAppointments={setAppointmentList}
+                                        isLastDate={
+                                            index === uniqueDates.length - 1
+                                        }
+                                        userRole={user.role}
+                                    />
+                                ))}
+                            </div>
+                            <Paginator
+                                currentPage={appointments.current_page}
+                                per_page={appointments.per_page}
+                                totalPages={appointments.last_page}
+                                totalList={appointments.total}
+                            />
                         </div>
                     ) : (
                         <p className="p-4 text-center text-accent-500">

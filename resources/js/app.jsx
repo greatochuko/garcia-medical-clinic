@@ -1,15 +1,15 @@
-import "./bootstrap";
-import "../css/app.css";
-import "../css/nav-header.css";
-import "../css/patient-visit-form.css";
-import "../css/medication-templates.css";
-import "../css/service-charges.css";
-import "../css/medication-list.css";
-import "../css/frequency-list.css";
-import "../css/plan-list.css";
+// import "./bootstrap";
+// import "../css/app.css";
+// import "../css/nav-header.css";
+// import "../css/patient-visit-form.css";
+// import "../css/medication-templates.css";
+// import "../css/service-charges.css";
+// import "../css/medication-list.css";
+// import "../css/frequency-list.css";
+// import "../css/plan-list.css";
 import "../css/app.css";
 // import '../css/appointment-manager.css';
-import "../css/allpatients.css";
+// import "../css/allpatients.css";
 
 // import '../css/dashboard.css';
 

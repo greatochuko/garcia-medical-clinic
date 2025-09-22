@@ -2,12 +2,9 @@ import LoadingIndicator from "@/Components/layout/LoadingIndicator";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { router, useForm } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
 import { route } from "ziggy-js";
 
 export default function CreateAppointment({ patientData, serviceTypes }) {
-    console.log(new Date());
-    console.log(new Date().toISOString().split("T")[0]);
     const isOver60 = parseInt(patientData.age) > 59;
 
     const [validationErrors, setValidationErrors] = useState([]);
@@ -44,9 +41,6 @@ export default function CreateAppointment({ patientData, serviceTypes }) {
         post(route("appointments.create_new"), {
             onError: (serverErrors) => {
                 setValidationErrors(Object.values(serverErrors));
-            },
-            onSuccess: () => {
-                toast("Appointment has been created!");
             },
         });
     }

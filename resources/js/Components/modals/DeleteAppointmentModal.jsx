@@ -21,7 +21,6 @@ export default function DeleteAppointmentModal({
                 onSuccess: () => {
                     removeAppointmentFromList();
                     closeModal();
-                    toast.success("You have deleted this appointment!");
                 },
                 onError: () => {
                     toast.error("An error occured deleting appointment");

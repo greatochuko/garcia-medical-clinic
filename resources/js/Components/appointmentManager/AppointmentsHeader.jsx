@@ -3,7 +3,7 @@ import React from "react";
 
 export default function AppointmentsHeader({ currentTab, setCurrentTab }) {
     return (
-        <div className="relative mb-2 border-b-2 border-accent-200 p-4 px-4 pb-6 text-center">
+        <div className="relative mb-2 flex flex-col items-center gap-1 border-b-2 border-accent-200 p-4 px-4 pb-6 text-center">
             <h1 className="text-center text-sm font-bold">
                 APPOINTMENTS MANAGER
             </h1>
@@ -22,7 +22,7 @@ export default function AppointmentsHeader({ currentTab, setCurrentTab }) {
                     </button>
                 ))}
             </div>
-            <div className="absolute right-4 top-full flex -translate-y-1/2 items-center gap-4">
+            <div className="right-4 top-full my-2 flex items-center gap-4 sm:absolute sm:m-0 sm:-translate-y-1/2">
                 <Link
                     href="/appointments/select-patient"
                     className="flex items-center gap-2 rounded-[10px] border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300"

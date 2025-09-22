@@ -32,6 +32,7 @@ class AppointmentManagerController extends Controller
         $page = (int) $request->input('page', 1);
         $search = $request->input('search', '');
 
+
         $query = Appointment::with(['patient.vitals', 'serviceCharge']);
 
         // Apply search on patient's name or patient ID

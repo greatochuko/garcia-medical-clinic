@@ -1,7 +1,6 @@
 import { router } from "@inertiajs/react";
 import { useForm } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
 import { route } from "ziggy-js";
 import LoadingIndicator from "../layout/LoadingIndicator";
 
@@ -148,9 +147,6 @@ export default function AddPatientForm({ patientId }) {
         post(route("patients.register"), {
             onError: (serverErrors) => {
                 setValidationErrors(Object.values(serverErrors));
-            },
-            onSuccess: () => {
-                toast("Patient Registered successfully");
             },
         });
     }

@@ -36,8 +36,8 @@ export function AppointmentRow({
             statusClassName = "border-dashed border-accent";
             break;
 
-        case "on_hold":
-            statusClassName = "border-dashed border-[#EAEAEA] bg-[#EAEAEA]";
+        case "for_billing":
+            statusClassName = "border-[#8D2310] bg-[#8D2310] text-white";
             break;
 
         case "checked_in":
@@ -49,7 +49,7 @@ export function AppointmentRow({
             break;
 
         default:
-            statusClassName = "border-[#8D2310] bg-[#8D2310] text-white";
+            statusClassName = "border-dashed border-[#EAEAEA] bg-[#EAEAEA]";
             break;
     }
 
@@ -156,10 +156,11 @@ export function AppointmentRow({
                                             setCheckOutLoading,
                                         )
                                     }
-                                    disabled={
-                                        checkOutLoading ||
-                                        appointment.status !== "checked_in"
-                                    }
+                                    // disabled={
+                                    //     checkOutLoading ||
+                                    //     appointment.status !== "checked_in"
+                                    // }
+                                    disabled
                                     className={`flex items-center gap-1.5 rounded-md border border-dashed border-[#8D2310] bg-white px-2 py-1.5 text-[#8D2310] duration-200 hover:bg-[#8D2310]/5 ${checkOutLoading ? "pointer-events-none" : "disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"}`}
                                 >
                                     {checkOutLoading ? (
