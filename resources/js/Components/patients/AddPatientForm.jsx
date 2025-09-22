@@ -3,6 +3,7 @@ import { useForm } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 import { route } from "ziggy-js";
 import LoadingIndicator from "../layout/LoadingIndicator";
+import Input from "../layout/Input";
 
 const formFields = [
     {
@@ -78,7 +79,7 @@ export default function AddPatientForm({ patientId }) {
             monthDiff < 0 || (monthDiff === 0 && dayDiff < 0) ? age - 1 : age;
 
         setData("age", patientAge);
-    }, [data.dob]);
+    }, [data.dob, setData]);
 
     function handleBack() {
         setCurrentStage("form");
@@ -182,7 +183,7 @@ export default function AddPatientForm({ patientId }) {
                                                         htmlFor={
                                                             fieldOption.value
                                                         }
-                                                        className="flex items-center gap-2"
+                                                        className="flex cursor-pointer items-center gap-2"
                                                     >
                                                         <input
                                                             type="radio"
@@ -222,7 +223,7 @@ export default function AddPatientForm({ patientId }) {
                                         <div
                                             className={`relative flex ${field.disabled ? "max-w-[12rem]" : ""}`}
                                         >
-                                            <input
+                                            <Input
                                                 type={field.type}
                                                 name={field.id}
                                                 id={field.id}
@@ -234,7 +235,7 @@ export default function AddPatientForm({ patientId }) {
                                                             e.target.value,
                                                     }))
                                                 }
-                                                className="w-0 flex-1 rounded-md border-[#dfdfdf] p-2 px-3 text-sm focus:border-inherit focus:ring-accent disabled:bg-[#E4E4E4]"
+                                                className="w-0 flex-1"
                                                 required={field.required}
                                                 disabled={
                                                     field.disabled || processing

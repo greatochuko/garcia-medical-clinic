@@ -1,3 +1,4 @@
+import Input from "@/Components/layout/Input";
 import LoadingIndicator from "@/Components/layout/LoadingIndicator";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { router, useForm } from "@inertiajs/react";
@@ -33,7 +34,7 @@ export default function CreateAppointment({ patientData, serviceTypes }) {
             .catch((err) =>
                 console.error("Error fetching queue numbers:", err),
             );
-    }, []);
+    }, [patientData.age, setData]);
 
     function handleCreateAppointment(e) {
         e.preventDefault();
@@ -85,7 +86,7 @@ export default function CreateAppointment({ patientData, serviceTypes }) {
                                         <span className="text-red-500">*</span>
                                     </label>
                                     <div className={`relative flex`}>
-                                        <input
+                                        <Input
                                             type="date"
                                             name={"appointment_date"}
                                             id={"appointment_date"}
@@ -97,7 +98,7 @@ export default function CreateAppointment({ patientData, serviceTypes }) {
                                                         e.target.value,
                                                 }))
                                             }
-                                            className="w-0 flex-1 rounded-md border-[#dfdfdf] p-3 text-sm focus:border-inherit focus:ring-accent disabled:bg-[#E4E4E4]"
+                                            className="w-0 flex-1 p-3"
                                             required={true}
                                             disabled={processing}
                                         />
@@ -127,7 +128,7 @@ export default function CreateAppointment({ patientData, serviceTypes }) {
                                                     e.target.value,
                                             }))
                                         }
-                                        className="cursor-pointer p-3 text-sm focus:border-inherit focus:ring-accent"
+                                        className="cursor-pointer rounded-md p-3 text-sm focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50"
                                     >
                                         <option value="" hidden>
                                             Select Service Type
@@ -158,17 +159,17 @@ export default function CreateAppointment({ patientData, serviceTypes }) {
                                                 ["status"]: e.target.value,
                                             }))
                                         }
-                                        className="cursor-pointer p-3 text-sm focus:border-inherit focus:ring-accent"
+                                        className="cursor-pointer rounded-md p-3 text-sm focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50"
                                     >
                                         <option value="waiting">Waiting</option>
                                     </select>
                                 </div>
                             </div>
                             <div className="flex flex-1 flex-col gap-2">
-                                <label htmlFor="queue_number">
+                                <h4 htmlFor="queue_number">
                                     Assign Queue Number{" "}
                                     <span className="text-red-500">*</span>
-                                </label>
+                                </h4>
                                 <div className="grid flex-1 grid-cols-4 gap-4 rounded-2xl border border-[#dfdfdf] p-4">
                                     {queueNumbers.map((queue_number) => (
                                         <button
