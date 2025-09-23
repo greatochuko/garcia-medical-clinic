@@ -9,13 +9,14 @@ export default function Paginator({
     totalPages,
     per_page,
     totalList,
+    routeName,
 }) {
     const [perPage, setPerPage] = useState(per_page);
     const [pageInput, setPageInput] = useState(currentPage);
 
     function handleChangePerPage(e) {
         const newPerPage = parseInt(e.target.value);
-        router.visit(route("appointments.index"), {
+        router.visit(route(routeName), {
             data: {
                 perPage: newPerPage,
                 page: newPerPage >= totalList ? 1 : currentPage,
@@ -28,7 +29,7 @@ export default function Paginator({
     const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     function gotoPage(page) {
-        router.visit(route("appointments.index"), {
+        router.visit(route(routeName), {
             data: {
                 page,
                 perPage,
@@ -47,7 +48,7 @@ export default function Paginator({
     }
 
     return (
-        <div className="grid grid-cols-2 gap-4 p-4 text-sm md:grid-cols-[128px_1fr_152px] md:flex-row md:items-center">
+        <div className="mt-auto grid grid-cols-2 gap-4 p-4 text-sm md:grid-cols-[128px_1fr_152px] md:flex-row md:items-center">
             <div className="col-span-2 flex items-center justify-center md:order-2 md:col-span-1">
                 <div className="flex divide-accent-300 rounded-md border text-accent">
                     <button

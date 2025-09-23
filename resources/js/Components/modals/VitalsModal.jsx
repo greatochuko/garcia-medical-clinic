@@ -81,7 +81,7 @@ export default function VitalsModal({ open, closeModal, patient }) {
                     closeModal();
                 },
                 onError: (err) => {
-                    console.log(err);
+                    console.error(err);
                     toast.error("An unexpected error occured");
                 },
             });
@@ -91,7 +91,7 @@ export default function VitalsModal({ open, closeModal, patient }) {
                     closeModal();
                 },
                 onError: (err) => {
-                    console.log(err);
+                    console.error(err);
                     toast.error("An unexpected error occured");
                 },
             });

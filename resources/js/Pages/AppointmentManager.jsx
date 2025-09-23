@@ -1,5 +1,5 @@
-import { AppointmentDateSection } from "@/Components/appointmentManager/AppointmentDateSection";
-import AppointmentsHeader from "@/Components/appointmentManager/AppointmentsHeader";
+import { AppointmentDateSection } from "@/Components/appointment-manager/AppointmentDateSection";
+import AppointmentsHeader from "@/Components/appointment-manager/AppointmentsHeader";
 import Paginator from "@/Components/layout/Paginator";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { usePage } from "@inertiajs/react";
@@ -128,6 +128,7 @@ export default function AppointmentManager({ appointments }) {
                                 per_page={appointments.per_page}
                                 totalPages={appointments.last_page}
                                 totalList={appointments.total}
+                                routeName="appointments.index"
                             />
                         </div>
                     ) : (

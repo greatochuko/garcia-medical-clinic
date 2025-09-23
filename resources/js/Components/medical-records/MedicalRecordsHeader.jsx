@@ -1,0 +1,68 @@
+import { router } from "@inertiajs/react";
+import React, { useState } from "react";
+import { route } from "ziggy-js";
+import Input from "../layout/Input";
+
+export default function MedicalRecordsHeader({
+    currentTab,
+    perPage,
+    page,
+    setCurrentTab,
+}) {
+    const params = new URLSearchParams(window.location.search);
+    const search = params.get("search");
+    const [searchQuery, setSearchQuery] = useState(search || "");
+
+    function handleSearch(e) {
+        e.preventDefault();
+        router.visit(route("medicalrecords.index"), {
+            data: {
+                perPage: perPage === 10 ? undefined : perPage,
+                page: page > 1 || undefined,
+                search: searchQuery || undefined,
+            },
+            // preserveState: true,
+        });
+    }
+
+    return (
+        <div className="relative mb-2 flex flex-col items-center gap-1 border-b-2 border-accent-200 p-4 px-4 pb-6 text-center">
+            <h1 className="text-center text-sm font-bold">MEDICAL RECORDS</h1>
+            <div className="absolute left-1/2 top-full flex -translate-x-1/2 -translate-y-1/2 gap-2 rounded-lg bg-accent-200 p-1 text-xs">
+                {["all", "unfinished"].map((tab) => (
+                    <button
+                        key={tab}
+                        onClick={() => setCurrentTab(tab)}
+                        className={`rounded-md px-4 py-1.5 font-medium duration-100 ${
+                            currentTab === tab
+                                ? "bg-accent text-white"
+                                : "text-accent-500"
+                        }`}
+                    >
+                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </button>
+                ))}
+            </div>
+
+            <form
+                onSubmit={handleSearch}
+                className="relative my-2 flex w-[90%] max-w-60 md:absolute md:left-4 md:top-full md:m-0 md:-translate-y-1/2 lg:max-w-xs"
+            >
+                <Input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-0 flex-1 pr-10"
+                    placeholder="Type here to search"
+                />
+                <img
+                    src="/assets/icons/search-icon.svg"
+                    alt="Search Icon"
+                    width={18}
+                    height={18}
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                />
+            </form>
+        </div>
+    );
+}

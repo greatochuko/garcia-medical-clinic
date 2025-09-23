@@ -81,7 +81,7 @@ export function AppointmentRow({
                     setLoading?.(false);
                 },
                 onError: (errors) => {
-                    console.log(errors);
+                    console.error(errors);
                     toast.error("An error occurred changing status");
                     setLoading?.(false);
                 },

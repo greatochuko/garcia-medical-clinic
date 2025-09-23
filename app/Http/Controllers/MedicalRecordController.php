@@ -11,6 +11,58 @@ use Inertia\Inertia;
 
 class MedicalRecordController extends Controller
 {
+    public function index(Request $request)
+    {
+        $perPage = (int) $request->input('perPage', 10);
+        $page = (int) $request->input('page', 1);
+        $search = $request->input('search', '');
+
+        $query = Patient::select(
+            'id',
+            'patient_id',
+            'first_name',
+            'last_name',
+            'charge',
+            'patient_type',
+            'last_visit_date',
+            'age',
+            'gender'
+        )
+            ->orderBy('created_at', 'desc'); // newest first
+
+
+        // Apply search filter
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('patient_id', 'like', "%{$search}%")
+                    ->orWhere('patient_type', 'like', "%{$search}%")
+                    ->orWhere('gender', 'like', "%{$search}%")
+                    ->orWhereRaw("FROM_UNIXTIME(last_visit_date, '%M %d, %Y') LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("FROM_UNIXTIME(last_visit_date, '%Y-%m-%d') LIKE ?", ["%{$search}%"]);
+            });
+        }
+
+        // Paginate result
+        $patients = $query->paginate($perPage, ['*'], 'page', $page);
+
+        // Transform data
+        $patients->getCollection()->transform(function ($patient) {
+            return [
+                'id' => $patient->id,
+                'name' => $patient->first_name . ' ' . $patient->last_name,
+                'charge' => number_format($patient->charge, 2),
+                'patient_type' => $patient->patient_type,
+                'last_visit_date' => $patient->last_visit_date,
+                'age' => $patient->age,
+                'gender' => $patient->gender
+            ];
+        });
+
+        return Inertia::render('MedicalRecords/MedicalRecords', ["patientData" => $patients]);
+    }
+
     public function view($id)
     {
         $patient = Patient::where('id', $id)->first();
@@ -20,6 +72,18 @@ class MedicalRecordController extends Controller
             'medicalRecords' => [],
             'totalappointments' => 5
         ]);
+    }
+
+    public function deletePatient($id)
+    {
+        try {
+            $appointment = Patient::findOrFail($id); // throws exception if not found
+            $appointment->delete();
+
+            return redirect()->back()->with('success', 'Patient record deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors('error', 'Failed to delete patient record. Please try again.');
+        }
     }
 
     public function view2($id)

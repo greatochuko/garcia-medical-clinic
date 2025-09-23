@@ -592,7 +592,7 @@ class AppointmentManagerController extends Controller
 
             return redirect()->back()->with('success', 'Appointment deleted successfully');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to delete appointment. Please try again.');
+            return redirect()->back()->withErrors('error', 'Failed to delete appointment. Please try again.');
         }
     }
 
