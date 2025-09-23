@@ -28,6 +28,13 @@ class Patient extends Model
         return $this->hasMany(Appointment::class, 'patient_id', 'patient_id');
     }
 
+    protected static function booted()
+    {
+        static::deleting(function ($patient) {
+            $patient->appointments()->delete();
+        });
+    }
+
     public function vitals()
     {
         return $this->hasOne(VitalSignsModal::class, 'patient_id', 'patient_id');
