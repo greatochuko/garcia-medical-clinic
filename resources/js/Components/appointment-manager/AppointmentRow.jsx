@@ -186,9 +186,10 @@ export function AppointmentRow({
                                     </button>
                                 ) : (
                                     <Link
-                                        // href={`/medical-record/${appointment.patient.patient_id}`}
-                                        href={route("medicalrecords.view", {
-                                            id: appointment.patient.patient_id,
+                                        href={route("patientvisitform.index", {
+                                            patient_id:
+                                                appointment.patient.patient_id,
+                                            appointment_id: appointment.id,
                                         })}
                                         aria-disabled={
                                             appointment.status !== "checked_in"

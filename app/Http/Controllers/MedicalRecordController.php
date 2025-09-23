@@ -67,6 +67,9 @@ class MedicalRecordController extends Controller
     public function view($id)
     {
         $patient = Patient::with(["appointments", "vitals"])->where('id', $id)->first();
+        if (!$patient) {
+            abort(404, 'Patient not found.');
+        }
         $medicalRecords = MedicalRecord::where('patient_id', $patient['patient_id'])->get();
         $medicalHistory = MedicalHistory::where('patient_id', $patient['patient_id']);
 
