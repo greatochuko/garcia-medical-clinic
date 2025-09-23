@@ -51,6 +51,7 @@ class MedicalRecordController extends Controller
         $patients->getCollection()->transform(function ($patient) {
             return [
                 'id' => $patient->id,
+                'patient_id' => $patient->patient_id,
                 'name' => $patient->first_name . ' ' . $patient->last_name,
                 'charge' => number_format($patient->charge, 2),
                 'patient_type' => $patient->patient_type,

@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
 import DeletePatientModal from "../modals/DeletePatientModal";
+import { router } from "@inertiajs/react";
+import { route } from "ziggy-js";
 
 export default function PatientRow({ patient, removePatientFromList }) {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -30,7 +32,15 @@ export default function PatientRow({ patient, removePatientFromList }) {
                 </div>
                 <div className="flex min-w-[25rem] flex-[3] items-center justify-center p-4 text-center">
                     <div className="flex w-fit gap-2 rounded-md bg-[#EAEAEA] p-2">
-                        <button className="rounded-md border border-dashed border-accent bg-white px-3 py-1.5 text-xs duration-200 hover:bg-accent-200">
+                        <button
+                            onClick={() =>
+                                router.visit(
+                                    route("appointments.create") +
+                                        `?id=${patient.patient_id}`,
+                                )
+                            }
+                            className="rounded-md border border-dashed border-accent bg-white px-3 py-1.5 text-xs duration-200 hover:bg-accent-200"
+                        >
                             Create Appointment
                         </button>
                         <button className="rounded-md border border-dashed border-accent bg-white px-3 py-1.5 text-xs duration-200 hover:bg-accent-200">

@@ -14,12 +14,24 @@ export default function Paginator({
     const [perPage, setPerPage] = useState(per_page);
     const [pageInput, setPageInput] = useState(currentPage);
 
+    function resolvePage(newPerPage, totalList, currentPage) {
+        const totalPages = Math.ceil(totalList / newPerPage);
+
+        if (newPerPage >= totalList) return 1;
+        if (currentPage > totalPages) return totalPages;
+        if (currentPage === 1) return undefined;
+
+        return currentPage;
+    }
+
     function handleChangePerPage(e) {
         const newPerPage = parseInt(e.target.value);
+
+        const page = resolvePage(newPerPage, totalList, currentPage);
         router.visit(route(routeName), {
             data: {
-                perPage: newPerPage,
-                page: newPerPage >= totalList ? 1 : currentPage,
+                perPage: newPerPage === 10 ? undefined : newPerPage,
+                page,
             },
             preserveState: true,
         });
@@ -31,8 +43,8 @@ export default function Paginator({
     function gotoPage(page) {
         router.visit(route(routeName), {
             data: {
-                page,
-                perPage,
+                page: page === 1 ? undefined : page,
+                perPage: perPage === 10 ? undefined : perPage,
             },
         });
     }
@@ -94,7 +106,7 @@ export default function Paginator({
                 onChange={handleChangePerPage}
                 className="w-32 cursor-pointer rounded-md px-3 py-1.5 text-sm focus-visible:border-inherit focus-visible:ring-accent"
             >
-                {[10, 15, 20, 30].map((num) => (
+                {[10, 15, 20, 25, 30].map((num) => (
                     <option key={num} value={num}>
                         {num} Per Page
                     </option>
