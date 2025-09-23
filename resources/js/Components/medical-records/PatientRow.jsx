@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import DeletePatientModal from "../modals/DeletePatientModal";
-import { router } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { route } from "ziggy-js";
 
 export default function PatientRow({ patient, removePatientFromList }) {
@@ -43,9 +43,12 @@ export default function PatientRow({ patient, removePatientFromList }) {
                         >
                             Create Appointment
                         </button>
-                        <button className="rounded-md border border-dashed border-accent bg-white px-3 py-1.5 text-xs duration-200 hover:bg-accent-200">
+                        <Link
+                            href={route("medicalrecords.view", patient.id)}
+                            className="rounded-md border border-dashed border-accent bg-white px-3 py-1.5 text-xs duration-200 hover:bg-accent-200"
+                        >
                             View Profile & Medical Record
-                        </button>
+                        </Link>
                     </div>
                 </div>
                 <div className="flex min-w-24 flex-[1] items-center justify-center p-4">

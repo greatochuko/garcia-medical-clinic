@@ -106,6 +106,11 @@ class AllPatientController extends Controller
         return Inertia::render('AddPatientPage', ["patientId" => $patientId]);
     }
 
+    public function edit(Request $request)
+    {
+        $patient = Patient::find($request->id);
+        return Inertia::render('AddPatientPage', ['patient' => $patient]);
+    }
 
     public function latest_id()
     {
@@ -159,17 +164,10 @@ class AllPatientController extends Controller
         // ->with('age', $patient->age);
     }
 
-
-    public function edit(Request $request)
-    {
-        $patient = Patient::find($request->id);
-        return Inertia::render('AddPatientPage', ['patient' => $patient]);
-    }
-
     public function update(Request $request)
     {
         $validated = $request->validate([
-            'patient_id'     => 'required|string|unique:patient_records,patient_id',
+            'patient_id'     => 'required|string',
             'first_name'     => 'required|string|max:255',
             'last_name'      => 'required|string|max:255',
             'middle_initial' => 'nullable|string|max:10',
@@ -183,8 +181,9 @@ class AllPatientController extends Controller
 
         $patient = Patient::find($request->id);
         if (!$patient) {
-            return redirect()->route('allpatients')->with('error', 'Patient not found!');
+            return redirect()->back()->with('error', 'Patient not found!');
         }
+
         $patient->update([
             'patient_id'     => $validated['patient_id'],
             'first_name'     => $validated['first_name'],
@@ -197,7 +196,7 @@ class AllPatientController extends Controller
             'phone'          => $validated['phone'],
             'address'        => $validated['address'],
         ]);
-        return redirect()->route('allpatients')->with('success', 'Patient updated successfully!');
+        return redirect()->route('medicalrecords.view', $patient["id"])->with('success', 'Patient updated successfully!');
     }
 
     public function destroy(Request $request)

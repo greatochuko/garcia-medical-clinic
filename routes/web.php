@@ -197,9 +197,9 @@ Route::middleware('auth')->group(function () {
 
     //Medical Records Route
     Route::get('/medical-records', [MedicalRecordController::class, 'index'])->name('medicalrecords.index');
+    Route::get('/medical-records/{id}', [MedicalRecordController::class, 'view'])->name('medicalrecords.view');
     Route::delete('/medical-records/{id}', [MedicalRecordController::class, 'deletePatient'])->name('medicalrecords.delete');
     // Route::get('/medical-records/unfinished-docs', [UnfinishedDocsController::class, 'index'])->name('unfinished-docs');
-    Route::get('/medical-records/{id}', [MedicalRecordController::class, 'view'])->name('medicalrecords.view');
     Route::get('/patient/medical-records/{id}/{appointment_id}', [MedicalRecordController::class, 'get_patient_medical_record'])->name('medicalrecords.medical_record_patient');
 
 

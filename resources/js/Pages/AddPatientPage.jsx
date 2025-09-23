@@ -2,7 +2,7 @@ import AddPatientForm from "@/Components/patients/AddPatientForm";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import React from "react";
 
-export default function AddPatientPage({ patientId }) {
+export default function AddPatientPage({ patientId, patient }) {
     return (
         <AuthenticatedLayout pageTitle={"Add Patient"}>
             <div className="flex-1">
@@ -11,7 +11,10 @@ export default function AddPatientPage({ patientId }) {
                         PATIENT REGISTRATION FORM
                     </h1>
 
-                    <AddPatientForm patientId={patientId} />
+                    <AddPatientForm
+                        patientId={patient?.patient_id || patientId}
+                        patient={patient}
+                    />
                 </div>
             </div>
         </AuthenticatedLayout>

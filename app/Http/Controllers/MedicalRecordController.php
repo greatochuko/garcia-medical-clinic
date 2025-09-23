@@ -66,11 +66,14 @@ class MedicalRecordController extends Controller
 
     public function view($id)
     {
-        $patient = Patient::where('id', $id)->first();
+        $patient = Patient::with(["appointments", "vitals"])->where('id', $id)->first();
+        $medicalRecords = MedicalRecord::where('patient_id', $patient['patient_id'])->get();
+        $medicalHistory = MedicalHistory::where('patient_id', $patient['patient_id']);
 
         return Inertia::render('MedicalRecords/ViewMedicalRecord', [
             'patient' => $patient,
-            'medicalRecords' => [],
+            'medicalRecords' => $medicalRecords,
+            'medicalHistory' => $medicalHistory,
             'totalappointments' => 5
         ]);
     }

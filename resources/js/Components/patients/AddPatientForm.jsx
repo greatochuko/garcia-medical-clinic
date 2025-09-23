@@ -48,18 +48,18 @@ const formFields = [
     { id: "address", label: "Home Address", type: "text", required: true },
 ];
 
-export default function AddPatientForm({ patientId }) {
-    const { data, setData, post, processing } = useForm({
+export default function AddPatientForm({ patientId, patient }) {
+    const { data, setData, post, put, processing } = useForm({
         patient_id: patientId.toString(),
-        first_name: "",
-        last_name: "",
-        middle_initial: "",
-        dob: "2000-01-01",
-        age: "",
-        gender: "",
-        patient_type: 1,
-        phone: "",
-        address: "",
+        first_name: patient?.first_name || "",
+        last_name: patient?.last_name || "",
+        middle_initial: patient?.middle_initial || "",
+        dob: patient?.dob || "2000-01-01",
+        age: patient?.age || "",
+        gender: patient?.gender.toLowerCase() || "",
+        patient_type: patient?.patient_type || 1,
+        phone: patient?.phone?.replace(/-/g, "") || "",
+        address: patient?.address || "",
     });
     const [validationErrors, setValidationErrors] = useState([]);
     const [currentStage, setCurrentStage] = useState("form");
@@ -135,6 +135,23 @@ export default function AddPatientForm({ patientId }) {
         return errorList;
     }
 
+    function handleSavePatientInfo(e) {
+        e.preventDefault();
+
+        const errorList = validateFields();
+
+        if (errorList.length > 0) {
+            setValidationErrors(errorList);
+            return;
+        }
+
+        put(route("patient.update", patient.id), {
+            onError: (serverErrors) => {
+                setValidationErrors(Object.values(serverErrors));
+            },
+        });
+    }
+
     function handleRegisterPatient(e) {
         e.preventDefault();
 
@@ -191,7 +208,11 @@ export default function AddPatientForm({ patientId }) {
                                                             id={
                                                                 fieldOption.value
                                                             }
-                                                            onClick={() =>
+                                                            checked={
+                                                                data.gender ===
+                                                                fieldOption.value
+                                                            }
+                                                            onChange={() =>
                                                                 setData(
                                                                     (prev) => ({
                                                                         ...prev,
@@ -266,7 +287,11 @@ export default function AddPatientForm({ patientId }) {
                     <button
                         disabled={processing}
                         onClick={() =>
-                            router.visit("/appointments/select-patient")
+                            router.visit(
+                                patient
+                                    ? `/medical-records/${patient.id}`
+                                    : "/appointments/select-patient",
+                            )
                         }
                         className="rounded-md border border-accent px-4 py-2 text-sm duration-200 hover:bg-accent-200"
                     >
@@ -275,11 +300,23 @@ export default function AddPatientForm({ patientId }) {
                     <button
                         disabled={processing}
                         onClick={
-                            termsAccepted ? handleRegisterPatient : handleNext
+                            patient
+                                ? handleSavePatientInfo
+                                : termsAccepted
+                                  ? handleRegisterPatient
+                                  : handleNext
                         }
                         className="flex items-center gap-2 rounded-md border border-accent bg-accent px-4 py-2 text-sm text-white duration-200 hover:bg-accent/90"
                     >
-                        {termsAccepted ? (
+                        {patient ? (
+                            processing ? (
+                                <>
+                                    <LoadingIndicator /> Saving...
+                                </>
+                            ) : (
+                                "Save"
+                            )
+                        ) : termsAccepted ? (
                             processing ? (
                                 <>
                                     <LoadingIndicator /> Registering...
