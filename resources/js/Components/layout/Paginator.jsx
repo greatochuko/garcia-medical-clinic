@@ -66,7 +66,7 @@ export default function Paginator({
                     <button
                         onClick={gotoPreviousPage}
                         disabled={currentPage < 2}
-                        className="rounded-l-md p-1.5 font-medium outline-none ring-accent/50 duration-200 hover:bg-accent hover:text-white focus-visible:z-10 focus-visible:ring-4 active:ring-4 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-accent md:px-3"
+                        className="rounded-l-md p-1.5 font-medium outline-none ring-accent/50 duration-200 hover:bg-[#089bab] hover:text-white focus-visible:z-10 focus-visible:ring-4 active:ring-4 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-accent md:px-3"
                     >
                         <ChevronLeftIcon
                             size={18}
@@ -87,7 +87,7 @@ export default function Paginator({
                     <button
                         onClick={gotoNextPage}
                         disabled={currentPage >= totalPages}
-                        className="rounded-r-md p-1.5 font-medium outline-none ring-accent/50 duration-200 hover:bg-accent hover:text-white focus-visible:z-10 focus-visible:ring-4 active:ring-4 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-accent md:px-3"
+                        className="rounded-r-md p-1.5 font-medium outline-none ring-accent/50 duration-200 hover:bg-[#089bab] hover:text-white focus-visible:z-10 focus-visible:ring-4 active:ring-4 disabled:cursor-not-allowed disabled:bg-[#EAEAEA] disabled:text-accent md:px-3"
                     >
                         <ChevronRightIcon
                             size={18}
@@ -159,10 +159,10 @@ function PageNumbers({ pages, currentPage, gotoPage }) {
                 <button
                     onClick={() => gotoPage(page)}
                     key={page}
-                    className={`h-8 w-10 outline-none ring-accent/50 duration-200 focus-visible:z-10 focus-visible:ring-4 active:ring-4 ${
+                    className={`h-8 w-10 duration-200 hover:bg-[#089bab] hover:text-white ${
                         isCurrent
-                            ? "bg-accent font-bold text-white"
-                            : "hover:bg-accent hover:text-white"
+                            ? "z-20 border border-[#089bab] font-bold ring-4 ring-[#089bab]/50"
+                            : ""
                     }`}
                 >
                     {page}

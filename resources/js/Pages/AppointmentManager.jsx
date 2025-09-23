@@ -105,8 +105,8 @@ export default function AppointmentManager({ appointments }) {
                         setCurrentTab={setCurrentTab}
                     />
                     {appointmentList.length > 0 ? (
-                        <div>
-                            <div className="flex flex-col gap-6 overflow-x-auto text-sm">
+                        <div className="flex flex-1 flex-col">
+                            <div className="flex flex-1 flex-col gap-6 divide-y divide-accent-200 overflow-x-auto text-sm">
                                 {uniqueDates.map((date, index) => (
                                     <AppointmentDateSection
                                         key={date}

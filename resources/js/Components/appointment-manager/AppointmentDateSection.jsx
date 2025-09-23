@@ -27,7 +27,7 @@ export function AppointmentDateSection({
     }
 
     return (
-        <div className="flex flex-col gap-4 border-b-2 border-accent-200 p-4">
+        <div className="flex flex-col gap-4 p-4">
             <h3 className="font-bold">
                 {new Date(date).toLocaleDateString("en-US", {
                     year: "numeric",
