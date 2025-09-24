@@ -24,10 +24,10 @@ class PatientVisitController extends Controller
     {
         $patient = Patient::where('patient_id', $id)->first();
         $patient['vitals'] = VitalSignsModal::where('patient_id', $id)->get();
-        // $patient['disease'] = $this->get_medical_history($id);
+        $patient['medicalHistory'] = $this->get_medical_history($id);
         return Inertia::render('MedicalRecords/PatientVisitForm', [
             'patient' => $patient,
-            'appointment' => $appointment_id
+            'appointmentId' => $appointment_id
         ]);
     }
 
