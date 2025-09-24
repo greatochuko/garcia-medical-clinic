@@ -11,7 +11,7 @@ export default function MedicalHistoryModal({
     closeModal: closeMedicalHistoryModal,
     patientId,
     medicalHistory,
-    setMedicalHistory,
+    updateMedicalHistory,
 }) {
     const { processing, data, setData, post } = useForm({
         diseases: medicalHistory || [],
@@ -55,7 +55,7 @@ export default function MedicalHistoryModal({
     function handleSave() {
         post(route("patientvisitform.add_medical_history"), {
             onSuccess: () => {
-                setMedicalHistory(data.diseases);
+                updateMedicalHistory(data.diseases);
                 toast.success("Medical history updated successfully");
                 closeModal();
             },

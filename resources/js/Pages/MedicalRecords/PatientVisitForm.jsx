@@ -1,14 +1,61 @@
 import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { PlusIcon } from "lucide-react";
 import MedicalHistoryModal from "@/Components/modals/MedicalHistoryModal";
+import VitalsModal from "@/Components/modals/VitalsModal";
 
-export default function PatientVisitForm({ patient, ...props }) {
+export default function PatientVisitForm({
+    patient: initialPatient,
+    ...props
+}) {
     const [currentTab, setCurrentTab] = useState("medicalHistory");
-    const [medicalHistory, setMedicalHistory] = useState(
-        patient.medicalHistory || [],
-    );
+    const [patient, setPatient] = useState(initialPatient);
     const patientFullName = `${patient.first_name} ${patient.middle_initial} ${patient.last_name}`;
+
+    const vitalSigns = [
+        {
+            id: "blood-pressure",
+            label: "Blood Pressure",
+            value:
+                patient.vitals?.blood_systolic_pressure &&
+                patient.vitals?.blood_diastolic_pressure
+                    ? `${patient.vitals.blood_systolic_pressure}/${patient.vitals.blood_diastolic_pressure} mmHg`
+                    : "",
+        },
+        {
+            id: "temperature",
+            label: "Temperature",
+            value: patient.vitals?.temperature
+                ? parseInt(patient.vitals.temperature) + " °C"
+                : "",
+        },
+        {
+            id: "heart-rate",
+            label: "Heart Rate",
+            value: patient.vitals?.heart_rate
+                ? parseInt(patient.vitals.heart_rate) + " bpm"
+                : "",
+        },
+        {
+            id: "height",
+            label: "Height",
+            value:
+                patient.vitals?.height_ft && patient.vitals?.height_in
+                    ? `${patient.vitals.height_ft} ft ${patient.vitals.height_in} in`
+                    : "",
+        },
+        {
+            id: "o2-saturation",
+            label: "O2 Saturation",
+            value: patient.vitals?.o2saturation
+                ? patient.vitals?.o2saturation + " %"
+                : "",
+        },
+        {
+            id: "weight",
+            label: "Weight",
+            value: patient.vitals?.weight ? patient.vitals?.weight + " kg" : "",
+        },
+    ];
 
     return (
         <AuthenticatedLayout pageTitle={"Patient Visit Form"}>
@@ -64,16 +111,44 @@ export default function PatientVisitForm({ patient, ...props }) {
                                     </h3>
                                     <MedicalHistoryButton
                                         patientId={patient.patient_id}
-                                        setMedicalHistory={setMedicalHistory}
-                                        medicalHistory={medicalHistory}
+                                        setPatient={setPatient}
+                                        medicalHistory={
+                                            patient.medicalHistory || []
+                                        }
                                     />
                                 </div>
                                 <p>
-                                    {medicalHistory.length > 0
-                                        ? medicalHistory.join(", ")
+                                    {patient.medicalHistory?.length > 0
+                                        ? patient.medicalHistory.join(", ")
                                         : "No Medical History"}
                                 </p>
                             </div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col divide-y-2 divide-accent-200 rounded-lg bg-white text-sm shadow-md">
+                        <h2 className="flex items-center gap-2 px-4 py-2 text-center text-sm font-bold">
+                            VS & MEASUREMENTS
+                            <VitalSignsButton
+                                patient={patient}
+                                setPatient={setPatient}
+                            />
+                        </h2>
+                        <div className="grid grid-cols-2 gap-4 gap-x-8 p-4">
+                            {vitalSigns.map((info) => (
+                                <div key={info.id} className="flex gap-3">
+                                    <div
+                                        className={`border-r-4 ${info.value ? "border-accent" : "border-accent-200"}`}
+                                    />
+                                    <div className="">
+                                        <h4 className="font-semibold">
+                                            {info.label}
+                                        </h4>
+                                        <p className="text-[#666666]">
+                                            {info.value || "-"}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -82,12 +157,43 @@ export default function PatientVisitForm({ patient, ...props }) {
     );
 }
 
-function MedicalHistoryButton({
-    patientId,
-    setMedicalHistory,
-    medicalHistory,
-}) {
+function VitalSignsButton({ patient, setPatient }) {
     const [modalOpen, setModalOpen] = useState(false);
+
+    function updateVitals(newVitals) {
+        setPatient((prev) => ({ ...prev, vitals: newVitals }));
+    }
+
+    return (
+        <>
+            <button
+                onClick={() => setModalOpen(true)}
+                className="p-1 duration-100 active:scale-90"
+            >
+                <img
+                    src="/assets/icons/add-one-icon.svg"
+                    alt="add one icon "
+                    width={18}
+                    height={18}
+                />
+            </button>
+
+            <VitalsModal
+                open={modalOpen}
+                closeModal={() => setModalOpen(false)}
+                patient={patient}
+                updateVitals={updateVitals}
+            />
+        </>
+    );
+}
+
+function MedicalHistoryButton({ patientId, setPatient, medicalHistory }) {
+    const [modalOpen, setModalOpen] = useState(false);
+
+    function updateMedicalHistory(newMedicalHistory) {
+        setPatient((prev) => ({ ...prev, medicalHistory: newMedicalHistory }));
+    }
 
     return (
         <>
@@ -107,7 +213,7 @@ function MedicalHistoryButton({
                 open={modalOpen}
                 closeModal={() => setModalOpen(false)}
                 patientId={patientId}
-                setMedicalHistory={setMedicalHistory}
+                updateMedicalHistory={updateMedicalHistory}
                 medicalHistory={medicalHistory}
             />
         </>

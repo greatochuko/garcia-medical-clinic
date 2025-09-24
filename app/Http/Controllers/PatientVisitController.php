@@ -22,8 +22,7 @@ class PatientVisitController extends Controller
 {
     public function index($id, $appointment_id)
     {
-        $patient = Patient::where('patient_id', $id)->first();
-        $patient['vitals'] = VitalSignsModal::where('patient_id', $id)->get();
+        $patient = Patient::with(["vitals"])->where('patient_id', $id)->first();
         $patient['medicalHistory'] = $this->get_medical_history($id);
         return Inertia::render('MedicalRecords/PatientVisitForm', [
             'patient' => $patient,

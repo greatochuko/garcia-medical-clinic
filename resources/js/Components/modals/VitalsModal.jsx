@@ -60,7 +60,12 @@ const measurementFields = [
     },
 ];
 
-export default function VitalsModal({ open, closeModal, patient }) {
+export default function VitalsModal({
+    open,
+    closeModal,
+    patient,
+    updateVitals,
+}) {
     const { post, put, processing, data, setData } = useForm({
         patient_id: patient.patient_id,
         blood_diastolic_pressure:
@@ -68,16 +73,20 @@ export default function VitalsModal({ open, closeModal, patient }) {
         blood_systolic_pressure: patient.vitals?.blood_systolic_pressure || "",
         heart_rate: patient.vitals?.heart_rate || "",
         o2saturation: patient.vitals?.o2saturation || "",
-        temperature: patient.vitals?.temperature || "",
+        temperature: parseInt(patient.vitals?.temperature) || "",
         height_ft: patient.vitals?.height_ft || "",
         height_in: patient.vitals?.height_in || "",
         weight: patient.vitals?.weight || "",
     });
 
-    function handleSaveVitalSigns() {
+    console.log(patient);
+
+    function handleSaveVitalSigns(e) {
+        e.preventDefault();
         if (patient.vitals) {
             put(route("vitalsignsmodal.update", { id: patient.vitals.id }), {
                 onSuccess: () => {
+                    updateVitals?.(data);
                     closeModal();
                 },
                 onError: (err) => {
@@ -86,8 +95,10 @@ export default function VitalsModal({ open, closeModal, patient }) {
                 },
             });
         } else {
+            console.log("Post");
             post(route("vitalsignsmodal.add"), {
                 onSuccess: () => {
+                    updateVitals?.(data);
                     closeModal();
                 },
                 onError: (err) => {
