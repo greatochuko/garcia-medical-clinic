@@ -16,6 +16,29 @@
     @apply active:shadow-inner active:shadow-[inset_0_6px_10px_rgba(0,0,0,0.5)] transition-shadow duration-150;
   } */
 }
+
+html {
+    /* For Firefox */
+    scrollbar-width: bold;
+    scrollbar-color: #1d7498 #d4d4d4;
+}
+
+/* For WebKit browsers (Chrome, Safari, Edge) */
+html::-webkit-scrollbar {
+    width: 8px;
+}
+
+html::-webkit-scrollbar-track {
+    /* background: #145c75; */
+    border-radius: 3px;
+}
+
+html::-webkit-scrollbar-thumb {
+    background-color: #3aa0d7;
+    border-radius: 3px;
+    /* border: 2px solid #145c75; */
+}
+
 .patient-template {
     max-height: 20rem;
     overflow: auto;

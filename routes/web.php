@@ -99,7 +99,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/patient/prescription/delete/{id}', [PatientVisitController::class, 'patientprescription_remove'])->name('patientvisitform.patientprescriptionremove');
 
 
-    Route::post('/patient/chiefcomplaint/add', [PatientVisitController::class, 'add_patient_chief_complaint'])->name('patientvisitform.patientchiefcomplaintadd');
+    Route::post('/patient/chiefcomplaint/add', [PatientVisitController::class, 'add_patient_chief_complaint'])->name('patientvisitform.patientEntryAdd.chief_complaint');
+    Route::put('/patient/chiefcomplaint/udpate', [PatientVisitController::class, 'update_patient_chief_complaint'])->name('patientvisitform.patientEntryUpdate.chief_complaint');
     Route::get('/patient/chiefcomplaint/get/{id}/{app_id}', [PatientVisitController::class, 'get_patient_chief_complaint'])->name('patientvisitform.patientchiefcomplaintget');
     Route::delete('/patient/chiefcomplaint/delete', [PatientVisitController::class, 'delete_patient_chief_complaint'])->name('patientvisitform.patientchiefcomplaintdelete');
 

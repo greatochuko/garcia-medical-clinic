@@ -32,12 +32,13 @@ class PatientVisitController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
         $medications = MedicationList::all();
+        $patient['chief_complaint'] = $this->get_patient_chief_complaint($id, $appointment_id);
 
         return Inertia::render('MedicalRecords/PatientVisitForm', [
             'patient' => $patient,
             'appointmentId' => $appointment_id,
             "prescriptions" => $prescriptions,
-            "medications" => $medications
+            "medications" => $medications,
         ]);
     }
 
@@ -69,9 +70,35 @@ class PatientVisitController extends Controller
 
     public function get_patient_chief_complaint($id, $app_id)
     {
-        $patient_chief_complaint = PatientChiefComplaint::where('patient_id', $id)->where('appointment_id', $app_id)->get();
+        $patient_chief_complaint = PatientChiefComplaint::where('patient_id', $id)
+            ->where('appointment_id', $app_id)
+            ->orderBy('created_at', 'desc')
+            ->get();;
         return $patient_chief_complaint;
     }
+
+    public function update_patient_chief_complaint(Request $request)
+    {
+        $entriesToUpdate = $request->entriesToUpdate ?? [];
+        $entriesToDelete = $request->entriesToDelete ?? [];
+
+        // Delete entries
+        if (!empty($entriesToDelete)) {
+            $idsToDelete = array_column($entriesToDelete, 'id');
+            PatientChiefComplaint::whereIn('id', $idsToDelete)->delete();
+        }
+
+        // Update entries
+        if (!empty($entriesToUpdate)) {
+            foreach ($entriesToUpdate as $entry) {
+                PatientChiefComplaint::where('id', $entry['id'])
+                    ->update(['chief_complaint' => $entry['chief_complaint']]);
+            }
+        }
+
+        return back()->with('success', 'Entries updated successfully');
+    }
+
 
     public function delete_patient_chief_complaint(Request $request)
     {
@@ -98,11 +125,13 @@ class PatientVisitController extends Controller
             ]
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Chief complaint added or updated successfully.',
-            'data'    => $patientChiefComplaint,
-        ]);
+        return;
+
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Chief complaint added or updated successfully.',
+        //     'data'    => $patientChiefComplaint,
+        // ]);
     }
 
     public function update_status($id, $app_id, Request $request)

@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import PatientSummaryPanel from "@/Components/patient-visit-form/PatientSummaryPanel";
-import Input from "@/Components/layout/Input";
-import { PlusIcon } from "lucide-react";
+
 import PrescriptionSection from "@/Components/patient-visit-form/PrescriptionSection";
 
+import PatientEntryCard from "@/Components/patient-visit-form/PatientEntryCard";
+
 const patientEntries = [
-    { id: "chief-complaint", title: "CHIEF COMPLAINT", value: [] },
-    { id: "physical-exam", title: "PHYSICAL EXAM", value: [] },
+    { id: "chief_complaint", title: "CHIEF COMPLAINT", value: [] },
+    { id: "physicalExam", title: "PHYSICAL EXAM", value: [] },
     { id: "plan", title: "PLAN", value: [] },
     { id: "diagnosis", title: "DIAGNOSIS", value: [] },
     {
-        id: "medical-records",
+        id: "medical_records",
         title: "MEDICAL RECORDS",
         value: [],
         hideInput: true,
@@ -25,6 +26,17 @@ export default function PatientVisitForm({
     medications,
 }) {
     const [patient, setPatient] = useState(initialPatient);
+    const [patientEntryData, setPatientEntryData] = useState({
+        chief_complaint: {
+            id: "chief_complaint",
+            data: patient.chief_complaint || [],
+            input: "",
+        },
+        physicalExam: { data: [], input: "" },
+        plan: { data: [], input: "" },
+        diagnosis: { data: [], input: "" },
+        medical_records: { data: [], input: "" },
+    });
 
     return (
         <AuthenticatedLayout pageTitle={"Patient Visit Form"}>
@@ -42,7 +54,19 @@ export default function PatientVisitForm({
                         <div className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 bg-accent-200"></div>
                     </div>
                     <div className="grid gap-2 px-2 sm:grid-cols-6 xl:grid-cols-9">
-                        {patientEntries.slice(0, 2).map((entry) => (
+                        {patientEntries.slice(0, 2).map((entry, index) => (
+                            <PatientEntryCard
+                                key={entry.id}
+                                entry={entry}
+                                entryData={patientEntryData[entry.id]}
+                                index={index}
+                                appointmentId={appointmentId}
+                                patientId={patient.patient_id}
+                                patientEntryData={patientEntryData}
+                                setPatientEntryData={setPatientEntryData}
+                            />
+                        ))}
+                        {/* {patientEntries.slice(0, 2).map((entry) => (
                             <div
                                 key={entry.id}
                                 className="flex flex-col divide-y-2 divide-accent-200 rounded-md bg-white text-sm shadow-md sm:col-span-3"
@@ -60,21 +84,59 @@ export default function PatientVisitForm({
                                         />
                                     </button>
                                 </div>
-                                <div className="h-60 overflow-y-auto"></div>
+                                <ul className="flex h-60 flex-col gap-2 overflow-y-auto break-words p-4">
+                                    {patientEntryData[entry.id].data.map(
+                                        (datum) => (
+                                            <li key={datum.id}>
+                                                <span className="mr-2 font-bold">
+                                                    &gt;
+                                                </span>
+                                                {datum["chief_complaint"]}{" "}
+                                                {entry.id}
+                                            </li>
+                                        ),
+                                    )}
+                                </ul>
                                 <div className="p-4">
-                                    <div className="relative">
-                                        <Input className="w-full rounded-xl p-3 pr-16" />
-                                        <button className="absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center justify-center rounded-xl rounded-bl-none bg-accent px-4">
+                                    <form
+                                        onSubmit={(e) =>
+                                            handleAddEntry(e, entry.id)
+                                        }
+                                        className="relative"
+                                    >
+                                        <Input
+                                            value={
+                                                patientEntryData[entry.id].input
+                                            }
+                                            onChange={(e) =>
+                                                setPatientEntryData((prev) => ({
+                                                    ...prev,
+                                                    [entry.id]: {
+                                                        ...prev[entry.id],
+                                                        input: e.target.value,
+                                                    },
+                                                }))
+                                            }
+                                            className="w-full rounded-xl p-3 pr-16"
+                                        />
+                                        <button
+                                            type="submit"
+                                            disabled={
+                                                !patientEntryData[entry.id]
+                                                    .input
+                                            }
+                                            className="focus-visible::ring-2 absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center justify-center rounded-xl rounded-bl-none border-2 border-accent bg-accent px-4 focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50 focus-visible:border-white focus-visible:outline-none"
+                                        >
                                             <PlusIcon
                                                 size={20}
                                                 strokeWidth={5}
                                                 color="#fff"
                                             />
                                         </button>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
-                        ))}
+                        ))} */}
 
                         <PrescriptionSection
                             patient={patient}
@@ -83,67 +145,17 @@ export default function PatientVisitForm({
                             medications={medications}
                         />
 
-                        {patientEntries.slice(2).map((entry) => (
-                            <div
+                        {patientEntries.slice(2).map((entry, index) => (
+                            <PatientEntryCard
+                                entry={entry}
                                 key={entry.id}
-                                className={`flex flex-col divide-y-2 divide-accent-200 rounded-md bg-white text-sm shadow-md lg:col-span-2 ${
-                                    entry.id === "medical-records"
-                                        ? "sm:col-span-6"
-                                        : "sm:col-span-3"
-                                }`}
-                            >
-                                <div className="relative p-4">
-                                    <h3 className="text-center font-semibold">
-                                        {entry.title}
-                                    </h3>
-                                    <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2">
-                                        <img
-                                            src={
-                                                entry.id === "medical-records"
-                                                    ? "/assets/icons/profile-card-icon.svg"
-                                                    : "/assets/icons/edit-icon-2.svg"
-                                            }
-                                            alt="edit icon"
-                                            width={18}
-                                            height={18}
-                                        />
-                                    </button>
-
-                                    {entry.id === "plan" && (
-                                        <div className="absolute left-1/2 top-full flex min-w-max -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-md bg-accent-200 p-1">
-                                            <button className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1 text-xs font-medium duration-200 hover:bg-accent-100">
-                                                <img
-                                                    src="/assets/icons/laboratory-icon.svg"
-                                                    alt="pills icon"
-                                                />
-                                                LAB REQUEST
-                                            </button>
-                                            <button className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1 text-xs font-medium duration-200 hover:bg-accent-100">
-                                                <img
-                                                    src="/assets/icons/med-certification-icon.svg"
-                                                    alt="pills icon"
-                                                />
-                                                MED CERTIFICATE
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="h-60 overflow-y-auto"></div>
-                                {!entry.hideInput && (
-                                    <div className="p-4">
-                                        <div className="relative">
-                                            <Input className="w-full rounded-xl p-3 pr-16" />
-                                            <button className="absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center justify-center rounded-xl rounded-bl-none bg-accent px-4">
-                                                <PlusIcon
-                                                    size={20}
-                                                    strokeWidth={5}
-                                                    color="#fff"
-                                                />
-                                            </button>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
+                                index={index + 2}
+                                entryData={patientEntryData[entry.id]}
+                                appointmentId={appointmentId}
+                                patientId={patient.patient_id}
+                                patientEntryData={patientEntryData}
+                                setPatientEntryData={setPatientEntryData}
+                            />
                         ))}
 
                         {/* <div className="flex flex-[2] flex-col gap-2">
