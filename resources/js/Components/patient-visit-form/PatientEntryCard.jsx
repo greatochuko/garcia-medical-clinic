@@ -94,8 +94,7 @@ export default function PatientEntryCard({
                 onFinish: () => {
                     setUpdating(false);
                 },
-                onSuccess: (res) => {
-                    console.log(res);
+                onSuccess: () => {
                     setPatientEntryData((prev) => ({
                         ...prev,
                         [entry.id]: {

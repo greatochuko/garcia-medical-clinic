@@ -8,7 +8,7 @@ import PatientEntryCard from "@/Components/patient-visit-form/PatientEntryCard";
 
 const patientEntries = [
     { id: "chief_complaint", title: "CHIEF COMPLAINT", value: [] },
-    { id: "physicalExam", title: "PHYSICAL EXAM", value: [] },
+    { id: "physical_exam", title: "PHYSICAL EXAM", value: [] },
     { id: "plan", title: "PLAN", value: [] },
     { id: "diagnosis", title: "DIAGNOSIS", value: [] },
     {
@@ -32,10 +32,22 @@ export default function PatientVisitForm({
             data: patient.chief_complaint || [],
             input: "",
         },
-        physicalExam: { data: [], input: "" },
-        plan: { data: [], input: "" },
-        diagnosis: { data: [], input: "" },
-        medical_records: { data: [], input: "" },
+        physical_exam: {
+            id: "physical_exam",
+            data: patient.physical_exam || [],
+            input: "",
+        },
+        plan: { id: "plan", data: patient.plan || [], input: "" },
+        diagnosis: {
+            id: "diagnosis",
+            data: patient.diagnosis || [],
+            input: "",
+        },
+        medical_records: {
+            id: "medical_records",
+            data: patient.medical_records || [],
+            input: "",
+        },
     });
 
     return (

@@ -33,6 +33,9 @@ class PatientVisitController extends Controller
             ->get();
         $medications = MedicationList::all();
         $patient['chief_complaint'] = $this->get_patient_chief_complaint($id, $appointment_id);
+        $patient['physical_exam'] = $this->get_patient_physical_exam($id, $appointment_id);
+        $patient['plan'] = $this->get_patient_plans($id, $appointment_id);
+        $patient['diagnosis'] = $this->get_patient_diagnosis($id, $appointment_id);
 
         return Inertia::render('MedicalRecords/PatientVisitForm', [
             'patient' => $patient,
@@ -96,7 +99,7 @@ class PatientVisitController extends Controller
             }
         }
 
-        return back()->with('success', 'Entries updated successfully');
+        return back()->with('success', 'Chief complaint entry updated successfully');
     }
 
 
@@ -219,11 +222,34 @@ class PatientVisitController extends Controller
             ]
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Physical exam added or updated successfully.',
-            'data' => $patientPhysicalExam
-        ]);
+        return;
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Physical exam added or updated successfully.',
+        //     'data' => $patientPhysicalExam
+        // ]);
+    }
+
+    public function update_patient_physical_exam(Request $request)
+    {
+        $entriesToUpdate = $request->entriesToUpdate ?? [];
+        $entriesToDelete = $request->entriesToDelete ?? [];
+
+        // Delete entries
+        if (!empty($entriesToDelete)) {
+            $idsToDelete = array_column($entriesToDelete, 'id');
+            PatientPhysicalExam::whereIn('id', $idsToDelete)->delete();
+        }
+
+        // Update entries
+        if (!empty($entriesToUpdate)) {
+            foreach ($entriesToUpdate as $entry) {
+                PatientPhysicalExam::where('id', $entry['id'])
+                    ->update(['physical_exam' => $entry['physical_exam']]);
+            }
+        }
+
+        return back()->with('success', 'Physical exam entry updated successfully');
     }
 
 
@@ -307,14 +333,36 @@ class PatientVisitController extends Controller
             ]
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Patient plan added or updated successfully.',
-            'data' => $patientPlan,
-        ]);
+        return;
+
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Patient plan added or updated successfully.',
+        //     'data' => $patientPlan,
+        // ]);
     }
 
+    public function update_patient_plan(Request $request)
+    {
+        $entriesToUpdate = $request->entriesToUpdate ?? [];
+        $entriesToDelete = $request->entriesToDelete ?? [];
 
+        // Delete entries
+        if (!empty($entriesToDelete)) {
+            $idsToDelete = array_column($entriesToDelete, 'id');
+            PatientPlans::whereIn('id', $idsToDelete)->delete();
+        }
+
+        // Update entries
+        if (!empty($entriesToUpdate)) {
+            foreach ($entriesToUpdate as $entry) {
+                PatientPlans::where('id', $entry['id'])
+                    ->update(['plan' => $entry['plan']]);
+            }
+        }
+
+        return back()->with('success', 'Plan entry updated successfully');
+    }
 
     public function get_patient_diagnosis($id, $app_id)
     {
@@ -347,11 +395,34 @@ class PatientVisitController extends Controller
             $request->all() // You can also specify fields explicitly if needed
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Diagnosis added or updated successfully.',
-            'data' => $patientDiagnosis
-        ]);
+        return;
+        // return response()->json([
+        //     'success' => true,
+        //     'message' => 'Diagnosis added or updated successfully.',
+        //     'data' => $patientDiagnosis
+        // ]);
+    }
+
+    public function update_patient_diagnosis(Request $request)
+    {
+        $entriesToUpdate = $request->entriesToUpdate ?? [];
+        $entriesToDelete = $request->entriesToDelete ?? [];
+
+        // Delete entries
+        if (!empty($entriesToDelete)) {
+            $idsToDelete = array_column($entriesToDelete, 'id');
+            PatientPlans::whereIn('id', $idsToDelete)->delete();
+        }
+
+        // Update entries
+        if (!empty($entriesToUpdate)) {
+            foreach ($entriesToUpdate as $entry) {
+                PatientPlans::where('id', $entry['id'])
+                    ->update(['diagnosis' => $entry['diagnosis']]);
+            }
+        }
+
+        return back()->with('success', 'Dignosis entry updated successfully');
     }
 
     public function patientprescription_add(Request $request)

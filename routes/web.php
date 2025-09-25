@@ -104,19 +104,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/patient/chiefcomplaint/get/{id}/{app_id}', [PatientVisitController::class, 'get_patient_chief_complaint'])->name('patientvisitform.patientchiefcomplaintget');
     Route::delete('/patient/chiefcomplaint/delete', [PatientVisitController::class, 'delete_patient_chief_complaint'])->name('patientvisitform.patientchiefcomplaintdelete');
 
-    Route::post('/patient/physicalexam/add', [PatientVisitController::class, 'add_patient_physical_exam'])->name('patientvisitform.patientphysicalexamadd');
+    Route::post('/patient/physicalexam/add', [PatientVisitController::class, 'add_patient_physical_exam'])->name('patientvisitform.patientEntryAdd.physical_exam');
+    Route::put('/patient/physicalexam/udpate', [PatientVisitController::class, 'update_patient_physical_exam'])->name('patientvisitform.patientEntryUpdate.physical_exam');
     Route::get('/patient/physicalexam/get/{id}/{app_id}', [PatientVisitController::class, 'get_patient_physical_exam'])->name('patientvisitform.patientphysicalexamget');
     Route::delete('/patient/physicalexam/delete', [PatientVisitController::class, 'delete_patient_physical_exam'])->name('patientvisitform.patientphysicalexamdelete');
 
+    Route::post('/patient/plan/add', [PatientVisitController::class, 'add_patient_plans'])->name('patientvisitform.patientEntryAdd.plan');
+    Route::put('/patient/plan/udpate', [PatientVisitController::class, 'update_patient_plan'])->name('patientvisitform.patientEntryUpdate.plan');
+
+    Route::post('/patient/diagnosis/add', [PatientVisitController::class, 'add_patient_diagnosis'])->name('patientvisitform.patientEntryAdd.diagnosis');
+    Route::put('/patient/diagnosis/udpate', [PatientVisitController::class, 'update_patient_diagnosis'])->name('patientvisitform.patientEntryUpdate.diagnosis');
+    Route::get('/patientdiagnosis/{id}/{app_id}', [PatientVisitController::class, 'get_patient_diagnosis'])->name('patientvisitform.patientdiagnosisget');
+    Route::delete('/patientdiagnosis', [PatientVisitController::class, 'delete_patient_diagnosis'])->name('patientvisitform.patientdiagnosisdelete');
 
     Route::post('/patient/notes/add', [PatientVisitController::class, 'add_patient_notes'])->name('patientvisitform.patientnotesadd');
     Route::get('/patient/notes/get/{id}/{app_id}', [PatientVisitController::class, 'get_patient_notes'])->name('patientvisitform.patientnotesget');
     Route::delete('/patient/notes/delete', [PatientVisitController::class, 'delete_patient_notes'])->name('patientvisitform.patientnotesdelete');
 
 
-    Route::post('/patientdiagnosis', [PatientVisitController::class, 'add_patient_diagnosis'])->name('patientvisitform.patientdiagnosisadd');
-    Route::get('/patientdiagnosis/{id}/{app_id}', [PatientVisitController::class, 'get_patient_diagnosis'])->name('patientvisitform.patientdiagnosisget');
-    Route::delete('/patientdiagnosis', [PatientVisitController::class, 'delete_patient_diagnosis'])->name('patientvisitform.patientdiagnosisdelete');
 
     Route::get('/user-accounts', [UserAccountController::class, 'show'])->name('users.index');
     Route::get('/user/create', [UserAccountController::class, 'create'])->name('user.create');
