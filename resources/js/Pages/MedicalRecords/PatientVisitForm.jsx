@@ -1,221 +1,158 @@
 import React, { useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import MedicalHistoryModal from "@/Components/modals/MedicalHistoryModal";
-import VitalsModal from "@/Components/modals/VitalsModal";
+import PatientSummaryPanel from "@/Components/patient-visit-form/PatientSummaryPanel";
+import Input from "@/Components/layout/Input";
+import { PlusIcon } from "lucide-react";
+import PrescriptionSection from "@/Components/patient-visit-form/PrescriptionSection";
+
+const patientEntries = [
+    { id: "chief-complaint", title: "CHIEF COMPLAINT", value: [] },
+    { id: "physical-exam", title: "PHYSICAL EXAM", value: [] },
+    { id: "plan", title: "PLAN", value: [] },
+    { id: "diagnosis", title: "DIAGNOSIS", value: [] },
+    {
+        id: "medical-records",
+        title: "MEDICAL RECORDS",
+        value: [],
+        hideInput: true,
+    },
+];
 
 export default function PatientVisitForm({
     patient: initialPatient,
-    ...props
+    appointmentId,
+    prescriptions,
+    medications,
 }) {
-    const [currentTab, setCurrentTab] = useState("medicalHistory");
     const [patient, setPatient] = useState(initialPatient);
-    const patientFullName = `${patient.first_name} ${patient.middle_initial} ${patient.last_name}`;
-
-    const vitalSigns = [
-        {
-            id: "blood-pressure",
-            label: "Blood Pressure",
-            value:
-                patient.vitals?.blood_systolic_pressure &&
-                patient.vitals?.blood_diastolic_pressure
-                    ? `${patient.vitals.blood_systolic_pressure}/${patient.vitals.blood_diastolic_pressure} mmHg`
-                    : "",
-        },
-        {
-            id: "temperature",
-            label: "Temperature",
-            value: patient.vitals?.temperature
-                ? parseInt(patient.vitals.temperature) + " °C"
-                : "",
-        },
-        {
-            id: "heart-rate",
-            label: "Heart Rate",
-            value: patient.vitals?.heart_rate
-                ? parseInt(patient.vitals.heart_rate) + " bpm"
-                : "",
-        },
-        {
-            id: "height",
-            label: "Height",
-            value:
-                patient.vitals?.height_ft && patient.vitals?.height_in
-                    ? `${patient.vitals.height_ft} ft ${patient.vitals.height_in} in`
-                    : "",
-        },
-        {
-            id: "o2-saturation",
-            label: "O2 Saturation",
-            value: patient.vitals?.o2saturation
-                ? patient.vitals?.o2saturation + " %"
-                : "",
-        },
-        {
-            id: "weight",
-            label: "Weight",
-            value: patient.vitals?.weight ? patient.vitals?.weight + " kg" : "",
-        },
-    ];
 
     return (
         <AuthenticatedLayout pageTitle={"Patient Visit Form"}>
-            <div className="mx-auto mt-6 flex w-[90%] max-w-screen-2xl flex-col gap-6">
-                <div className="flex rounded-lg bg-[#FAFAFA] p-2 shadow">
-                    <div className="flex flex-1 flex-col divide-y-2 divide-accent-200 rounded-lg bg-white shadow-md">
-                        <h2 className="px-4 py-2 text-center text-sm font-bold">
-                            PATIENT PROFILE
+            <div className="mx-auto mt-4 flex w-[90%] max-w-screen-2xl flex-col gap-4">
+                <PatientSummaryPanel
+                    patient={patient}
+                    setPatient={setPatient}
+                />
+                <div className="flex flex-col gap-4 rounded-lg bg-accent-100 py-2 shadow">
+                    <div className="relative flex items-center justify-center">
+                        <h2 className="z-20 rounded-md bg-accent-200 p-2 px-4 text-center">
+                            Patient Visit Form ID No. 1 . July 16, 2025 2:26 PM
+                            . Royce V. Garcia, MD
                         </h2>
-                        <div className="relative flex items-center gap-4 p-4">
-                            <img
-                                src="/images/patient.png"
-                                alt="patient profile picture"
-                                height={80}
-                                width={80}
-                            />
-                            <div className="flex flex-col gap-1">
-                                <h4 className="font-bold">{patientFullName}</h4>
-                                <p className="text-sm">
-                                    {patient.age}, {patient.gender}
-                                </p>
-                            </div>
-                            <div className="absolute left-1/2 top-full flex -translate-x-1/2 -translate-y-1/2 items-center rounded-lg bg-accent-200 p-1.5">
-                                <button
-                                    onClick={() =>
-                                        setCurrentTab("medicalHistory")
-                                    }
-                                    className={`rounded-md px-3 py-1.5 text-xs font-medium duration-100 ${currentTab === "medicalHistory" ? "bg-accent text-white" : ""}`}
-                                >
-                                    MEDICAL
-                                </button>
-                                <button
-                                    onClick={() => setCurrentTab("info")}
-                                    className={`rounded-md px-3 py-1.5 text-xs font-medium duration-100 ${currentTab === "info" ? "bg-accent text-white" : ""}`}
-                                >
-                                    INFO
-                                </button>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-4 p-4">
-                            <div className="rounded-full bg-accent-200 p-4">
-                                <img
-                                    src="/assets/icons/medical-history-icon.svg"
-                                    alt="medical history icon"
-                                    height={24}
-                                    width={24}
-                                />
-                            </div>
-                            <div className="text-sm">
-                                <div className="flex items-center gap-2">
-                                    <h3 className="font-bold">
-                                        Medical History
-                                    </h3>
-                                    <MedicalHistoryButton
-                                        patientId={patient.patient_id}
-                                        setPatient={setPatient}
-                                        medicalHistory={
-                                            patient.medicalHistory || []
-                                        }
-                                    />
-                                </div>
-                                <p>
-                                    {patient.medicalHistory?.length > 0
-                                        ? patient.medicalHistory.join(", ")
-                                        : "No Medical History"}
-                                </p>
-                            </div>
-                        </div>
+                        <div className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 bg-accent-200"></div>
                     </div>
-                    <div className="flex flex-col divide-y-2 divide-accent-200 rounded-lg bg-white text-sm shadow-md">
-                        <h2 className="flex items-center gap-2 px-4 py-2 text-center text-sm font-bold">
-                            VS & MEASUREMENTS
-                            <VitalSignsButton
-                                patient={patient}
-                                setPatient={setPatient}
-                            />
-                        </h2>
-                        <div className="grid grid-cols-2 gap-4 gap-x-8 p-4">
-                            {vitalSigns.map((info) => (
-                                <div key={info.id} className="flex gap-3">
-                                    <div
-                                        className={`border-r-4 ${info.value ? "border-accent" : "border-accent-200"}`}
-                                    />
-                                    <div className="">
-                                        <h4 className="font-semibold">
-                                            {info.label}
-                                        </h4>
-                                        <p className="text-[#666666]">
-                                            {info.value || "-"}
-                                        </p>
+                    <div className="grid gap-2 px-2 sm:grid-cols-6 xl:grid-cols-9">
+                        {patientEntries.slice(0, 2).map((entry) => (
+                            <div
+                                key={entry.id}
+                                className="flex flex-col divide-y-2 divide-accent-200 rounded-md bg-white text-sm shadow-md sm:col-span-3"
+                            >
+                                <div className="relative p-4">
+                                    <h3 className="text-center font-semibold">
+                                        {entry.title}
+                                    </h3>
+                                    <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2">
+                                        <img
+                                            src="/assets/icons/edit-icon-2.svg"
+                                            alt="edit icon"
+                                            width={18}
+                                            height={18}
+                                        />
+                                    </button>
+                                </div>
+                                <div className="h-60 overflow-y-auto"></div>
+                                <div className="p-4">
+                                    <div className="relative">
+                                        <Input className="w-full rounded-xl p-3 pr-16" />
+                                        <button className="absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center justify-center rounded-xl rounded-bl-none bg-accent px-4">
+                                            <PlusIcon
+                                                size={20}
+                                                strokeWidth={5}
+                                                color="#fff"
+                                            />
+                                        </button>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
+
+                        <PrescriptionSection
+                            patient={patient}
+                            appointmentId={appointmentId}
+                            prescriptions={prescriptions}
+                            medications={medications}
+                        />
+
+                        {patientEntries.slice(2).map((entry) => (
+                            <div
+                                key={entry.id}
+                                className={`flex flex-col divide-y-2 divide-accent-200 rounded-md bg-white text-sm shadow-md lg:col-span-2 ${
+                                    entry.id === "medical-records"
+                                        ? "sm:col-span-6"
+                                        : "sm:col-span-3"
+                                }`}
+                            >
+                                <div className="relative p-4">
+                                    <h3 className="text-center font-semibold">
+                                        {entry.title}
+                                    </h3>
+                                    <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2">
+                                        <img
+                                            src={
+                                                entry.id === "medical-records"
+                                                    ? "/assets/icons/profile-card-icon.svg"
+                                                    : "/assets/icons/edit-icon-2.svg"
+                                            }
+                                            alt="edit icon"
+                                            width={18}
+                                            height={18}
+                                        />
+                                    </button>
+
+                                    {entry.id === "plan" && (
+                                        <div className="absolute left-1/2 top-full flex min-w-max -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-md bg-accent-200 p-1">
+                                            <button className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1 text-xs font-medium duration-200 hover:bg-accent-100">
+                                                <img
+                                                    src="/assets/icons/laboratory-icon.svg"
+                                                    alt="pills icon"
+                                                />
+                                                LAB REQUEST
+                                            </button>
+                                            <button className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1 text-xs font-medium duration-200 hover:bg-accent-100">
+                                                <img
+                                                    src="/assets/icons/med-certification-icon.svg"
+                                                    alt="pills icon"
+                                                />
+                                                MED CERTIFICATE
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="h-60 overflow-y-auto"></div>
+                                {!entry.hideInput && (
+                                    <div className="p-4">
+                                        <div className="relative">
+                                            <Input className="w-full rounded-xl p-3 pr-16" />
+                                            <button className="absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center justify-center rounded-xl rounded-bl-none bg-accent px-4">
+                                                <PlusIcon
+                                                    size={20}
+                                                    strokeWidth={5}
+                                                    color="#fff"
+                                                />
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+
+                        {/* <div className="flex flex-[2] flex-col gap-2">
+                            <div className="grid grid-cols-2 gap-2">
+                            </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
         </AuthenticatedLayout>
-    );
-}
-
-function VitalSignsButton({ patient, setPatient }) {
-    const [modalOpen, setModalOpen] = useState(false);
-
-    function updateVitals(newVitals) {
-        setPatient((prev) => ({ ...prev, vitals: newVitals }));
-    }
-
-    return (
-        <>
-            <button
-                onClick={() => setModalOpen(true)}
-                className="p-1 duration-100 active:scale-90"
-            >
-                <img
-                    src="/assets/icons/add-one-icon.svg"
-                    alt="add one icon "
-                    width={18}
-                    height={18}
-                />
-            </button>
-
-            <VitalsModal
-                open={modalOpen}
-                closeModal={() => setModalOpen(false)}
-                patient={patient}
-                updateVitals={updateVitals}
-            />
-        </>
-    );
-}
-
-function MedicalHistoryButton({ patientId, setPatient, medicalHistory }) {
-    const [modalOpen, setModalOpen] = useState(false);
-
-    function updateMedicalHistory(newMedicalHistory) {
-        setPatient((prev) => ({ ...prev, medicalHistory: newMedicalHistory }));
-    }
-
-    return (
-        <>
-            <button
-                onClick={() => setModalOpen(true)}
-                className="p-1 duration-100 active:scale-90"
-            >
-                <img
-                    src="/assets/icons/add-one-icon.svg"
-                    alt="add one icon "
-                    width={18}
-                    height={18}
-                />
-            </button>
-
-            <MedicalHistoryModal
-                open={modalOpen}
-                closeModal={() => setModalOpen(false)}
-                patientId={patientId}
-                updateMedicalHistory={updateMedicalHistory}
-                medicalHistory={medicalHistory}
-            />
-        </>
     );
 }

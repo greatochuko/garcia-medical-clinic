@@ -79,8 +79,6 @@ export default function VitalsModal({
         weight: patient.vitals?.weight || "",
     });
 
-    console.log(patient);
-
     function handleSaveVitalSigns(e) {
         e.preventDefault();
         if (patient.vitals) {
@@ -95,7 +93,6 @@ export default function VitalsModal({
                 },
             });
         } else {
-            console.log("Post");
             post(route("vitalsignsmodal.add"), {
                 onSuccess: () => {
                     updateVitals?.(data);

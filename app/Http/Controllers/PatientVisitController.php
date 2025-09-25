@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FrequencyList;
+use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PatientPrescription;
@@ -10,6 +12,7 @@ use App\Models\PatientPhysicalExam;
 use App\Models\MedicalHistory;
 use App\Models\UnfinishedDoc;
 use App\Models\MedicalRecord;
+use App\Models\MedicationList;
 use App\Models\VitalSignsModal;
 use App\Models\PatientNotes;
 use App\Models\PatientPlans;
@@ -24,9 +27,17 @@ class PatientVisitController extends Controller
     {
         $patient = Patient::with(["vitals"])->where('patient_id', $id)->first();
         $patient['medicalHistory'] = $this->get_medical_history($id);
+        $prescriptions = PatientPrescription::where('patient_id', $patient->patient_id)
+            ->where('appointment_id', $appointment_id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $medications = MedicationList::all();
+
         return Inertia::render('MedicalRecords/PatientVisitForm', [
             'patient' => $patient,
-            'appointmentId' => $appointment_id
+            'appointmentId' => $appointment_id,
+            "prescriptions" => $prescriptions,
+            "medications" => $medications
         ]);
     }
 
@@ -324,57 +335,50 @@ class PatientVisitController extends Controller
             'frequency'  => 'nullable|string|max:255',
             'amount'     => 'nullable|string|max:255',
             'duration'   => 'nullable|string|max:255',
-            'appointment_id'   => 'required',
+            'appointment_id'  => 'required',
         ]);
 
         try {
             // Step 2: Check medication existence
-            if (!empty($validated['medication'])) {
-                $medExists = \DB::table('medication_lists')
-                    ->where('name', $validated['medication'])
-                    ->exists();
 
-                if (!$medExists) {
-                    \DB::table('medication_lists')->insert([
-                        'name' => $validated['medication'],
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-                }
+            if (!empty($validated['medication'])) {
+                MedicationList::firstOrCreate(
+                    ['name' => $validated['medication']],
+                    ['created_at' => now(), 'updated_at' => now()]
+                );
             }
+
 
             // Step 3: Check frequency existence
-            if (!empty($validated['frequency'])) {
-                $freqExists = \DB::table('frequency_lists')
-                    ->where('name', $validated['frequency'])
-                    ->exists();
 
-                if (!$freqExists) {
-                    \DB::table('frequency_lists')->insert([
-                        'name' => $validated['frequency'],
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-                }
+            if (!empty($validated['frequency'])) {
+                FrequencyList::firstOrCreate(
+                    ['name' => $validated['frequency']],
+                    ['created_at' => now(), 'updated_at' => now()]
+                );
             }
+
 
             // Step 4: Save the prescription
             $validated['doctor_id'] = Auth::id();
             $prescription = PatientPrescription::create($validated);
 
             // Step 5: Return success response
-            return response()->json([
-                'success' => true,
-                'message' => 'Prescription added successfully.',
-                'data' => $prescription
-            ]);
+            // return response()->json([
+            //     'success' => true,
+            //     'message' => 'Prescription added successfully.',
+            //     'data' => $prescription
+            // ]);
+
+            return redirect()->back()->with('success', 'Prescription added successfully.');
         } catch (\Exception $e) {
             // Step 6: Return error response
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while saving the prescription.',
-                'error' => $e->getMessage()
-            ], 500);
+            // return response()->json([
+            //     'success' => false,
+            //     'message' => 'An error occurred while saving the prescription.',
+            //     'error' => $e->getMessage()
+            // ], 500);
+            return back()->withErrors(['error' => 'An error occurred while saving the prescription.']);
         }
     }
 
@@ -427,6 +431,6 @@ class PatientVisitController extends Controller
     public function patientprescription_remove($id)
     {
         $prescription_delete = PatientPrescription::destroy($id);
-        return;
+        return redirect()->back()->with('success', 'Prescription removed successfully.');
     }
 }
