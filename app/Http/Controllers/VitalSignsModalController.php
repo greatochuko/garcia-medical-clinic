@@ -31,7 +31,7 @@ class VitalSignsModalController extends Controller
         ]);
 
         $vitals = VitalSignsModal::create($validated);
-        return;
+        return redirect()->back()->with('success', 'Vitals updated successfully.');
     }
 
 
@@ -52,15 +52,15 @@ class VitalSignsModalController extends Controller
         $vitals = VitalSignsModal::find($id);
 
         if (!$vitals) {
-            return response()->json(['message' => 'Vitals not found for this patient.'], 404);
+            return back()->withErrors([
+                'vitals' => 'Vitals not found for this patient.',
+            ]);
         }
 
 
         // Update the vitals
         $vitals->update($validated);
 
-        return;
-
-        // return response()->json(['message' => 'Vitals updated successfully.', 'data' => $vitals], 200);
+        return redirect()->back()->with('success', 'Vitals updated successfully.');
     }
 }
