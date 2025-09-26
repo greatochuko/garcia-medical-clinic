@@ -5,7 +5,7 @@ export default function PrescriptionSection({
     patient,
     appointmentId,
     prescriptions,
-    medications,
+    inputOptions,
 }) {
     const [medicationModalOpen, setMedicationModalOpen] = useState(false);
 
@@ -62,7 +62,7 @@ export default function PrescriptionSection({
                 patient={patient}
                 appointmentId={appointmentId}
                 prescriptions={prescriptions}
-                medications={medications}
+                inputOptions={inputOptions}
             />
         </>
     );

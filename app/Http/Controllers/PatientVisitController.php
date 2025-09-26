@@ -30,17 +30,19 @@ class PatientVisitController extends Controller
         $prescriptions = PatientPrescription::where('patient_id', $patient->patient_id)
             ->where('appointment_id', $appointment_id)
             ->get();
-        $medications = MedicationList::all();
         $patient['chief_complaint'] = $this->get_patient_chief_complaint($id, $appointment_id);
         $patient['physical_exam'] = $this->get_patient_physical_exam($id, $appointment_id);
         $patient['plan'] = $this->get_patient_plans($id, $appointment_id);
         $patient['diagnosis'] = $this->get_patient_diagnosis($id, $appointment_id);
+        $inputOptions["plan"] = Plan::all();
+        $inputOptions["medications"] = MedicationList::all();
+        $inputOptions["frequencies"] = FrequencyList::all();
 
         return Inertia::render('MedicalRecords/PatientVisitForm', [
             'patient' => $patient,
             'appointmentId' => $appointment_id,
             "prescriptions" => $prescriptions,
-            "medications" => $medications,
+            "inputOptions" => $inputOptions,
         ]);
     }
 

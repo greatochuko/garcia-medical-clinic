@@ -24,7 +24,7 @@ export default function PatientVisitForm({
     patient: initialPatient,
     appointmentId,
     prescriptions,
-    medications,
+    inputOptions,
 }) {
     const [patient, setPatient] = useState(initialPatient);
     const [patientEntryData, setPatientEntryData] = useState({
@@ -84,7 +84,7 @@ export default function PatientVisitForm({
                             patient={patient}
                             appointmentId={appointmentId}
                             prescriptions={prescriptions}
-                            medications={medications}
+                            inputOptions={inputOptions}
                         />
 
                         {patientEntries.slice(2).map((entry, index) => (
@@ -97,6 +97,9 @@ export default function PatientVisitForm({
                                 patientId={patient.patient_id}
                                 patientEntryData={patientEntryData}
                                 setPatientEntryData={setPatientEntryData}
+                                inputOptions={inputOptions[entry.id]?.map(
+                                    (pl) => pl.name,
+                                )}
                             />
                         ))}
                     </div>

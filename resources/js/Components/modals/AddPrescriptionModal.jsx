@@ -11,7 +11,7 @@ export default function AddPrescriptionModal({
     patient,
     appointmentId,
     prescriptions: initialPrescriptions,
-    medications,
+    inputOptions,
 }) {
     const initialData = {
         medication: "",
@@ -83,7 +83,7 @@ export default function AddPrescriptionModal({
                         <PrescriptionTable
                             data={data}
                             prescriptions={prescriptions}
-                            medications={medications}
+                            inputOptions={inputOptions}
                             processing={processing}
                             setData={setData}
                             setPrescriptions={setPrescriptions}

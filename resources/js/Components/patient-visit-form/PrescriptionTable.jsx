@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 import Input from "../layout/Input";
-import MedicationDropdown from "./MedicationDropdown";
 import { Loader2Icon } from "lucide-react";
 import { PlusIcon } from "lucide-react";
 import { router } from "@inertiajs/react";
 import { route } from "ziggy-js";
+import SearchInput from "../ui/SearchInput";
 
 export default function PrescriptionTable({
     prescriptions,
     data,
-    medications,
+    inputOptions,
     processing,
     setData,
     setPrescriptions,
 }) {
-    const [dropdownOpen, setDropdownOpen] = useState(false);
     const [prescriptionLoading, setPrescriptionLoading] = useState("");
+    const { medications, frequencies } = inputOptions;
 
     const fieldVacant = Object.values(data).some((val) => !val?.trim());
 
@@ -135,33 +135,25 @@ export default function PrescriptionTable({
             <div className="sticky bottom-0 z-10 mt-auto flex min-w-min bg-white">
                 <div className="w-3/10 min-w-48 px-2 py-4 pl-4">
                     <div className="group relative">
-                        <Input
-                            disabled={processing}
-                            placeholder="Medication name"
-                            className="w-full px-2"
-                            value={data.medication}
-                            onChange={(e) => {
-                                setDropdownOpen(true);
+                        <SearchInput
+                            onChange={(value) =>
                                 setData((prev) => ({
                                     ...prev,
-                                    medication: e.target.value,
-                                }));
-                            }}
+                                    medication: value,
+                                }))
+                            }
+                            onSelect={(value) =>
+                                setData((prev) => ({
+                                    ...prev,
+                                    medication: value,
+                                }))
+                            }
+                            options={medications.map((med) => med.name)}
+                            value={data.medication}
+                            disabled={processing}
+                            placeholder="Medication name"
+                            className="p-2"
                         />
-                        {dropdownOpen && (
-                            <MedicationDropdown
-                                medications={medications}
-                                medicationInput={data.medication}
-                                setMedicationInput={(value) => {
-                                    setDropdownOpen(false);
-
-                                    setData((prev) => ({
-                                        ...prev,
-                                        medication: value,
-                                    }));
-                                }}
-                            />
-                        )}
                     </div>
                 </div>
                 <div className="w-1/10 min-w-20 px-2 py-4">
@@ -179,17 +171,24 @@ export default function PrescriptionTable({
                     />
                 </div>
                 <div className="w-3/10 min-w-[177.5px] px-2 py-4">
-                    <Input
+                    <SearchInput
+                        value={data.frequency}
+                        onChange={(value) =>
+                            setData((prev) => ({
+                                ...prev,
+                                frequency: value,
+                            }))
+                        }
+                        onSelect={(value) =>
+                            setData((prev) => ({
+                                ...prev,
+                                frequency: value,
+                            }))
+                        }
+                        options={frequencies.map((med) => med.name)}
                         disabled={processing}
                         placeholder="Frequency"
                         className="w-full px-2"
-                        value={data.frequency}
-                        onChange={(e) =>
-                            setData((prev) => ({
-                                ...prev,
-                                frequency: e.target.value,
-                            }))
-                        }
                     />
                 </div>
                 <div className="w-1/10 min-w-[127px] px-2 py-4">

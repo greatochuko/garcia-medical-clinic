@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { router } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import PatientEntryModal from "@/Components/modals/PatientEntryModal";
-import Input from "@/Components/layout/Input";
 import { PlusIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { Loader2Icon } from "lucide-react";
+import SearchInput from "../ui/SearchInput";
 
 export default function PatientEntryCard({
     entry,
@@ -15,6 +15,7 @@ export default function PatientEntryCard({
     patientId,
     appointmentId,
     patientEntryData,
+    inputOptions = [],
 }) {
     const [loading, setLoading] = useState(false);
     const [updating, setUpdating] = useState(false);
@@ -174,19 +175,28 @@ export default function PatientEntryCard({
                 {!entry.hideInput && (
                     <div className="p-4">
                         <form onSubmit={handleAddEntry} className="relative">
-                            <Input
-                                // disabled={loading}
-                                value={entryData.input}
-                                onChange={(e) =>
+                            <SearchInput
+                                onChange={(value) =>
                                     setPatientEntryData((prev) => ({
                                         ...prev,
                                         [entry.id]: {
                                             ...prev[entry.id],
-                                            input: e.target.value,
+                                            input: value,
+                                        },
+                                    }))
+                                }
+                                onSelect={(value) =>
+                                    setPatientEntryData((prev) => ({
+                                        ...prev,
+                                        [entry.id]: {
+                                            ...prev[entry.id],
+                                            input: value,
                                         },
                                     }))
                                 }
                                 className="w-full rounded-xl p-3 pr-16"
+                                options={inputOptions}
+                                value={entryData.input}
                             />
                             <button
                                 type="submit"
