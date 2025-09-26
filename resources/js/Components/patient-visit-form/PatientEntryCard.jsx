@@ -130,7 +130,7 @@ export default function PatientEntryCard({
                     <h3 className="text-center font-semibold">{entry.title}</h3>
                     <button
                         onClick={openPatientEntryModal}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md border border-transparent p-1.5 duration-200 hover:border-accent-400 hover:bg-accent-200"
                     >
                         <img
                             src={
@@ -139,8 +139,8 @@ export default function PatientEntryCard({
                                     : "/assets/icons/edit-icon-2.svg"
                             }
                             alt="edit icon"
-                            width={18}
-                            height={18}
+                            width={16}
+                            height={16}
                         />
                     </button>
 

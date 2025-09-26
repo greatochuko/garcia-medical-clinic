@@ -5,6 +5,7 @@ import PatientSummaryPanel from "@/Components/patient-visit-form/PatientSummaryP
 import PrescriptionSection from "@/Components/patient-visit-form/PrescriptionSection";
 
 import PatientEntryCard from "@/Components/patient-visit-form/PatientEntryCard";
+import DiagnosticResultsCard from "@/Components/patient-visit-form/DiagnosticResultsCard";
 
 const patientEntries = [
     { id: "chief_complaint", title: "CHIEF COMPLAINT", value: [] },
@@ -78,77 +79,6 @@ export default function PatientVisitForm({
                                 setPatientEntryData={setPatientEntryData}
                             />
                         ))}
-                        {/* {patientEntries.slice(0, 2).map((entry) => (
-                            <div
-                                key={entry.id}
-                                className="flex flex-col divide-y-2 divide-accent-200 rounded-md bg-white text-sm shadow-md sm:col-span-3"
-                            >
-                                <div className="relative p-4">
-                                    <h3 className="text-center font-semibold">
-                                        {entry.title}
-                                    </h3>
-                                    <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2">
-                                        <img
-                                            src="/assets/icons/edit-icon-2.svg"
-                                            alt="edit icon"
-                                            width={18}
-                                            height={18}
-                                        />
-                                    </button>
-                                </div>
-                                <ul className="flex h-60 flex-col gap-2 overflow-y-auto break-words p-4">
-                                    {patientEntryData[entry.id].data.map(
-                                        (datum) => (
-                                            <li key={datum.id}>
-                                                <span className="mr-2 font-bold">
-                                                    &gt;
-                                                </span>
-                                                {datum["chief_complaint"]}{" "}
-                                                {entry.id}
-                                            </li>
-                                        ),
-                                    )}
-                                </ul>
-                                <div className="p-4">
-                                    <form
-                                        onSubmit={(e) =>
-                                            handleAddEntry(e, entry.id)
-                                        }
-                                        className="relative"
-                                    >
-                                        <Input
-                                            value={
-                                                patientEntryData[entry.id].input
-                                            }
-                                            onChange={(e) =>
-                                                setPatientEntryData((prev) => ({
-                                                    ...prev,
-                                                    [entry.id]: {
-                                                        ...prev[entry.id],
-                                                        input: e.target.value,
-                                                    },
-                                                }))
-                                            }
-                                            className="w-full rounded-xl p-3 pr-16"
-                                        />
-                                        <button
-                                            type="submit"
-                                            disabled={
-                                                !patientEntryData[entry.id]
-                                                    .input
-                                            }
-                                            className="focus-visible::ring-2 absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center justify-center rounded-xl rounded-bl-none border-2 border-accent bg-accent px-4 focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50 focus-visible:border-white focus-visible:outline-none"
-                                        >
-                                            <PlusIcon
-                                                size={20}
-                                                strokeWidth={5}
-                                                color="#fff"
-                                            />
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        ))} */}
 
                         <PrescriptionSection
                             patient={patient}
@@ -169,11 +99,9 @@ export default function PatientVisitForm({
                                 setPatientEntryData={setPatientEntryData}
                             />
                         ))}
-
-                        {/* <div className="flex flex-[2] flex-col gap-2">
-                            <div className="grid grid-cols-2 gap-2">
-                            </div>
-                        </div> */}
+                    </div>
+                    <div className="px-2">
+                        <DiagnosticResultsCard />
                     </div>
                 </div>
             </div>

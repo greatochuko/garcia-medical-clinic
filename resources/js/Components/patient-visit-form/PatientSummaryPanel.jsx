@@ -152,7 +152,7 @@ export default function PatientSummaryPanel({ patient, setPatient }) {
                     </button>
                 </div>
                 <div className="flex items-center gap-2 p-4">
-                    <button className="flex flex-1 flex-col items-center gap-1.5 rounded-md bg-accent p-2 duration-200 hover:bg-accent/90">
+                    <button className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90">
                         <img
                             src="/assets/icons/prescription-icon.svg"
                             alt="prescription icon"
@@ -164,7 +164,7 @@ export default function PatientSummaryPanel({ patient, setPatient }) {
                             PRESCR.
                         </p>
                     </button>
-                    <button className="flex flex-1 flex-col items-center gap-1.5 rounded-md bg-accent p-2 duration-200 hover:bg-accent/90">
+                    <button className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90">
                         <img
                             src="/assets/icons/lab-icon.svg"
                             alt="lab icon"
@@ -176,7 +176,7 @@ export default function PatientSummaryPanel({ patient, setPatient }) {
                             LAB REQ
                         </p>
                     </button>
-                    <button className="flex flex-1 flex-col items-center gap-1.5 rounded-md bg-accent p-2 duration-200 hover:bg-accent/90">
+                    <button className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90">
                         <img
                             src="/assets/icons/certificate-icon.svg"
                             alt="certificate icon"
