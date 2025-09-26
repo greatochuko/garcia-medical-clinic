@@ -76,7 +76,7 @@ export default function VitalsModal({
         temperature: parseInt(patient.vitals?.temperature) || "",
         height_ft: patient.vitals?.height_ft || "",
         height_in: patient.vitals?.height_in || "",
-        weight: patient.vitals?.weight || "",
+        weight: parseInt(patient.vitals?.weight) || "",
     });
 
     function handleSaveVitalSigns(e) {

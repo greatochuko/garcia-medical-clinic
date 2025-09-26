@@ -29,7 +29,6 @@ class PatientVisitController extends Controller
         $patient['medicalHistory'] = $this->get_medical_history($id);
         $prescriptions = PatientPrescription::where('patient_id', $patient->patient_id)
             ->where('appointment_id', $appointment_id)
-            ->orderBy('created_at', 'desc')
             ->get();
         $medications = MedicationList::all();
         $patient['chief_complaint'] = $this->get_patient_chief_complaint($id, $appointment_id);
@@ -75,7 +74,6 @@ class PatientVisitController extends Controller
     {
         $patient_chief_complaint = PatientChiefComplaint::where('patient_id', $id)
             ->where('appointment_id', $app_id)
-            ->orderBy('created_at', 'desc')
             ->get();;
         return $patient_chief_complaint;
     }

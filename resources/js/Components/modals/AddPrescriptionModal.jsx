@@ -32,11 +32,11 @@ export default function AddPrescriptionModal({
         closeModal();
     }
 
-    function handleAddMedication(e) {
+    function handleAddPrescription(e) {
         e.preventDefault();
         post(route("patientvisitform.patientprescriptionadd"), {
             onSuccess: () => {
-                setPrescriptions([data, ...prescriptions]);
+                setPrescriptions([...prescriptions, data]);
                 setData(initialData);
             },
             onError: (errors) => {
@@ -52,7 +52,7 @@ export default function AddPrescriptionModal({
         <ModalContainer closeModal={closeVitalsModal} open={open}>
             <form
                 onClick={(e) => e.stopPropagation()}
-                onSubmit={handleAddMedication}
+                onSubmit={handleAddPrescription}
                 className={`flex h-[80%] max-h-[80%] w-[90%] max-w-6xl flex-col divide-y-2 divide-accent-200 overflow-y-auto rounded-lg bg-white text-sm duration-200 ${open ? "" : "translate-y-2"}`}
             >
                 <div className="flex items-center justify-between px-4 py-2 pr-3">
