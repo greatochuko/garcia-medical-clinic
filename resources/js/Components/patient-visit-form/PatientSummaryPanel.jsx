@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import MedicalHistoryButton from "./MedicalHistoryButton";
 import VitalSignsButton from "./VitalSignsButton";
 import SignPatientVisitFormModal from "../modals/SignPatientVisitFormModal";
-import { Link } from "@inertiajs/react";
 import { route } from "ziggy-js";
+import { router } from "@inertiajs/react";
 
 export default function PatientSummaryPanel({
     appointmentId,
@@ -13,6 +13,7 @@ export default function PatientSummaryPanel({
     labRequest,
     prescriptions,
 }) {
+    console.log({ prescriptions, labRequest, medicalCertificate });
     const [currentTab, setCurrentTab] = useState("medicalHistory");
     const [signFormModalOpen, setSignFormModalOpen] = useState(false);
 
@@ -171,12 +172,16 @@ export default function PatientSummaryPanel({
                         </button>
                     </div>
                     <div className="flex items-center gap-2 p-4">
-                        <Link
-                            href={route("prescriptions.print", {
-                                id: patient.patient_id,
-                                app_id: appointmentId,
-                            })}
-                            disabled={!prescriptions}
+                        <button
+                            onClick={() =>
+                                router.visit(
+                                    route("prescriptions.print", {
+                                        id: patient.patient_id,
+                                        app_id: appointmentId,
+                                    }),
+                                )
+                            }
+                            disabled={!prescriptions.length}
                             className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
                         >
                             <img
@@ -189,13 +194,17 @@ export default function PatientSummaryPanel({
                             <p className="rounded-sm bg-white px-1.5 text-center text-[10px]">
                                 PRESCR.
                             </p>
-                        </Link>
-                        <Link
-                            href={route("laboratory.print", {
-                                id: patient.patient_id,
-                                app_id: appointmentId,
-                            })}
-                            disabled={!labRequest}
+                        </button>
+                        <button
+                            onClick={() =>
+                                router.visit(
+                                    route("laboratory.print", {
+                                        id: patient.patient_id,
+                                        app_id: appointmentId,
+                                    }),
+                                )
+                            }
+                            disabled={!labRequest.length}
                             className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
                         >
                             <img
@@ -208,12 +217,16 @@ export default function PatientSummaryPanel({
                             <p className="rounded-sm bg-white px-1.5 text-center text-[10px]">
                                 LAB REQ
                             </p>
-                        </Link>
-                        <Link
-                            href={route("medical-certificate.show", {
-                                id: patient.patient_id,
-                                app_id: appointmentId,
-                            })}
+                        </button>
+                        <button
+                            onClick={() =>
+                                router.visit(
+                                    route("medical-certificate.show", {
+                                        id: patient.patient_id,
+                                        app_id: appointmentId,
+                                    }),
+                                )
+                            }
                             disabled={!medicalCertificate}
                             className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
                         >
@@ -227,7 +240,7 @@ export default function PatientSummaryPanel({
                             <p className="rounded-sm bg-white px-1.5 text-center text-[10px]">
                                 MED CERT
                             </p>
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </div>
