@@ -7,6 +7,9 @@ export default function PatientSummaryPanel({
     appointmentId,
     patient,
     setPatient,
+    medicalCertificate,
+    labRequest,
+    prescription,
 }) {
     const [currentTab, setCurrentTab] = useState("medicalHistory");
     const [signFormModalOpen, setSignFormModalOpen] = useState(false);
@@ -166,7 +169,10 @@ export default function PatientSummaryPanel({
                         </button>
                     </div>
                     <div className="flex items-center gap-2 p-4">
-                        <button className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90">
+                        <button
+                            disabled={!prescription}
+                            className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
+                        >
                             <img
                                 src="/assets/icons/prescription-icon.svg"
                                 alt="prescription icon"
@@ -178,7 +184,10 @@ export default function PatientSummaryPanel({
                                 PRESCR.
                             </p>
                         </button>
-                        <button className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90">
+                        <button
+                            disabled={!labRequest}
+                            className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
+                        >
                             <img
                                 src="/assets/icons/lab-icon.svg"
                                 alt="lab icon"
@@ -190,7 +199,10 @@ export default function PatientSummaryPanel({
                                 LAB REQ
                             </p>
                         </button>
-                        <button className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90">
+                        <button
+                            disabled={!medicalCertificate}
+                            className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
+                        >
                             <img
                                 src="/assets/icons/certificate-icon.svg"
                                 alt="certificate icon"

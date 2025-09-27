@@ -6,6 +6,7 @@ import { PlusIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 import { Loader2Icon } from "lucide-react";
 import SearchInput from "../ui/SearchInput";
+import CreateMedicalCertificateModal from "../modals/CreateMedicalCertificateModal";
 
 export default function PatientEntryCard({
     entry,
@@ -16,8 +17,11 @@ export default function PatientEntryCard({
     appointmentId,
     patientEntryData,
     inputOptions = [],
+    medicalCertificate,
 }) {
     const [loading, setLoading] = useState(false);
+    const [medicalCertificateModalOpen, setMedicalCertificateModalOpen] =
+        useState(false);
     const [updating, setUpdating] = useState(false);
     const [modifyEntryModalOpen, setModifyEntryModalOpen] = useState(false);
     const [entryList, setEntryList] = useState(
@@ -154,7 +158,12 @@ export default function PatientEntryCard({
                                 />
                                 LAB REQUEST
                             </button>
-                            <button className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1 text-xs font-medium duration-200 hover:bg-accent-100">
+                            <button
+                                onClick={() =>
+                                    setMedicalCertificateModalOpen(true)
+                                }
+                                className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1 text-xs font-medium duration-200 hover:bg-accent-100"
+                            >
                                 <img
                                     src="/assets/icons/med-certification-icon.svg"
                                     alt="pills icon"
@@ -230,6 +239,16 @@ export default function PatientEntryCard({
                 updating={updating}
                 onSaveEntry={handleUpdateEntry}
             />
+
+            {entry.id === "plan" && (
+                <CreateMedicalCertificateModal
+                    open={medicalCertificateModalOpen}
+                    closeModal={() => setMedicalCertificateModalOpen(false)}
+                    appointment_id={appointmentId}
+                    patient_id={patientId}
+                    medicalCertificate={medicalCertificate}
+                />
+            )}
         </>
     );
 }

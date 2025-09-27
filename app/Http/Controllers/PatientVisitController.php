@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FrequencyList;
+use App\Models\MedicalCertificate;
 use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
 use Illuminate\Support\Facades\Auth;
@@ -37,12 +38,18 @@ class PatientVisitController extends Controller
         $inputOptions["plan"] = Plan::all();
         $inputOptions["medications"] = MedicationList::all();
         $inputOptions["frequencies"] = FrequencyList::all();
+        $medicalCertificate = MedicalCertificate::where('patient_id', $id)
+            ->where('appointment_id', $appointment_id)
+            ->first();
+
+        // dd($medicalCertificate);
 
         return Inertia::render('MedicalRecords/PatientVisitForm', [
             'patient' => $patient,
             'appointmentId' => $appointment_id,
             "prescriptions" => $prescriptions,
             "inputOptions" => $inputOptions,
+            "medicalCertificate" => $medicalCertificate,
         ]);
     }
 

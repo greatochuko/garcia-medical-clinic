@@ -214,7 +214,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/medical-certificate/patient/info/{id}/{app_id}', [MedicalCertificateController::class, 'getinfo'])
         ->name('medical-certificate.getinfo');
 
-    Route::post('/medical-certificate', [MedicalCertificateController::class, 'store'])->name('medical-certificate.store');
+    Route::post('/medical-certificate', [MedicalCertificateController::class, 'store_medical_certificate'])->name('medical-certificate.store');
 
     Route::post('/appointment-manager/reorder', [AppointmentManagerController::class, 'reorder'])->name('appointments.reorder');
     Route::get('/appointments/poll', [AppointmentManagerController::class, 'poll'])->name('appointments.poll');
