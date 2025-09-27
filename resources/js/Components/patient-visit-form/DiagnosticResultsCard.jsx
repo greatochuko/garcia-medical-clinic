@@ -169,7 +169,12 @@ const initialDiagnosticResults = [
             },
             {
                 category: "Others",
-                tests: [{ name: "XRAY of hand" }],
+                tests: [
+                    { name: "Test 1" },
+                    { name: "Test 2" },
+                    { name: "Test 3" },
+                    { name: "Test 4" },
+                ],
             },
         ],
     },
@@ -196,7 +201,7 @@ export default function DiagnosticResultsCard() {
     return (
         <>
             <div className="divide-y-2 divide-accent-200 rounded-md bg-white shadow-md">
-                <div className="relative p-2 pb-6 text-center">
+                <div className="relative p-2 pb-20 text-center md:pb-6">
                     <h2 className="text-sm font-bold">DIAGNOSTIC RESULTS</h2>
                     <button className="absolute right-3 top-3 rounded-md border border-transparent p-1 duration-200 hover:border-accent-400 hover:bg-accent-200">
                         <ExpandIcon
@@ -206,28 +211,39 @@ export default function DiagnosticResultsCard() {
                     </button>
                     <button
                         onClick={() => setAddResultsModalOpen(true)}
-                        className="absolute left-4 top-full flex -translate-y-1/2 items-center gap-1 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 text-xs font-medium duration-200 hover:bg-accent-200"
+                        className="absolute left-1/2 top-12 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 text-xs font-medium duration-200 hover:bg-accent-200 md:left-4 md:top-full md:translate-x-0"
                     >
                         <PlusIcon size={12} />
                         ADD RESULTS
                     </button>
-                    <div className="absolute left-1/2 top-full flex -translate-x-1/2 -translate-y-1/2 items-center gap-1 bg-accent-200 p-1">
+                    <div className="absolute left-1/2 top-full grid w-[90%] max-w-72 -translate-x-1/2 -translate-y-1/2 grid-cols-2 items-center gap-1 rounded-md bg-accent-200 p-1 md:flex md:max-w-fit">
                         {diagnosticResults.map((result) => (
                             <button
                                 onClick={() => setCurrentTab(result.id)}
                                 key={result.id}
                                 className={`whitespace-nowrap rounded-md px-2 py-1.5 text-xs font-medium ${currentTab === result.id ? "bg-accent text-white" : ""}`}
                             >
-                                {result.name}
+                                {result.id === "serology_radiology_others" ? (
+                                    <>
+                                        <span className="hidden md:inline">
+                                            {result.name}
+                                        </span>
+                                        <span className="md:hidden">
+                                            Others
+                                        </span>
+                                    </>
+                                ) : (
+                                    result.name
+                                )}
                             </button>
                         ))}
                     </div>
                 </div>
-                <div className="p-8 text-xs">
+                <div className="p-4 pt-12 text-xs md:p-8">
                     <table className="w-full">
                         <thead>
                             <tr className="bg-accent-200">
-                                <th className="min-w-60 p-2 text-left">
+                                <th className="min-w-52 p-2 text-left">
                                     TEST NAME
                                 </th>
                                 <th className="p-2">TODAY</th>

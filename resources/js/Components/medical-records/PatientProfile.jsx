@@ -10,7 +10,7 @@ export default function PatientProfile({ patient, medicalHistory }) {
             id: "dob",
             label: "Date of Birth",
             icon: "/assets/icons/dob-icon.svg",
-            value: new Date(patient.dob).toLocaleDateString("us-en", {
+            value: new Date(patient.dob).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
                 year: "numeric",
@@ -38,14 +38,51 @@ export default function PatientProfile({ patient, medicalHistory }) {
             id: "height",
             label: "Height",
             icon: "/assets/icons/height-icon.svg",
-            value: patient.vitals?.height || "N/A",
+            value: patient.vitals
+                ? `${patient.vitals.height_ft}' ${patient.vitals.height_in}"`
+                : "N/A",
         },
-
         {
             id: "weight",
             label: "Weight",
             icon: "/assets/icons/weight-icon.svg",
-            value: patient.vitals?.weight || "N/A",
+            value: patient.vitals?.weight
+                ? `${patient.vitals.weight} kg`
+                : "N/A",
+        },
+        {
+            id: "temperature",
+            label: "Temperature",
+            icon: "/assets/icons/temperature-icon.svg",
+            value: patient.vitals?.temperature
+                ? `${patient.vitals.temperature} °C`
+                : "N/A",
+        },
+        {
+            id: "blood-pressure",
+            label: "Blood Pressure",
+            icon: "/assets/icons/blood-pressure-icon.svg",
+            value:
+                patient.vitals?.blood_systolic_pressure &&
+                patient.vitals?.blood_diastolic_pressure
+                    ? `${patient.vitals.blood_systolic_pressure}/${patient.vitals.blood_diastolic_pressure} mmHg`
+                    : "N/A",
+        },
+        {
+            id: "oxygen",
+            label: "Oxygen Saturation",
+            icon: "/assets/icons/oxygen-icon.svg",
+            value: patient.vitals?.o2saturation
+                ? `${patient.vitals.o2saturation}%`
+                : "N/A",
+        },
+        {
+            id: "heart-rate",
+            label: "Heart Rate",
+            icon: "/assets/icons/heart-icon.svg",
+            value: patient.vitals?.heart_rate
+                ? `${patient.vitals.heart_rate} bpm`
+                : "N/A",
         },
         {
             id: "medical-history",

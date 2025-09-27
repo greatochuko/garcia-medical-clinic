@@ -13,13 +13,13 @@ echo "Building React frontend..."
 pnpm build
 
 # Step 1: Zip the folders locally
-echo "Zipping public/ and resources/ into $ZIP_NAME..."
+echo "Zipping code files into into $ZIP_NAME..."
 
 zip -r $ZIP_NAME \
     app \
-    public \
     resources \
     routes/web.php \
+    public \
     package.json \
     pnpm-lock.yaml
 

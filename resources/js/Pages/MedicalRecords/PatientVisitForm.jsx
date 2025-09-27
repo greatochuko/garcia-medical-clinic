@@ -52,9 +52,12 @@ export default function PatientVisitForm({
     });
 
     return (
-        <AuthenticatedLayout pageTitle={"Patient Visit Form"}>
+        <AuthenticatedLayout
+            pageTitle={`${patient.first_name} ${patient.last_name} Patient Visit Form`}
+        >
             <div className="mx-auto mt-4 flex w-[90%] max-w-screen-2xl flex-col gap-4">
                 <PatientSummaryPanel
+                    appointmentId={appointmentId}
                     patient={patient}
                     setPatient={setPatient}
                 />

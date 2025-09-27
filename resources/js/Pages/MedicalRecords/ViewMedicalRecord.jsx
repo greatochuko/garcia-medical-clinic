@@ -13,7 +13,7 @@ export default function ViewMedicalRecord({
 
     return (
         <AuthenticatedLayout
-            pageTitle={"Dashboard"}
+            pageTitle={`${patient.first_name} ${patient.last_name} Medical Records`}
             user={user}
             setUser={setUser}
         >
