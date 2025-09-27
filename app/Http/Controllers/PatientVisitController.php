@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\FrequencyList;
 use App\Models\LaboratoryRequest;
 use App\Models\MedicalCertificate;
@@ -44,12 +45,14 @@ class PatientVisitController extends Controller
             ->first();
         $laboratoryRequest = LaboratoryRequest::where('patient_id', $id)
             ->where('appointment_id', $appointment_id)->get();
+        $appointment = Appointment::where('id', $appointment_id)->first();
+
 
         // dd($medicalCertificate);
 
         return Inertia::render('MedicalRecords/PatientVisitForm', [
             'patient' => $patient,
-            'appointmentId' => $appointment_id,
+            'appointment' => $appointment,
             "prescriptions" => $prescriptions,
             "inputOptions" => $inputOptions,
             "medicalCertificate" => $medicalCertificate,
@@ -153,20 +156,22 @@ class PatientVisitController extends Controller
         $data = $request->all();
         $user = Auth::user();
         if ($user->role !== 'doctor' && $user->role !== 'admin') {
-            return response()->json(['error' => 'Unauthorized. Only doctors can perform this action.'], 403);
+            // return response()->withe
+            return back()->withErrors(['error' => 'Unauthorized. Only doctors can perform this action.']);
         }
         $did = $user->id;
         $record = MedicalRecord::where('patient_id', $id)
             ->where('closed_appointment_id', $app_id)
             ->first();
         if (!$record) {
-            return response()->json(['error' => 'Medical record not found.'], 404);
+            return back()->withErrors(['error' => 'Medical record not found.']);
         }
         $record->status = $data['status'];
         $record->doctor_id = $did;
         $record->save();
 
 
+        return back()->with('success', 'Medical record status updated to modify.');
         return response()->json([
             'message' => 'Medical record status updated to modify.',
             'record' => $record

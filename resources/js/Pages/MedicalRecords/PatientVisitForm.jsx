@@ -22,12 +22,13 @@ const patientEntries = [
 
 export default function PatientVisitForm({
     patient: initialPatient,
-    appointmentId,
     prescriptions,
     inputOptions,
     medicalCertificate,
     laboratoryRequest,
+    appointment,
 }) {
+    const appointmentId = appointment.id;
     const [patient, setPatient] = useState(initialPatient);
     const [patientEntryData, setPatientEntryData] = useState({
         chief_complaint: {
@@ -53,6 +54,8 @@ export default function PatientVisitForm({
         },
     });
 
+    const appointmentIsClosed = appointment.status === "for_billing";
+
     return (
         <AuthenticatedLayout
             pageTitle={`${patient.first_name} ${patient.last_name} Patient Visit Form`}
@@ -65,6 +68,7 @@ export default function PatientVisitForm({
                     medicalCertificate={medicalCertificate}
                     labRequest={laboratoryRequest}
                     prescriptions={prescriptions}
+                    appointmentIsClosed={appointmentIsClosed}
                 />
                 <div className="flex flex-col gap-4 rounded-lg bg-accent-100 py-2 shadow">
                     <div className="relative flex items-center justify-center">
@@ -74,7 +78,9 @@ export default function PatientVisitForm({
                         </h2>
                         <div className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 bg-accent-200"></div>
                     </div>
-                    <div className="grid gap-2 px-2 sm:grid-cols-6 xl:grid-cols-9">
+                    <div
+                        className={`grid gap-2 px-2 sm:grid-cols-6 xl:grid-cols-9 ${appointmentIsClosed ? "grayscale" : ""}`}
+                    >
                         {patientEntries.slice(0, 2).map((entry, index) => (
                             <PatientEntryCard
                                 key={entry.id}
@@ -85,6 +91,7 @@ export default function PatientVisitForm({
                                 patientId={patient.patient_id}
                                 patientEntryData={patientEntryData}
                                 setPatientEntryData={setPatientEntryData}
+                                appointmentIsClosed={appointmentIsClosed}
                             />
                         ))}
 
@@ -93,6 +100,7 @@ export default function PatientVisitForm({
                             appointmentId={appointmentId}
                             prescriptions={prescriptions}
                             inputOptions={inputOptions}
+                            appointmentIsClosed={appointmentIsClosed}
                         />
 
                         {patientEntries.slice(2).map((entry, index) => (
@@ -110,6 +118,7 @@ export default function PatientVisitForm({
                                 )}
                                 medicalCertificate={medicalCertificate}
                                 laboratoryRequest={laboratoryRequest}
+                                appointmentIsClosed={appointmentIsClosed}
                             />
                         ))}
                     </div>

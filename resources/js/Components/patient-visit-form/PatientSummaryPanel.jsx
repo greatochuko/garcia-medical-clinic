@@ -12,8 +12,8 @@ export default function PatientSummaryPanel({
     medicalCertificate,
     labRequest,
     prescriptions,
+    appointmentIsClosed,
 }) {
-    console.log({ prescriptions, labRequest, medicalCertificate });
     const [currentTab, setCurrentTab] = useState("medicalHistory");
     const [signFormModalOpen, setSignFormModalOpen] = useState(false);
 
@@ -161,15 +161,23 @@ export default function PatientSummaryPanel({
                         ACTION BUTTONS
                     </h2>
                     <div className="flex flex-1 flex-col justify-center gap-2 p-4">
-                        <button
-                            onClick={() => setSignFormModalOpen(true)}
-                            className="rounded-md bg-accent px-3 py-2 text-xs font-medium text-white duration-100 hover:bg-accent/90"
-                        >
-                            SIGN AND CLOSE FORM
-                        </button>
-                        <button className="rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90">
-                            SAVE AND FINISH LATER
-                        </button>
+                        {appointmentIsClosed ? (
+                            <button className="rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90 disabled:pointer-events-none disabled:opacity-50">
+                                MODIFY RECORD
+                            </button>
+                        ) : (
+                            <>
+                                <button
+                                    onClick={() => setSignFormModalOpen(true)}
+                                    className="rounded-md bg-accent px-3 py-2 text-xs font-medium text-white duration-100 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
+                                >
+                                    SIGN AND CLOSE FORM
+                                </button>
+                                <button className="rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90 disabled:pointer-events-none disabled:opacity-50">
+                                    SAVE AND FINISH LATER
+                                </button>
+                            </>
+                        )}
                     </div>
                     <div className="flex items-center gap-2 p-4">
                         <button
@@ -249,7 +257,6 @@ export default function PatientSummaryPanel({
                 appointmentId={appointmentId}
                 closeModal={() => setSignFormModalOpen(false)}
                 open={signFormModalOpen}
-                patientId={patient.id}
             />
         </>
     );

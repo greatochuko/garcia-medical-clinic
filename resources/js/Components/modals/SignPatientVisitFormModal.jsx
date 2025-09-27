@@ -1,23 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import ModalContainer from "../layout/ModalContainer";
 import XIcon from "../icons/XIcon";
-import { useForm } from "@inertiajs/react";
 import LoadingIndicator from "../layout/LoadingIndicator";
+import { route } from "ziggy-js";
+import { router } from "@inertiajs/react";
 
 export default function SignPatientVisitFormModal({
     open,
     closeModal: closeSignModal,
     appointmentId,
-    patientId,
 }) {
-    const { processing } = useForm();
+    const [loading, setLoading] = useState();
 
     function handleSignAppointment() {
-        console.log({ appointmentId, patientId });
+        router.put(
+            route("appointments.update-status", { id: appointmentId }),
+            { status: "for_billing" },
+            {
+                preserveScroll: true,
+                // preserveState: true,
+                onStart: () => {
+                    setLoading?.(true);
+                },
+                onSuccess: (data) => {
+                    console.log(data);
+                    closeModal();
+                },
+                onError: (errors) => {
+                    console.log(errors);
+                },
+            },
+        );
     }
 
     function closeModal() {
-        if (processing) return;
+        if (loading) return;
         closeSignModal();
     }
 
@@ -47,17 +64,17 @@ export default function SignPatientVisitFormModal({
                 <div className="flex items-center justify-end gap-4 p-4 text-xs">
                     <button
                         onClick={closeModal}
-                        disabled={processing}
+                        disabled={loading}
                         className="btn rounded-md border border-accent px-4 py-2 duration-200 hover:bg-accent-200"
                     >
                         Cancel
                     </button>
                     <button
-                        disabled={processing}
+                        disabled={loading}
                         onClick={handleSignAppointment}
                         className="btn flex items-center gap-2 rounded-md border border-accent bg-accent px-4 py-2 text-white duration-200 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
                     >
-                        {processing ? (
+                        {loading ? (
                             <>
                                 <LoadingIndicator /> Signing...
                             </>

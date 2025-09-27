@@ -25,7 +25,6 @@ export function AppointmentRow({
 }) {
     const [appointment, setAppointment] = useState(originalAppointment);
     const [checkInLoading, setCheckInLoading] = useState(false);
-    const [checkOutLoading, setCheckOutLoading] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [vitalSignsModalOpen, setVitalSignsModalOpen] = useState(false);
 
@@ -150,27 +149,13 @@ export function AppointmentRow({
                                     )}
                                 </button>
                                 <button
-                                    onClick={() =>
-                                        changeStatus(
-                                            "checked_out",
-                                            setCheckOutLoading,
-                                        )
+                                    onClick={() => {}}
+                                    disabled={
+                                        appointment.status !== "for_billing"
                                     }
-                                    // disabled={
-                                    //     checkOutLoading ||
-                                    //     appointment.status !== "checked_in"
-                                    // }
-                                    disabled
-                                    className={`flex items-center gap-1.5 rounded-md border border-dashed border-[#8D2310] bg-white px-2 py-1.5 text-[#8D2310] duration-200 hover:bg-[#8D2310]/5 ${checkOutLoading ? "pointer-events-none" : "disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"}`}
+                                    className={`flex items-center gap-1.5 rounded-md border border-dashed border-[#8D2310] bg-white px-2 py-1.5 text-[#8D2310] duration-200 hover:bg-[#8D2310]/5 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]`}
                                 >
-                                    {checkOutLoading ? (
-                                        <>
-                                            <LoadingIndicator color="#8D2310" />{" "}
-                                            Checking Out
-                                        </>
-                                    ) : (
-                                        "Check Out"
-                                    )}
+                                    Check Out
                                 </button>
                                 {userRole === "secretary" ? (
                                     <button

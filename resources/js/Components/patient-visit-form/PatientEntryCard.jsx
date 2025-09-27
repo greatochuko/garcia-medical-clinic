@@ -20,6 +20,7 @@ export default function PatientEntryCard({
     inputOptions = [],
     medicalCertificate,
     laboratoryRequest,
+    appointmentIsClosed,
 }) {
     const [loading, setLoading] = useState(false);
     const [labRequestModalOpen, setLabRequestModalOpen] = useState(false);
@@ -137,8 +138,9 @@ export default function PatientEntryCard({
                 <div className="relative p-4">
                     <h3 className="text-center font-semibold">{entry.title}</h3>
                     <button
+                        disabled={appointmentIsClosed}
                         onClick={openPatientEntryModal}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md border border-transparent p-1.5 duration-200 hover:border-accent-400 hover:bg-accent-200"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md border border-transparent p-1.5 duration-200 hover:border-accent-400 hover:bg-accent-200 disabled:pointer-events-none"
                     >
                         <img
                             src={
@@ -155,6 +157,7 @@ export default function PatientEntryCard({
                     {entry.id === "plan" && (
                         <div className="absolute left-1/2 top-full flex min-w-max -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-md bg-accent-200 p-1">
                             <button
+                                disabled={appointmentIsClosed}
                                 onClick={() => setLabRequestModalOpen(true)}
                                 className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1 text-xs font-medium duration-200 hover:bg-accent-100"
                             >
@@ -165,6 +168,7 @@ export default function PatientEntryCard({
                                 LAB REQUEST
                             </button>
                             <button
+                                disabled={appointmentIsClosed}
                                 onClick={() =>
                                     setMedicalCertificateModalOpen(true)
                                 }
@@ -212,10 +216,15 @@ export default function PatientEntryCard({
                                 className="w-full rounded-xl p-3 pr-16"
                                 options={inputOptions}
                                 value={entryData.input}
+                                disabled={appointmentIsClosed}
                             />
                             <button
                                 type="submit"
-                                disabled={!entryData.input || loading}
+                                disabled={
+                                    appointmentIsClosed ||
+                                    !entryData.input ||
+                                    loading
+                                }
                                 className="absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center justify-center rounded-xl rounded-bl-none bg-accent px-4 disabled:opacity-50"
                             >
                                 {loading ? (
