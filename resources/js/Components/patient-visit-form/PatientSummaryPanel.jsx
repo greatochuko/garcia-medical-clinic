@@ -11,7 +11,7 @@ export default function PatientSummaryPanel({
     setPatient,
     medicalCertificate,
     labRequest,
-    prescription,
+    prescriptions,
 }) {
     const [currentTab, setCurrentTab] = useState("medicalHistory");
     const [signFormModalOpen, setSignFormModalOpen] = useState(false);
@@ -171,8 +171,12 @@ export default function PatientSummaryPanel({
                         </button>
                     </div>
                     <div className="flex items-center gap-2 p-4">
-                        <button
-                            disabled={!prescription}
+                        <Link
+                            href={route("prescriptions.print", {
+                                id: patient.patient_id,
+                                app_id: appointmentId,
+                            })}
+                            disabled={!prescriptions}
                             className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
                         >
                             <img
@@ -185,7 +189,7 @@ export default function PatientSummaryPanel({
                             <p className="rounded-sm bg-white px-1.5 text-center text-[10px]">
                                 PRESCR.
                             </p>
-                        </button>
+                        </Link>
                         <Link
                             href={route("laboratory.print", {
                                 id: patient.patient_id,

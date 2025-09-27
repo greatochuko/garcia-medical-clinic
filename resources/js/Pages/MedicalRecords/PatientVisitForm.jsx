@@ -64,6 +64,7 @@ export default function PatientVisitForm({
                     setPatient={setPatient}
                     medicalCertificate={medicalCertificate}
                     labRequest={laboratoryRequest}
+                    prescriptions={prescriptions}
                 />
                 <div className="flex flex-col gap-4 rounded-lg bg-accent-100 py-2 shadow">
                     <div className="relative flex items-center justify-center">
