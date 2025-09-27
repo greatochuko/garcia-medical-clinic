@@ -51,7 +51,7 @@ class MedicalCertificateController extends Controller
                 'gender'     => $result->gender,
                 'civilStatus' => $result->civilStatus,
                 'address'    => $result->address,
-                'visitDate'  => Carbon::parse($result->last_visit_date)->format('F j, Y'),
+                'visitDate' => Carbon::createFromTimestamp($result->last_visit_date)->format('F j, Y'),
             ],
             'diagnosis' => $result->diagnosis,
             'comments'  => $result->comments,

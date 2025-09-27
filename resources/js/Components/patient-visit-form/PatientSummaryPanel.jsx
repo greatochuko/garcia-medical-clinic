@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import MedicalHistoryButton from "./MedicalHistoryButton";
 import VitalSignsButton from "./VitalSignsButton";
 import SignPatientVisitFormModal from "../modals/SignPatientVisitFormModal";
+import { Link } from "@inertiajs/react";
+import { route } from "ziggy-js";
 
 export default function PatientSummaryPanel({
     appointmentId,
@@ -199,7 +201,11 @@ export default function PatientSummaryPanel({
                                 LAB REQ
                             </p>
                         </button>
-                        <button
+                        <Link
+                            href={route("medical-certificate.show", {
+                                id: patient.patient_id,
+                                app_id: appointmentId,
+                            })}
                             disabled={!medicalCertificate}
                             className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
                         >
@@ -213,7 +219,7 @@ export default function PatientSummaryPanel({
                             <p className="rounded-sm bg-white px-1.5 text-center text-[10px]">
                                 MED CERT
                             </p>
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

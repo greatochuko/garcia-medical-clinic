@@ -8,11 +8,14 @@ export default function PatientRow({ patient, removePatientFromList }) {
 
     const lastVisitDate = useMemo(
         () =>
-            new Date(patient.last_visit_date).toLocaleDateString("us-en", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-            }),
+            new Date(patient.last_visit_date * 1000).toLocaleDateString(
+                "us-en",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                },
+            ),
         [patient.last_visit_date],
     );
 

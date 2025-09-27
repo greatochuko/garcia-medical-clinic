@@ -4,7 +4,7 @@ import MedicationRefillModal from "../modals/MedicationRefillModal";
 export function MedicalRecordsHistory({ patient }) {
     const [refillModalOpen, setRefillModalOpen] = useState(false);
 
-    const lastVisitDate = new Date(patient.last_visit_date);
+    const lastVisitDate = new Date(patient.last_visit_date * 1000);
 
     const medicalRecordsStats = [
         {
