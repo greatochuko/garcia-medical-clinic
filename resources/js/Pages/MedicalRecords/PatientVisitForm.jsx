@@ -26,6 +26,7 @@ export default function PatientVisitForm({
     prescriptions,
     inputOptions,
     medicalCertificate,
+    laboratoryRequest,
 }) {
     const [patient, setPatient] = useState(initialPatient);
     const [patientEntryData, setPatientEntryData] = useState({
@@ -62,6 +63,7 @@ export default function PatientVisitForm({
                     patient={patient}
                     setPatient={setPatient}
                     medicalCertificate={medicalCertificate}
+                    labRequest={laboratoryRequest}
                 />
                 <div className="flex flex-col gap-4 rounded-lg bg-accent-100 py-2 shadow">
                     <div className="relative flex items-center justify-center">
@@ -106,6 +108,7 @@ export default function PatientVisitForm({
                                     (pl) => pl.name,
                                 )}
                                 medicalCertificate={medicalCertificate}
+                                laboratoryRequest={laboratoryRequest}
                             />
                         ))}
                     </div>

@@ -9,8 +9,8 @@ import { route } from "ziggy-js";
 export default function CreateMedicalCertificateModal({
     open,
     closeModal,
-    patient_id,
-    appointment_id,
+    patientId,
+    appointmentId,
     medicalCertificate,
 }) {
     const { processing, data, setData, post } = useForm(
@@ -18,8 +18,8 @@ export default function CreateMedicalCertificateModal({
             civilStatus: "Married",
             diagnosis: "",
             comments: "",
-            patient_id,
-            appointment_id,
+            patient_id: patientId,
+            appointment_id: appointmentId,
         },
     );
 

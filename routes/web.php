@@ -229,7 +229,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/laboratory-tests/{id}/{pid}', [PatientLaboratoryTestController::class, 'updatePatientTests'])->name('laboratory.patient.tests.update');
     Route::post('/laboratory-tests', [PatientLaboratoryTestController::class, 'store'])->name('laboratory.patient.store');
 
-    Route::post('/laboratory-requests', [LaboratoryRequestController::class, 'store'])->name('laboratory.store');
+    Route::post('/laboratory-requests', [LaboratoryRequestController::class, 'store_laboratory_request'])->name('laboratory.store');
     Route::get('/laboratory-requests/{patientId}/{app_id}', [LaboratoryRequestController::class, 'getPatientRequests'])->name('laboratory.patient');
 
     // Billing routes

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FrequencyList;
+use App\Models\LaboratoryRequest;
 use App\Models\MedicalCertificate;
 use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
@@ -41,6 +42,8 @@ class PatientVisitController extends Controller
         $medicalCertificate = MedicalCertificate::where('patient_id', $id)
             ->where('appointment_id', $appointment_id)
             ->first();
+        $laboratoryRequest = LaboratoryRequest::where('patient_id', $id)
+            ->where('appointment_id', $appointment_id)->get();
 
         // dd($medicalCertificate);
 
@@ -50,6 +53,7 @@ class PatientVisitController extends Controller
             "prescriptions" => $prescriptions,
             "inputOptions" => $inputOptions,
             "medicalCertificate" => $medicalCertificate,
+            "laboratoryRequest" => $laboratoryRequest,
         ]);
     }
 

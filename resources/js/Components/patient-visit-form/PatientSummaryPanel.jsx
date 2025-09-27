@@ -186,7 +186,11 @@ export default function PatientSummaryPanel({
                                 PRESCR.
                             </p>
                         </button>
-                        <button
+                        <Link
+                            href={route("laboratory.print", {
+                                id: patient.patient_id,
+                                app_id: appointmentId,
+                            })}
                             disabled={!labRequest}
                             className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
                         >
@@ -200,7 +204,7 @@ export default function PatientSummaryPanel({
                             <p className="rounded-sm bg-white px-1.5 text-center text-[10px]">
                                 LAB REQ
                             </p>
-                        </button>
+                        </Link>
                         <Link
                             href={route("medical-certificate.show", {
                                 id: patient.patient_id,

@@ -12,7 +12,7 @@ use Inertia\Response;
 
 class LaboratoryRequestController extends Controller
 {
-    public function store(Request $request)
+    public function store_laboratory_request(Request $request)
     {
         $validated = $request->validate([
             'patient_id' => 'required',
@@ -68,10 +68,10 @@ class LaboratoryRequestController extends Controller
                 ->where('others', '!=', NULL)
                 ->first();
 
-                // dd($existing);
+            // dd($existing);
 
             if ($existing) {
-                if($validated['others']== '') {
+                if ($validated['others'] == '') {
                     $existing->delete();
                 }
                 // Update 'others' in the existing row
@@ -91,7 +91,7 @@ class LaboratoryRequestController extends Controller
         }
 
 
-        return response()->json(['message' => 'Laboratory requests saved/updated successfully']);
+        return redirect()->back()->with('success', 'Laboratory requests saved successfully.');
     }
 
 
