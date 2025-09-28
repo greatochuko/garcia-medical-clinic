@@ -17,7 +17,11 @@ export default function PrescriptionTable({
     const [prescriptionLoading, setPrescriptionLoading] = useState("");
     const { medications, frequencies } = inputOptions;
 
-    const fieldVacant = Object.values(data).some((val) => !val?.trim());
+    const fieldVacant = Object.values(data).some((val) =>
+        typeof val === "string"
+            ? !val?.trim()
+            : val === null || val === undefined,
+    );
 
     function handleDeletePrescription(prescriptionId) {
         router.delete(

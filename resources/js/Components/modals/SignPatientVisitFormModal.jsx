@@ -14,16 +14,15 @@ export default function SignPatientVisitFormModal({
 
     function handleSignAppointment() {
         router.put(
-            route("appointments.update-status", { id: appointmentId }),
-            { status: "for_billing" },
+            route("appointments.close-form", { id: appointmentId }),
+            {},
             {
                 preserveScroll: true,
                 // preserveState: true,
                 onStart: () => {
                     setLoading?.(true);
                 },
-                onSuccess: (data) => {
-                    console.log(data);
+                onSuccess: () => {
                     closeModal();
                 },
                 onError: (errors) => {

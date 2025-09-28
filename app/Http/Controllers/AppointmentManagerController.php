@@ -560,6 +560,23 @@ class AppointmentManagerController extends Controller
         // ]);
     }
 
+    public function closeForm($id)
+    {
+        // return response()->json(['success' => false, 'status' => "new"]);
+        $appointment = Appointment::where('id', $id)->first();
+
+        if (!$appointment) {
+            return response()->json(['error' => 'Appointment not found'], 404);
+        }
+
+        $appointment->status = "for_billing";
+        $appointment->save();
+
+        return redirect()->route('appointments.index')->with('success', 'Form closed successfully!');
+
+        // return response()->json(['success' => true, 'status' => $appointment->status]);
+    }
+
     public function updateStatus(Request $request, $id)
     {
         // return response()->json(['success' => false, 'status' => "new"]);

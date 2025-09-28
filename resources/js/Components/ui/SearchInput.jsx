@@ -76,7 +76,10 @@ export default function SearchInput({
                 {...props}
             />
             {suggestions.length > 0 && (
-                <ul className="absolute bottom-full left-0 right-0 z-10 max-h-36 overflow-y-auto rounded-lg border bg-white shadow">
+                <ul
+                    tabIndex={1}
+                    className="absolute bottom-full left-0 right-0 z-10 max-h-36 overflow-y-auto rounded-lg border bg-white shadow"
+                >
                     {suggestions.map((item, idx) => (
                         <li
                             key={idx}

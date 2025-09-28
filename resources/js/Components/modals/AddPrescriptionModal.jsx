@@ -35,8 +35,8 @@ export default function AddPrescriptionModal({
     function handleAddPrescription(e) {
         e.preventDefault();
         post(route("patientvisitform.patientprescriptionadd"), {
-            onSuccess: () => {
-                setPrescriptions([...prescriptions, data]);
+            onSuccess: (response) => {
+                setPrescriptions(response.props.prescriptions);
                 setData(initialData);
             },
             onError: (errors) => {

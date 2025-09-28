@@ -198,6 +198,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/closed/appointments/{id}', [AppointmentManagerController::class, 'closedDelete'])->name('appointments.destroy.closed');
     Route::delete('/active/appointments/{id}', [AppointmentManagerController::class, 'activeDelete'])->name('appointments.destroy.active');
     Route::put('/appointments/update-status/{id}', [AppointmentManagerController::class, 'updateStatus'])->name('appointments.update-status');
+    Route::put('/appointments/close-form/{id}', [AppointmentManagerController::class, 'closeForm'])->name('appointments.close-form');
     Route::post('/appointments/check-out/{id}', [AppointmentManagerController::class, 'checkOut'])->name('appointments.check-out');
 
 
