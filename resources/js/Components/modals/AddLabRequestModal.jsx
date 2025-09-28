@@ -99,7 +99,7 @@ export default function AddLabRequestModal({
 }) {
     const initialData = {
         patient_id: patientId,
-        appointment_id: appointmentId,
+        appointment_id: appointmentId.toString(),
         test_names: laboratoryRequest.map((lr) => lr.test_name) || [],
         others: "",
     };
@@ -116,7 +116,7 @@ export default function AddLabRequestModal({
         e.preventDefault();
         post(route("laboratory.store"), {
             onSuccess: () => {
-                closeModal();
+                closeLabRequestModal();
             },
             onError: (errors) => {
                 console.error(errors);
@@ -174,7 +174,7 @@ export default function AddLabRequestModal({
                                                 checked={data.test_names.includes(
                                                     test,
                                                 )}
-                                                onChange={() =>
+                                                onChange={() => {
                                                     setData((prev) => ({
                                                         ...prev,
                                                         test_names:
@@ -190,8 +190,8 @@ export default function AddLabRequestModal({
                                                                       ...prev.test_names,
                                                                       test,
                                                                   ],
-                                                    }))
-                                                }
+                                                    }));
+                                                }}
                                             />
                                             <span className="flex-1">
                                                 {test}
@@ -253,8 +253,9 @@ function CustomCheckBox({ name, value, checked, onChange }) {
                 type="radio"
                 name={name}
                 value={value}
-                checked={checked}
-                onChange={onChange}
+                defaultChecked={checked}
+                // onChange={onChange}
+                onClick={onChange}
                 className="hidden"
             />
         </>
