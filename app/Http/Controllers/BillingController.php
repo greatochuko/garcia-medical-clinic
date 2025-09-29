@@ -15,7 +15,31 @@ use Illuminate\Support\Facades\DB;
 
 class BillingController extends Controller
 {
+
     public function index(Request $request)
+    {
+        $search = $request->input('search', '');
+        $perPage = $request->input('perPage', 10);
+
+        $query = Billing::with('patient');
+
+        if ($search) {
+            $query->whereHas('patient', function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                    ->orWhere('last_name', 'like', "%{$search}%")
+                    ->orWhere('gender', 'like', "%{$search}%")
+                    ->orWhere('patient_id', 'like', "%{$search}%");
+            });
+        }
+
+        $billings = $query->paginate($perPage)->appends(['search' => $search]);
+
+        return Inertia::render('BillingRecord', [
+            'billingData' => $billings
+        ]);
+    }
+
+    public function index2(Request $request)
     {
 
         $search = $request->input('search', '');
@@ -36,34 +60,35 @@ class BillingController extends Controller
         }
 
         // Get the full result set (will be paginated manually below)
-        $billings = $query->get()->map(function ($billing) {
-            // Handle services field
-            $services = $billing->services;
-            if (is_string($services)) {
-                $services = json_decode($services, true);
-            }
+        $billings = $query;
+        // $billings = $query->get()->map(function ($billing) {
+        //     // Handle services field
+        //     $services = $billing->services;
+        //     if (is_string($services)) {
+        //         $services = json_decode($services, true);
+        //     }
 
-            $serviceString = '';
-            if (is_array($services)) {
-                $serviceString = implode(' + ', array_map(function ($service) {
-                    return is_array($service) ? $service['name'] : $service;
-                }, $services));
-            } else {
-                $serviceString = $services ?? '';
-            }
+        //     $serviceString = '';
+        //     if (is_array($services)) {
+        //         $serviceString = implode(' + ', array_map(function ($service) {
+        //             return is_array($service) ? $service['name'] : $service;
+        //         }, $services));
+        //     } else {
+        //         $serviceString = $services ?? '';
+        //     }
 
-            return [
-                'id' => $billing->id,
-                'patient_id' => $billing->patient_id,
-                'name' => $billing->patient ? $billing->patient->first_name . ' ' . $billing->patient->last_name : 'N/A',
-                'age' => $billing->patient ? $billing->patient->age : 'N/A',
-                'gender' => $billing->patient ? $billing->patient->gender : 'N/A',
-                'service' => $serviceString,
-                'total' => $billing->total,
-                'final_total' => $billing->final_total,
-                'paid' => $billing->paid == 1 ? 'true' : 'false',
-            ];
-        });
+        //     return [
+        //         'id' => $billing->id,
+        //         'patient_id' => $billing->patient_id,
+        //         'name' => $billing->patient ? $billing->patient->first_name . ' ' . $billing->patient->last_name : 'N/A',
+        //         'age' => $billing->patient ? $billing->patient->age : 'N/A',
+        //         'gender' => $billing->patient ? $billing->patient->gender : 'N/A',
+        //         'service' => $serviceString,
+        //         'total' => $billing->total,
+        //         'final_total' => $billing->final_total,
+        //         'paid' => $billing->paid == 1 ? 'true' : 'false',
+        //     ];
+        // });
 
         // Handle pagination manually
         $total = $billings->count();
@@ -71,7 +96,7 @@ class BillingController extends Controller
         $paginatedData = $billings->slice(($page - 1) * $perPage, $perPage)->values();
 
         return Inertia::render('BillingRecord', [
-            'patient' => [
+            'patientData' => [
                 'data' => $paginatedData,
                 'current_page' => $page,
                 'per_page' => $perPage,
@@ -170,93 +195,94 @@ class BillingController extends Controller
             'paid' => 'boolean',
             // 'appointment_id' => 'required'
         ]);
-        
+
         $appointment = Appointment::find($request->appointment_id);
         if ($request->has('status')) {
             $medical_record = MedicalRecord::where('patient_id', $request->patient_id)->where('closed_appointment_id', $request->appointment_id)->update(['doctor_id' => auth()->user()->id, 'status' => $request->status]);
-            if($request->status == 'closed'){ 
-                 $unfinishedDoc = UnfinishedDoc::updateOrCreate(
-    [
-        'patient_id' => $request->patient_id,
-        'appointment_id' => $request->appointment_id,
-    ],
-    [
-        'appointment_id' => $request->appointment_id,
-        'doctor_id' => Auth::user()->id,
-        'appointment_date' => $appointment->appointment_date,
-        'status' => '1'
-    ]
-);
-            }else if($request->status == 'open'){
-               $unfinishedDoc = UnfinishedDoc::updateOrCreate(
-    [
-        'patient_id' => $request->patient_id,
-        'appointment_id' => $request->appointment_id,
-    ],
-    [
-        'appointment_id' => $request->appointment_id,
-        'appointment_date' => $appointment->appointment_date,
-        'doctor_id' => Auth::user()->id,
-        'status' => '0'
-    ]
-);
+            if ($request->status == 'closed') {
+                $unfinishedDoc = UnfinishedDoc::updateOrCreate(
+                    [
+                        'patient_id' => $request->patient_id,
+                        'appointment_id' => $request->appointment_id,
+                    ],
+                    [
+                        'appointment_id' => $request->appointment_id,
+                        'doctor_id' => Auth::user()->id,
+                        'appointment_date' => $appointment->appointment_date,
+                        'status' => '1'
+                    ]
+                );
+            } else if ($request->status == 'open') {
+                $unfinishedDoc = UnfinishedDoc::updateOrCreate(
+                    [
+                        'patient_id' => $request->patient_id,
+                        'appointment_id' => $request->appointment_id,
+                    ],
+                    [
+                        'appointment_id' => $request->appointment_id,
+                        'appointment_date' => $appointment->appointment_date,
+                        'doctor_id' => Auth::user()->id,
+                        'status' => '0'
+                    ]
+                );
             }
             $billing->update($validated);
-        }
-        else{
+        } else {
             $medical_record = MedicalRecord::where('patient_id', $request->patient_id)->where('closed_appointment_id', $request->appointment_id)->first();
-            if($medical_record){
-               $status = $medical_record->status;
-               if($status != 'closed'){
-                MedicalRecord::where('patient_id', $request->patient_id)->where('closed_appointment_id', $request->appointment_id)->update(['status' => 'modify']);
+            if ($medical_record) {
+                $status = $medical_record->status;
+                if ($status != 'closed') {
+                    MedicalRecord::where('patient_id', $request->patient_id)->where('closed_appointment_id', $request->appointment_id)->update(['status' => 'modify']);
 
-                $unfinish = UnfinishedDoc::where('patient_id' ,  $request->patient_id)->where('appointment_id' , $request->appointment_id)->first();
-                if(!$unfinish){
+                    $unfinish = UnfinishedDoc::where('patient_id',  $request->patient_id)->where('appointment_id', $request->appointment_id)->first();
+                    if (!$unfinish) {
+                        $unfinishedDoc = UnfinishedDoc::create([
+                            'patient_id' => $request->patient_id,
+                            'appointment_id' => $request->appointment_id,
+                            'appointment_date' => $appointment->appointment_date,
+                            'status' => '0'
+                        ]);
+                    } else {
+                        $unfinishedDoc = UnfinishedDoc::updateOrCreate(
+                            [
+                                'patient_id' => $request->patient_id,
+                                'appointment_id' => $request->appointment_id,
+                            ],
+                            [
+                                'appointment_id' => $request->appointment_id,
+                                'appointment_date' => $appointment->appointment_date,
+                                'status' => '0'
+                            ]
+                        );
+                    }
+                } else {
                     $unfinishedDoc = UnfinishedDoc::create([
-            'patient_id' => $request->patient_id,
-            'appointment_id' => $request->appointment_id,
-            'appointment_date' => $appointment->appointment_date,
-            'status' => '0'
-        ]);
-                }else{
-                    $unfinishedDoc = UnfinishedDoc::updateOrCreate(
-    [
-        'patient_id' => $request->patient_id,
-        'appointment_id' => $request->appointment_id,
-    ],
-    [
-        'appointment_id' => $request->appointment_id,
-        'appointment_date' => $appointment->appointment_date,
-        'status' => '0'
-    ]);
+                        'patient_id' => $request->patient_id,
+                        'appointment_id' => $request->appointment_id,
+                        'appointment_date' => $appointment->appointment_date,
+                        'status' => 1
+                    ]);
                 }
-               }else{
-                 $unfinishedDoc = UnfinishedDoc::create([
-            'patient_id' => $request->patient_id,
-            'appointment_id' => $request->appointment_id,
-            'appointment_date' => $appointment->appointment_date,
-            'status' => 1
-              ]);
-               }
-            }else{
-                 $unfinishedDoc = UnfinishedDoc::updateOrCreate(
-    [
-        'patient_id' => $request->patient_id,
-        'appointment_id' => $request->appointment_id,
-    ],
-    [
-        'appointment_id' => $request->appointment_id,
-        'appointment_date' => $appointment->appointment_date,
-        'status' => '0'
-    ]);
+            } else {
+                $unfinishedDoc = UnfinishedDoc::updateOrCreate(
+                    [
+                        'patient_id' => $request->patient_id,
+                        'appointment_id' => $request->appointment_id,
+                    ],
+                    [
+                        'appointment_id' => $request->appointment_id,
+                        'appointment_date' => $appointment->appointment_date,
+                        'status' => '0'
+                    ]
+                );
 
-               $record = MedicalRecord::create([
-                'doctor_id' => 0,
-                'patient_id' => $request->patient_id,
-                'closed_appointment_id' => $request->appointment_id,
-                'status' => 'modify',
-                'date' => now(),
-            ]);
+                $record = MedicalRecord::create([
+                    'doctor_id' => 0,
+                    'patient_id' => $request->patient_id,
+                    'closed_appointment_id' => $request->appointment_id,
+                    'status' => 'modify',
+                    'date' => now(),
+                ]);
             }
             $billing->update($validated);
         }

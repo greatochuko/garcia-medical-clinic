@@ -618,24 +618,38 @@ class AppointmentManagerController extends Controller
 
     public function checkOut($id)
     {
-        $appointment = Appointment::with(['patient', 'serviceCharge'])
-            ->where('patient_id', $id)
-            ->firstOrFail();
-        // Create closed appointment record
-        ClosedAppointment::create([
-            'patient_id' => $appointment->patient->patient_id,
-            'appointment_id' => $appointment->id,
-            'queue_number' => $appointment->queue_type . $appointment->queue_number,
-            'name' => $appointment->patient->first_name . ', ' . $appointment->patient->middle_initial . ' ' . $appointment->patient->last_name,
-            'age' => $appointment->patient->age,
-            'gender' => $appointment->patient->gender,
-            // 'service' => $appointment->serviceCharge->name,
-            'status' => 'checked_out'
-        ]);
+        try {
+            $appointment = Appointment::with(['patient', 'serviceCharge'])
+                ->where('id', $id)
+                ->firstOrFail();
 
-        // Delete the original appointment
-        $appointment->delete();
+            // Example: maybe you want to mark it as checked out
+            // $appointment->update(['status' => 'checked_out']);
 
-        return redirect()->route('appointments.index')->with('success', 'Patient has been checked out successfully.');
+            // dd($appointment);
+
+            // Create closed appointment record
+            ClosedAppointment::create([
+                'patient_id' => $appointment->patient->patient_id,
+                'appointment_id' => $appointment->id,
+                'queue_number' => $appointment->queue_type . $appointment->queue_number,
+                'name' => $appointment->patient->first_name . ', ' . $appointment->patient->middle_initial . ' ' . $appointment->patient->last_name,
+                'age' => $appointment->patient->age,
+                'gender' => $appointment->patient->gender,
+                'service' => $appointment->serviceCharge->name,
+                'status' => 'checked_out'
+            ]);
+
+            // Delete the original appointment
+            $appointment->delete();
+
+            return back()->with('success', 'Appointment checked out successfully.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Appointment not found or an error occurred.');
+        }
     }
+
+
+    //     return redirect()->route('appointments.index')->with('success', 'Patient has been checked out successfully.');
+    // }
 }
