@@ -77,12 +77,6 @@ export function AppointmentRow({
         setCheckOutLoading(false);
     }
 
-    function removeAppointmentFromList() {
-        setAppointments((prev) =>
-            prev.filter((app) => app.id !== appointment.id),
-        );
-    }
-
     async function changeStatus(newStatus, setLoading) {
         router.put(
             route("appointments.update-status", { id: appointment.id }),
@@ -250,7 +244,7 @@ export function AppointmentRow({
                             setDeleteModalOpen(false);
                         }}
                         appointmentId={appointment.id}
-                        removeAppointmentFromList={removeAppointmentFromList}
+                        setAppointments={setAppointments}
                     />
                     <VitalsModal
                         open={vitalSignsModalOpen}

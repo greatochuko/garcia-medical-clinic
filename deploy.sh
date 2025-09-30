@@ -7,22 +7,15 @@ PORT="65002"
 REMOTE_DIR="~/domains/garciamedicalclinic.site/public_html"
 ZIP_NAME="deploy.zip"
 
-# Step 0: Build the React code
+# Step 0: Build the React frontend
 echo "Building React frontend..."
-# pnpm install
 pnpm build
 
-# Step 1: Zip the folders locally
-echo "Zipping code files into into $ZIP_NAME..."
-
+# Step 1: Zip the folders locally, excluding unimportant/sensitive files
+echo "Zipping code files into $ZIP_NAME..."
 zip -r $ZIP_NAME \
-    app \
-    resources \
-    routes/web.php \
-    public \
-    package.json \
-    pnpm-lock.yaml
-
+    app bootstrap config database public resources routes artisan composer.json composer.lock package.json pnpm-lock.yaml \
+    -x "*.env*" "node_modules/*" "vendor/*" "storage/*" "tests/*" ".*" "_tmp_*" "bash.exe.stackdump"
 
 # Step 2: Upload the zip to the server
 echo "Uploading $ZIP_NAME to $USER@$HOST:$REMOTE_DIR..."
@@ -40,5 +33,4 @@ EOF
 echo "Deleting local $ZIP_NAME..."
 rm $ZIP_NAME
 
-# Step 5: Done
 echo "Deployment complete!"

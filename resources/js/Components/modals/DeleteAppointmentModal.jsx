@@ -10,7 +10,7 @@ export default function DeleteAppointmentModal({
     open,
     closeModal,
     appointmentId,
-    removeAppointmentFromList,
+    setAppointments,
 }) {
     const { processing, delete: deleteRequest } = useForm();
 
@@ -18,15 +18,15 @@ export default function DeleteAppointmentModal({
         deleteRequest(
             route("appointments.destroy.active", { id: appointmentId }),
             {
-                onSuccess: () => {
-                    removeAppointmentFromList();
-                    document.body.style.overflow = "auto";
-
+                onSuccess: (data) => {
+                    setAppointments(data.props.appointments.data);
                     closeModal();
                 },
                 onError: () => {
                     toast.error("An error occured deleting appointment");
                 },
+                preserveState: true,
+                preserveScroll: true,
             },
         );
     }

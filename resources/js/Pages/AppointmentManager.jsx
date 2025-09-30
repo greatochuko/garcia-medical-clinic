@@ -7,7 +7,7 @@ import axios from "axios";
 import React, { useCallback, useMemo, useState } from "react";
 import { route } from "ziggy-js";
 
-export default function AppointmentManager({ appointments, medications }) {
+export default function AppointmentManager({ appointments }) {
     const { auth } = usePage().props;
 
     const [currentTab, setCurrentTab] = useState("active");
