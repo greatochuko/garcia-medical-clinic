@@ -7,6 +7,8 @@ export default function SearchInput({
     onSelect,
     options = [],
     className = "",
+    dropdownClassName = "",
+    position = "top", // default top
     ...props
 }) {
     const [suggestions, setSuggestions] = useState([]);
@@ -18,7 +20,9 @@ export default function SearchInput({
 
         if (inputValue.length > 0) {
             const filtered = options.filter((opt) =>
-                opt.toLowerCase().includes(inputValue.toLowerCase()),
+                (opt.label ?? opt)
+                    .toLowerCase()
+                    .includes(inputValue.toLowerCase()),
             );
             setSuggestions(filtered);
             setActiveIndex(-1);
@@ -47,13 +51,10 @@ export default function SearchInput({
             );
         } else if (e.key === "Enter") {
             e.preventDefault();
-            if (activeIndex >= 0) {
-                handleSelect(suggestions[activeIndex]);
-            }
+            if (activeIndex >= 0) handleSelect(suggestions[activeIndex].value);
         }
     };
 
-    // scroll active item into view when activeIndex changes
     useEffect(() => {
         if (activeIndex >= 0) {
             const items = document.querySelectorAll(".search-suggestion-item");
@@ -78,19 +79,19 @@ export default function SearchInput({
             {suggestions.length > 0 && (
                 <ul
                     tabIndex={1}
-                    className="absolute bottom-full left-0 right-0 z-10 max-h-36 overflow-y-auto rounded-lg border bg-white shadow"
+                    className={`absolute left-0 right-0 z-10 max-h-36 overflow-y-auto rounded-lg border bg-white shadow ${position === "top" ? "bottom-full mb-1" : "top-full mt-1"} ${dropdownClassName}`}
                 >
                     {suggestions.map((item, idx) => (
                         <li
                             key={idx}
-                            onMouseDown={() => handleSelect(item)}
-                            className={`search-suggestion-item cursor-pointer px-4 py-2 ${
+                            onMouseDown={() => handleSelect(item.value)}
+                            className={`search-suggestion-item cursor-pointer px-4 py-2 text-left ${
                                 idx === activeIndex
                                     ? "bg-gray-200"
                                     : "hover:bg-gray-100"
                             }`}
                         >
-                            {item}
+                            {item.label ?? item}
                         </li>
                     ))}
                 </ul>

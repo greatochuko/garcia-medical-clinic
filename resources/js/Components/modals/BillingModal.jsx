@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { usePage } from "@inertiajs/react";
 import ModalContainer from "../layout/ModalContainer";
 import { XIcon } from "lucide-react";
@@ -11,9 +11,19 @@ export default function BillingModal({
     open,
     closeModal,
     appointment,
-    prescriptions,
+    prescriptions: initialPrescriptions,
 }) {
     const { auth } = usePage().props;
+    const [prescriptions, setPrescriptions] = useState(initialPrescriptions);
+
+    useEffect(() => {
+        setPrescriptions(
+            initialPrescriptions.map((p) => ({
+                ...p,
+                amount: Number(p.amount),
+            })),
+        );
+    }, [initialPrescriptions]);
 
     const patient = appointment.patient;
     const patientFullName = `${patient.first_name}, ${patient.middle_initial} ${patient.last_name}`;
@@ -47,6 +57,29 @@ export default function BillingModal({
         },
     ];
 
+    function handleQuantityChange(id, value) {
+        setPrescriptions((prev) =>
+            prev.map((p) =>
+                p.id === id ? { ...p, amount: Number(value) || 0 } : p,
+            ),
+        );
+    }
+
+    function calculateTotal(prescription) {
+        return prescription.medication.price * prescription.amount;
+    }
+
+    function calculateSubtotal() {
+        return (
+            Number(appointment.service_charge.charge) +
+            prescriptions.reduce((sum, pres) => sum + calculateTotal(pres), 0)
+        );
+    }
+
+    const subtotal = calculateSubtotal();
+    const discount = subtotal * 0.2;
+    const total = subtotal - discount;
+
     return (
         <ModalContainer closeModal={closeModal} open={open}>
             <div
@@ -54,7 +87,7 @@ export default function BillingModal({
                 className={`flex h-[80%] w-[90%] max-w-5xl flex-col divide-y-2 divide-accent-200 rounded-lg bg-white text-sm duration-200 ${open ? "" : "translate-y-2"}`}
             >
                 <div className="relative flex items-center justify-center p-4">
-                    <h5 className="font-semibold">MEDICATION REFILL LIST</h5>
+                    <h5 className="font-semibold">CHECK UP BILLING FORM</h5>
                     <button
                         type="button"
                         onClick={closeModal}
@@ -179,22 +212,33 @@ export default function BillingModal({
                                 {prescriptions.map((prescription) => (
                                     <tr key={prescription.id}>
                                         <td className="truncate p-2">
-                                            {prescription.medication}
+                                            {prescription.medication.name}
+                                            <p className="text-[10px] text-[#8C8C8C]">
+                                                {`${prescription.dosage} ${prescription.frequency.name} for ${prescription.duration} days - #${parseInt(prescription.amount)}`}
+                                            </p>
                                         </td>
                                         <td className="p-2 text-center">
                                             <input
                                                 type="number"
-                                                defaultValue={
-                                                    prescription.amount
+                                                value={prescription.amount}
+                                                min={1}
+                                                className="w-full rounded-md border border-accent-400 bg-white p-2 text-center text-xs outline-none focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50"
+                                                onChange={(e) =>
+                                                    handleQuantityChange(
+                                                        prescription.id,
+                                                        e.target.value,
+                                                    )
                                                 }
-                                                className="w-full rounded-md border border-accent-400 bg-white p-2 text-center text-xs outline-none focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50 disabled:cursor-not-allowed disabled:bg-[#E4E4E4] disabled:text-gray-500"
                                             />
                                         </td>
                                         <td className="p-2 text-center">
-                                            7.00
+                                            {prescription.medication.price}
                                         </td>
                                         <td className="p-2 text-center">
-                                            {formatPHP(7)}
+                                            {formatPHP(
+                                                prescription.medication.price *
+                                                    prescription.amount,
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
@@ -211,7 +255,9 @@ export default function BillingModal({
                                     >
                                         SUBTOTAL
                                     </td>
-                                    <td className="text-center">2000</td>
+                                    <td className="text-center">
+                                        {formatPHP(subtotal)}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td></td>
@@ -221,7 +267,9 @@ export default function BillingModal({
                                     >
                                         SENIOR DISCOUNT 20%
                                     </td>
-                                    <td className="text-center">-400</td>
+                                    <td className="text-center">
+                                        -{formatPHP(discount)}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td></td>
@@ -229,7 +277,7 @@ export default function BillingModal({
                                         TOTAL
                                     </td>
                                     <td className="p-2 text-center text-sm font-bold">
-                                        {formatPHP(540)}
+                                        {formatPHP(total)}
                                     </td>
                                 </tr>
                             </tbody>
@@ -237,7 +285,10 @@ export default function BillingModal({
                     </div>
 
                     <div className="mt-4 flex items-center justify-end gap-4">
-                        <button className="rounded-md border border-accent p-2 text-xs duration-200 hover:bg-accent-200">
+                        <button
+                            onClick={closeModal}
+                            className="rounded-md border border-accent p-2 text-xs duration-200 hover:bg-accent-200"
+                        >
                             Cancel
                         </button>
                         <button className="rounded-md border border-accent bg-accent px-4 py-2 text-xs text-white duration-200 hover:bg-accent/90">

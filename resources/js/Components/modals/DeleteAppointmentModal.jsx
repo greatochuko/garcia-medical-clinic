@@ -20,6 +20,8 @@ export default function DeleteAppointmentModal({
             {
                 onSuccess: () => {
                     removeAppointmentFromList();
+                    document.body.style.overflow = "auto";
+
                     closeModal();
                 },
                 onError: () => {

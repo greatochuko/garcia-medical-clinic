@@ -157,7 +157,10 @@ export default function PrescriptionTable({
                                     medication: med?.name || value, // keep name for showing in the field
                                 }));
                             }}
-                            options={medications.map((med) => med.name)}
+                            options={medications.map((med) => ({
+                                label: med.name,
+                                value: med.name,
+                            }))}
                             value={data.medication}
                             disabled={processing}
                             placeholder="Medication name"
@@ -199,7 +202,10 @@ export default function PrescriptionTable({
                                 frequency: freq?.name || value, // keep name for display
                             }));
                         }}
-                        options={frequencies.map((f) => f.name)}
+                        options={frequencies.map((f) => ({
+                            label: f.name,
+                            value: f.name,
+                        }))}
                         disabled={processing}
                         placeholder="Frequency"
                         className="w-full px-2"

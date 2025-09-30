@@ -1,4 +1,4 @@
-import Input from "@/Components/layout/Input";
+import SearchInput from "@/Components/ui/SearchInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { router } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
@@ -29,14 +29,25 @@ export default function SelectPatient({ patients }) {
                                 already registered in your clinic.
                             </p>
                             <div className="relative flex w-[90%] max-w-sm">
-                                <Input
+                                <SearchInput
                                     type="text"
                                     value={searchQuery}
-                                    onChange={(e) =>
-                                        setSearchQuery(e.target.value)
-                                    }
-                                    className="w-0 flex-1 pr-10"
+                                    onChange={(value) => setSearchQuery(value)}
+                                    className="w-full flex-1 pr-10"
+                                    dropdownClassName="text-sm"
                                     placeholder="Start typing..."
+                                    position="bottom"
+                                    onSelect={(value) =>
+                                        router.visit(
+                                            `/appointments/create?id=${value}`,
+                                        )
+                                    }
+                                    options={filteredPatients.map(
+                                        (patient) => ({
+                                            label: `${patient.first_name} ${patient.middle_initial || ""} ${patient.last_name}`,
+                                            value: patient.patient_id,
+                                        }),
+                                    )}
                                 />
                                 <img
                                     src="/assets/icons/search-icon.svg"
@@ -46,7 +57,7 @@ export default function SelectPatient({ patients }) {
                                     className="absolute right-3 top-1/2 -translate-y-1/2"
                                 />
 
-                                {searchQuery && (
+                                {/* {searchQuery && (
                                     <div className="absolute left-1/2 top-full w-full -translate-x-1/2 translate-y-1">
                                         <ul className="max-h-40 overflow-y-auto rounded-lg border bg-white text-start text-sm shadow-md">
                                             {filteredPatients.length > 0 ? (
@@ -76,7 +87,7 @@ export default function SelectPatient({ patients }) {
                                             )}
                                         </ul>
                                     </div>
-                                )}
+                                )} */}
                             </div>
                         </div>
                         <div className="flex flex-1 flex-col items-center gap-6 border-b-2 border-accent-200 py-12 text-center">

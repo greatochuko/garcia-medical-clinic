@@ -214,7 +214,10 @@ export default function PatientEntryCard({
                                     }))
                                 }
                                 className="w-full rounded-xl p-3 pr-16"
-                                options={inputOptions}
+                                options={inputOptions.map((opt) => ({
+                                    label: opt,
+                                    value: opt,
+                                }))}
                                 value={entryData.input}
                                 disabled={appointmentIsClosed}
                             />

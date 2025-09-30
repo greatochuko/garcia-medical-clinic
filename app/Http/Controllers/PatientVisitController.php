@@ -515,7 +515,7 @@ class PatientVisitController extends Controller
 
     public function patientprescription_get($id, $app_id)
     {
-        $prescriptions = PatientPrescription::where('patient_id', $id)->where('appointment_id', $app_id)->get();
+        $prescriptions = PatientPrescription::with(["medication", "frequency"])->where('patient_id', $id)->where('appointment_id', $app_id)->get();
         return response()->json([
             'success' => true,
             'data' => $prescriptions,
