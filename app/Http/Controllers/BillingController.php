@@ -164,6 +164,7 @@ class BillingController extends Controller
     {
         $validated = $request->validate([
             'patient_id' => 'required',
+            'appointment_id' => 'required|string',
             'services' => 'required|string', // or 'array' if you use JSON
             'total' => 'required|numeric',
             'discount' => 'nullable|numeric',
@@ -171,11 +172,32 @@ class BillingController extends Controller
             'paid' => 'boolean'
         ]);
 
+        DB::beginTransaction();
 
-        $billing = Billing::create($validated);
+        try {
+            $billing = Billing::create($validated);
 
-        return response()->json(['success' => true, 'billing' => $billing]);
+            $appointment = Appointment::findOrFail($validated['appointment_id']);
+            $appointment->update(['status' => 'checked_out']);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'billing' => $billing,
+                'appointment' => $appointment
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
 
     public function edit($id)
     {

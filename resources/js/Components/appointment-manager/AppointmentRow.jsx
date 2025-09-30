@@ -72,7 +72,7 @@ export function AppointmentRow({
             setBillingModalOpen(true);
         } catch (error) {
             toast.error("An error occured fetching prescriptions");
-            console.log(error);
+            console.error(error);
         }
         setCheckOutLoading(false);
     }
@@ -260,6 +260,7 @@ export function AppointmentRow({
                         closeModal={() => setBillingModalOpen(false)}
                         appointment={appointment}
                         prescriptions={prescriptions}
+                        setAppointment={setAppointment}
                     />
                 </>
             )}
