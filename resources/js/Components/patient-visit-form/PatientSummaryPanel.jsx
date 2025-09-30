@@ -17,7 +17,7 @@ export default function PatientSummaryPanel({
     const [currentTab, setCurrentTab] = useState("medicalHistory");
     const [signFormModalOpen, setSignFormModalOpen] = useState(false);
 
-    const patientFullName = `${patient.first_name} ${patient.middle_initial} ${patient.last_name}`;
+    const patientFullName = `${patient.first_name} ${patient.middle_initial || ""} ${patient.last_name}`;
 
     const vitalSigns = [
         {

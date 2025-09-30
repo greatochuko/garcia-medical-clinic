@@ -12,7 +12,7 @@ export default function PaymentModal({
     onSubmit,
     loading,
 }) {
-    const patientFullName = `${patient.first_name}, ${patient.middle_initial} ${patient.last_name}`;
+    const patientFullName = `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`;
     const [cashTendered, setCashTendered] = useState("");
 
     const handleNumberClick = (val) => {

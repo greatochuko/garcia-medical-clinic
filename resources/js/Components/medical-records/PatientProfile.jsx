@@ -3,7 +3,7 @@ import React from "react";
 import { route } from "ziggy-js";
 
 export default function PatientProfile({ patient, medicalHistory }) {
-    const patientFullName = `${patient.first_name} ${patient.middle_initial} ${patient.last_name}`;
+    const patientFullName = `${patient.first_name} ${patient.middle_initial || ""} ${patient.last_name}`;
 
     const patientInfo = [
         {

@@ -6,7 +6,7 @@ import { usePage } from "@inertiajs/react";
 export default function MedicationRefillModal({ closeModal, open, patient }) {
     const { auth } = usePage().props;
 
-    const patientFullName = `${patient.first_name} ${patient.middle_initial} ${patient.last_name}`;
+    const patientFullName = `${patient.first_name} ${patient.middle_initial || ""} ${patient.last_name}`;
 
     function closeVitalsModal() {
         closeModal();

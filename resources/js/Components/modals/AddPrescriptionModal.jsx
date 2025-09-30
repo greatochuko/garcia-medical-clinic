@@ -26,7 +26,7 @@ export default function AddPrescriptionModal({
         initialPrescriptions || [],
     );
     const { data, setData, processing, post } = useForm(initialData);
-    const patientFullName = `${patient.first_name} ${patient.middle_initial} ${patient.last_name}`;
+    const patientFullName = `${patient.first_name} ${patient.middle_initial || ""} ${patient.last_name}`;
 
     function closeVitalsModal() {
         closeModal();

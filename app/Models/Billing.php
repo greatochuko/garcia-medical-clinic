@@ -21,10 +21,15 @@ class Billing extends Model
 
 
     // ... existing code ...
-    
+
 
     public function patient()
     {
         return $this->belongsTo(Patient::class, 'patient_id', 'patient_id');
     }
-} 
+
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class, 'appointment_id');
+    }
+}

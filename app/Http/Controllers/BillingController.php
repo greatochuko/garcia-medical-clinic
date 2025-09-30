@@ -21,7 +21,7 @@ class BillingController extends Controller
         $search = $request->input('search', '');
         $perPage = $request->input('perPage', 10);
 
-        $query = Billing::with('patient');
+        $query = Billing::with('patient', 'appointment.serviceCharge');
 
         if ($search) {
             $query->whereHas('patient', function ($q) use ($search) {
@@ -32,12 +32,16 @@ class BillingController extends Controller
             });
         }
 
-        $billings = $query->paginate($perPage)->appends(['search' => $search]);
+        $billings = $query
+            ->orderBy('created_at', 'desc') // newest first
+            ->paginate($perPage)
+            ->appends(['search' => $search]);
 
         return Inertia::render('BillingRecord', [
             'billingData' => $billings
         ]);
     }
+
 
     public function index2(Request $request)
     {

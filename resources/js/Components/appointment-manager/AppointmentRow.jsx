@@ -32,7 +32,7 @@ export function AppointmentRow({
     const [billingModalOpen, setBillingModalOpen] = useState(false);
     const [prescriptions, setPrescriptions] = useState([]);
 
-    const patientFullName = `${appointment.patient.first_name}, ${appointment.patient.middle_initial} ${appointment.patient.last_name}`;
+    const patientFullName = `${appointment.patient.first_name}, ${appointment.patient.middle_initial || ""} ${appointment.patient.last_name}`;
 
     let statusClassName = "";
 
@@ -259,6 +259,7 @@ export function AppointmentRow({
                         open={billingModalOpen}
                         closeModal={() => setBillingModalOpen(false)}
                         appointment={appointment}
+                        patient={appointment.patient}
                         prescriptions={prescriptions}
                         setAppointment={setAppointment}
                     />
