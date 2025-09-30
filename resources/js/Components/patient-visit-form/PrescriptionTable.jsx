@@ -74,12 +74,12 @@ export default function PrescriptionTable({
                     {prescriptions.map((pres, i) => (
                         <tr key={i} className="even:bg-[#F8F8F8]">
                             <td className="overflow-hidden px-2 py-4 pl-4">
-                                {pres.medication}
+                                {pres.medication.name}
                             </td>
                             <td className="px-2 py-4 text-center">
                                 {pres.dosage}
                             </td>
-                            <td className="px-2 py-4">{pres.frequency}</td>
+                            <td className="px-2 py-4">{pres.frequency.name}</td>
                             <td className="px-2 py-4 text-center">
                                 {pres.duration}
                             </td>
@@ -143,15 +143,20 @@ export default function PrescriptionTable({
                             onChange={(value) =>
                                 setData((prev) => ({
                                     ...prev,
-                                    medication: value,
+                                    medication_id: null, // clear id if user types
+                                    medication: value, // keep name for display
                                 }))
                             }
-                            onSelect={(value) =>
+                            onSelect={(value) => {
+                                const med = medications.find(
+                                    (m) => m.name === value,
+                                );
                                 setData((prev) => ({
                                     ...prev,
-                                    medication: value,
-                                }))
-                            }
+                                    medication_id: med?.id || null, // store the id here
+                                    medication: med?.name || value, // keep name for showing in the field
+                                }));
+                            }}
                             options={medications.map((med) => med.name)}
                             value={data.medication}
                             disabled={processing}
@@ -180,16 +185,21 @@ export default function PrescriptionTable({
                         onChange={(value) =>
                             setData((prev) => ({
                                 ...prev,
-                                frequency: value,
+                                frequency_id: null, // clear id if user types
+                                frequency: value, // keep name for display
                             }))
                         }
-                        onSelect={(value) =>
+                        onSelect={(value) => {
+                            const freq = frequencies.find(
+                                (f) => f.name === value,
+                            );
                             setData((prev) => ({
                                 ...prev,
-                                frequency: value,
-                            }))
-                        }
-                        options={frequencies.map((med) => med.name)}
+                                frequency_id: freq?.id || null, // store the id
+                                frequency: freq?.name || value, // keep name for display
+                            }));
+                        }}
+                        options={frequencies.map((f) => f.name)}
                         disabled={processing}
                         placeholder="Frequency"
                         className="w-full px-2"

@@ -21,13 +21,15 @@ return new class extends Migration
             $table->string('doctor_id');
             $table->string('appointment_id');
             $table->unsignedBigInteger('medication_id'); // link to medication_lists
-            $table->string('dosage')->nullable();
-            $table->decimal('amount', 10, 2)->nullable();
-            $table->string('frequency')->nullable();
-            $table->string('duration')->nullable();
+            $table->string('dosage'); // required
+            $table->decimal('amount', 10, 2); // required
+            $table->unsignedBigInteger('frequency_id'); // link to frequency_lists
+            $table->string('duration'); // required
             $table->timestamps();
 
+            // Foreign keys
             $table->foreign('medication_id')->references('id')->on('medication_lists')->onDelete('cascade');
+            $table->foreign('frequency_id')->references('id')->on('frequency_lists')->onDelete('cascade');
         });
     }
 

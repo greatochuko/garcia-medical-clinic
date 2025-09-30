@@ -48,9 +48,9 @@ export default function PrescriptionSection({
                             <li key={pres.id} className="flex gap-2">
                                 <span className="font-bold">{i + 1}.</span>
                                 <div className="flex flex-col">
-                                    {pres.medication} #{pres.amount} tabs
+                                    {pres.medication.name} #{pres.amount} tabs
                                     <span className="text-xs text-[#666666]">
-                                        {pres.dosage} {pres.frequency}
+                                        {pres.dosage} {pres.frequency.name}
                                     </span>
                                 </div>
                             </li>

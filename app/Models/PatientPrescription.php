@@ -16,12 +16,17 @@ class PatientPrescription extends Model
         "medication_id",
         "dosage",
         "amount",
-        "frequency",
+        "frequency_id",  // changed from 'frequency' to 'frequency_id'
         "duration",
     ];
 
     public function medication()
     {
         return $this->belongsTo(MedicationList::class, 'medication_id');
+    }
+
+    public function frequency()
+    {
+        return $this->belongsTo(FrequencyList::class, 'frequency_id');
     }
 }
