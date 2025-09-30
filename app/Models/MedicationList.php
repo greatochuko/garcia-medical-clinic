@@ -11,5 +11,14 @@ class MedicationList extends Model
 
     protected $fillable = [
         'name',
+        'category',
+        'price',
+        'quantity',
+        'controlled',
     ];
+
+    public function prescriptions()
+    {
+        return $this->hasMany(PatientPrescription::class, 'medication_id');
+    }
 }

@@ -8,6 +8,7 @@ import { route } from "ziggy-js";
 import { toast } from "react-hot-toast";
 import { Link, router } from "@inertiajs/react";
 import LoadingIndicator from "../layout/LoadingIndicator";
+import BillingModal from "../modals/BillingModal";
 
 function formatStatus(status) {
     return status
@@ -24,9 +25,14 @@ export function AppointmentRow({
     userRole,
 }) {
     const [appointment, setAppointment] = useState(originalAppointment);
+    const [checkOutLoading, setCheckOutLoading] = useState(false);
     const [checkInLoading, setCheckInLoading] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [vitalSignsModalOpen, setVitalSignsModalOpen] = useState(false);
+    const [billingModalOpen, setBillingModalOpen] = useState(false);
+    const [prescriptions, setPrescriptions] = useState([]);
+
+    const patientFullName = `${appointment.patient.first_name}, ${appointment.patient.middle_initial} ${appointment.patient.last_name}`;
 
     let statusClassName = "";
 
@@ -50,6 +56,25 @@ export function AppointmentRow({
         default:
             statusClassName = "border-dashed border-[#EAEAEA] bg-[#EAEAEA]";
             break;
+    }
+
+    async function handleCheckOut() {
+        try {
+            setCheckOutLoading(true);
+            const res = await fetch(
+                route("patientvisitform.patientprescriptionget", {
+                    id: appointment.patient.patient_id,
+                    app_id: appointment.id,
+                }),
+            );
+            const data = await res.json();
+            setPrescriptions(data.data);
+            setBillingModalOpen(true);
+        } catch (error) {
+            toast.error("An error occured fetching prescriptions");
+            console.log(error);
+        }
+        setCheckOutLoading(false);
     }
 
     function removeAppointmentFromList() {
@@ -106,12 +131,13 @@ export function AppointmentRow({
                             {appointment.queue_type + appointment.queue_number}
                         </div>
                         <div className="min-w-60 flex-[4] p-4">
-                            <h4 className="font-semibold">
-                                {appointment.patient.name}
-                            </h4>
+                            <h4 className="font-semibold">{patientFullName}</h4>
                             <p className="text-xs text-gray-500">
                                 {appointment.patient.age},{" "}
                                 {appointment.patient.gender}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                                {appointment.service_charge.name}
                             </p>
                         </div>
                         <div className="flex min-w-40 flex-[2] items-center justify-center p-4">
@@ -149,13 +175,21 @@ export function AppointmentRow({
                                     )}
                                 </button>
                                 <button
-                                    onClick={() => {}}
+                                    onClick={handleCheckOut}
                                     disabled={
-                                        appointment.status !== "for_billing"
+                                        appointment.status !== "for_billing" ||
+                                        checkOutLoading
                                     }
-                                    className={`flex items-center gap-1.5 rounded-md border border-dashed border-[#8D2310] bg-white px-2 py-1.5 text-[#8D2310] duration-200 hover:bg-[#8D2310]/5 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]`}
+                                    className={`flex items-center gap-1.5 rounded-md border border-dashed border-[#8D2310] bg-white px-2 py-1.5 text-[#8D2310] duration-200 hover:bg-[#8D2310]/5 ${checkOutLoading ? "pointer-events-none" : "disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"}`}
                                 >
-                                    Check Out
+                                    {checkOutLoading ? (
+                                        <>
+                                            <LoadingIndicator color="#8D2310" />{" "}
+                                            Checking Out
+                                        </>
+                                    ) : (
+                                        "Check Out"
+                                    )}
                                 </button>
                                 {userRole === "secretary" ? (
                                     <button
@@ -209,6 +243,7 @@ export function AppointmentRow({
                             </div>
                         </div>
                     </div>
+
                     <DeleteAppointmentModal
                         open={deleteModalOpen}
                         closeModal={() => {
@@ -224,6 +259,13 @@ export function AppointmentRow({
                         }}
                         appointmentId={appointment.id}
                         patient={appointment.patient}
+                    />
+
+                    <BillingModal
+                        open={billingModalOpen}
+                        closeModal={() => setBillingModalOpen(false)}
+                        appointment={appointment}
+                        prescriptions={prescriptions}
                     />
                 </>
             )}

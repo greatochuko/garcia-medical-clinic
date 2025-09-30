@@ -4,12 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Log;
 use App\Models\Patient;
 use App\Models\Appointment;
-use App\Models\VitalSignsModal;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\ClosedAppointment;
+use App\Models\MedicationList;
 use App\Models\ServiceCharge;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -19,126 +17,37 @@ class AppointmentManagerController extends Controller
 {
     public function index(Request $request)
     {
-        // $appointments = Appointment::with(['patient', 'serviceCharge'])
-        //     ->select('appointments.*')
-        //     // ->orderBy('appointments.order_number', 'desc')
-        //      ->whereDate('appointments.appointment_date', Carbon::now()->toDateString()) 
-        //     ->orderBy('appointments.order_number',)
-        //     ->paginate($request->input('perPage', 10));
-
-
-
         $perPage = (int) $request->input('perPage', 10);
-        $page = (int) $request->input('page', 1);
-        $search = $request->input('search', '');
-
-        // Appointment::doesntHave('patient')->delete();
+        $search  = $request->input('search', '');
 
         $query = Appointment::with(['patient.vitals', 'serviceCharge']);
+        $medications = MedicationList::all();
 
-        // Apply search on patient's name or patient ID
+        // Apply search filters
         if ($search) {
             $query->where(function ($q) use ($search) {
-                // Search by patient name or ID
                 $q->whereHas('patient', function ($subQuery) use ($search) {
                     $subQuery->where('first_name', 'like', "%{$search}%")
                         ->orWhere('last_name', 'like', "%{$search}%")
                         ->orWhere('status', 'like', "%{$search}%")
                         ->orWhere('patient_id', 'like', "%{$search}%");
-                })
-                    // Search by service name
-                    ->orWhereHas('serviceCharge', function ($subQuery) use ($search) {
-                        $subQuery->where('name', 'like', "%{$search}%");
-                    });
+                })->orWhereHas('serviceCharge', function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', "%{$search}%");
+                });
             });
         }
 
-
-        // $patientVitals = VitalSignsModal::all(); // or ->get()
-
-
-        $appointments = $query
-            // ->with(['patient.vitals'])
-            ->select('appointments.*')
-            ->orderBy('appointments.created_at', 'desc') // order by date
-            ->paginate($perPage, ['*'], 'page', $page);
-
-
-
-        // Transform the data
-        $transformedData = $appointments->through(function ($appointment) {
-            return [
-                'id' => $appointment->id,
-                'order_number' => $appointment->order_number,
-                'queue_type' => $appointment->queue_type,
-                'appointment_date' => $appointment->appointment_date,
-                'queue_number' => $appointment->queue_number,
-                'patient' => [
-                    'name' => $appointment->patient->first_name . ', ' . $appointment->patient->middle_initial . ' ' . $appointment->patient->last_name,
-                    'age' => $appointment->patient->age,
-                    'patient_id' => $appointment->patient->patient_id,
-                    'gender' => $appointment->patient->gender,
-                    'vitals' => $appointment->patient->vitals ?? null
-                ],
-                'services' => [$appointment->serviceCharge->name ?? ''],
-                'status' => $appointment->status,
-                'actions' => ['Check In', 'Check Out']
-            ];
-        });
-
-
+        // Fetch with pagination
+        $appointments = $query->orderBy('appointments.created_at', 'desc')
+            ->paginate($perPage)
+            ->withQueryString();
 
         return Inertia::render('AppointmentManager', [
-            'appointments' => [
-                'data' => $transformedData->items(),
-                'current_page' => $appointments->currentPage(),
-                'per_page' => $appointments->perPage(),
-                'last_page' => $appointments->lastPage(),
-                'total' => $appointments->total(),
-                'prev_page_url' => $appointments->previousPageUrl(),
-                'next_page_url' => $appointments->nextPageUrl(),
-            ]
+            'appointments' => $appointments,
+            'medications' => $medications
         ]);
-
-
-
-        // $appointments = Appointment::with(['patient', 'serviceCharge'])
-        //     ->select('appointments.*')
-        //     // ->orderBy('appointments.order_number', 'desc')
-        //     ->orderBy('appointments.order_number',)
-        //     ->paginate($request->input('perPage', 10));
-
-        // // Transform the data to match the expected format
-        // $transformedData = $appointments->through(function ($appointment) {
-        //     return [
-        //         'id' => $appointment->id,
-        //         'order_number' => $appointment->order_number,
-        //         'queue_type' => $appointment->queue_type,
-        //         'queue_number' => $appointment->queue_number,
-        //         'patient' => [
-        //             'name' => $appointment->patient->first_name . ', ' . $appointment->patient->middle_initial . ' ' . $appointment->patient->last_name,
-        //             'age' => $appointment->patient->age,
-        //             'patient_id' => $appointment->patient->patient_id,
-        //             'gender' => $appointment->patient->gender
-        //         ],
-        //         'services' => [$appointment->serviceCharge->name], // Assuming service_charges table has a name column
-        //         'status' => $appointment->status,
-        //         'actions' => ['Check In', 'Check Out']
-        //     ];
-        // });
-
-        // return Inertia::render('AppointmentManager', [
-        //     'appointments' => [
-        //         'data' => $transformedData->items(),
-        //         'current_page' => $appointments->currentPage(),
-        //         'per_page' => $appointments->perPage(),
-        //         'last_page' => $appointments->lastPage(),
-        //         'total' => $appointments->total(),
-        //         'prev_page_url' => $appointments->previousPageUrl(),
-        //         'next_page_url' => $appointments->nextPageUrl(),
-        //     ]
-        // ]);
     }
+
 
     public function poll(Request $request)
     {
