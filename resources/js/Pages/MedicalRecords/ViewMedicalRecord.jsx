@@ -3,17 +3,12 @@ import { MedicalRecordsHistory } from "@/Components/medical-records/MedicalRecor
 import PatientProfile from "@/Components/medical-records/PatientProfile";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
-export default function ViewMedicalRecord({
-    auth,
-    patient,
-    medicalRecords,
-    medicalHistory,
-}) {
+export default function ViewMedicalRecord({ auth, patient, medicalHistory }) {
     const [user, setUser] = useState(auth.user);
 
     return (
         <AuthenticatedLayout
-            pageTitle={`${patient.first_name} ${patient.last_name} Medical Records`}
+            pageTitle={`${patient.first_name} ${patient.last_name} - Medical Records`}
             user={user}
             setUser={setUser}
         >
@@ -22,10 +17,7 @@ export default function ViewMedicalRecord({
                     patient={patient}
                     medicalHistory={medicalHistory}
                 />
-                <MedicalRecordsHistory
-                    patient={patient}
-                    medicalRecords={medicalRecords}
-                />
+                <MedicalRecordsHistory patient={patient} user={user} />
             </div>
         </AuthenticatedLayout>
     );

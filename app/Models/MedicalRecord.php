@@ -10,21 +10,32 @@ class MedicalRecord extends Model
     use HasFactory;
 
     protected $fillable = [
-        'patient_id',
-        'closed_appointment_id',
+        'appointment_id',
+        'diagnosis',
+        'prescribed_medications',
         'doctor_id',
-        'date',
-        'has_document',
-        'status'
+        'patient_id',
     ];
 
     protected $casts = [
-        'date' => 'datetime',
-        'has_document' => 'boolean'
+        'prescribed_medications' => 'array', // stores as JSON in DB
     ];
+
+    /**
+     * Relationships
+     */
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class);
+    }
+
+    public function doctor()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function patient()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(Patient::class, 'patient_id', 'patient_id');
     }
-} 
+}

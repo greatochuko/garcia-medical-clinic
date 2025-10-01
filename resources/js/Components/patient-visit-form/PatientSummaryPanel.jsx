@@ -13,6 +13,8 @@ export default function PatientSummaryPanel({
     labRequest,
     prescriptions,
     appointmentIsClosed,
+    diagnosis,
+    medications,
 }) {
     const [currentTab, setCurrentTab] = useState("medicalHistory");
     const [signFormModalOpen, setSignFormModalOpen] = useState(false);
@@ -162,7 +164,7 @@ export default function PatientSummaryPanel({
                     </h2>
                     <div className="flex flex-1 flex-col justify-center gap-2 p-4">
                         {appointmentIsClosed ? (
-                            <button className="rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90 disabled:pointer-events-none disabled:opacity-50">
+                            <button className="mx-auto w-fit rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90 disabled:pointer-events-none disabled:opacity-50">
                                 MODIFY RECORD
                             </button>
                         ) : (
@@ -257,6 +259,8 @@ export default function PatientSummaryPanel({
                 appointmentId={appointmentId}
                 closeModal={() => setSignFormModalOpen(false)}
                 open={signFormModalOpen}
+                diagnosis={diagnosis}
+                prescribed_medications={medications}
             />
         </>
     );

@@ -27,7 +27,9 @@ export default function PatientVisitForm({
     medicalCertificate,
     laboratoryRequest,
     appointment,
+    auth,
 }) {
+    const [user, setUser] = useState(auth.user);
     const appointmentId = appointment.id;
     const [patient, setPatient] = useState(initialPatient);
     const [patientEntryData, setPatientEntryData] = useState({
@@ -58,6 +60,8 @@ export default function PatientVisitForm({
 
     return (
         <AuthenticatedLayout
+            user={user}
+            setUser={setUser}
             pageTitle={`${patient.first_name} ${patient.last_name} Patient Visit Form`}
         >
             <div className="mx-auto mt-4 flex w-[90%] max-w-screen-2xl flex-col gap-4">
@@ -69,6 +73,12 @@ export default function PatientVisitForm({
                     labRequest={laboratoryRequest}
                     prescriptions={prescriptions}
                     appointmentIsClosed={appointmentIsClosed}
+                    diagnosis={patientEntryData.diagnosis.data
+                        .map((diag) => diag.diagnosis)
+                        .join(",")}
+                    medications={prescriptions.map(
+                        (pres) => pres.medication.name,
+                    )}
                 />
                 <div className="flex flex-col gap-4 rounded-lg bg-accent-100 py-2 shadow">
                     <div className="relative flex items-center justify-center">
@@ -123,7 +133,9 @@ export default function PatientVisitForm({
                         ))}
                     </div>
                     <div className="px-2">
-                        <DiagnosticResultsCard />
+                        <DiagnosticResultsCard
+                            appointmentIsClosed={appointmentIsClosed}
+                        />
                     </div>
                 </div>
             </div>

@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import MedicationRefillModal from "../modals/MedicationRefillModal";
+import { Link, usePage } from "@inertiajs/react";
+import { route } from "ziggy-js";
 
-export function MedicalRecordsHistory({ patient }) {
+export function MedicalRecordsHistory({ patient, user }) {
+    const { medicalRecords } = usePage().props;
+    console.clear();
+    console.log(medicalRecords[0].doctor);
     const [refillModalOpen, setRefillModalOpen] = useState(false);
 
-    const lastVisitDate = new Date(patient.last_visit_date * 1000);
+    const lastVisitDate = new Date(patient.last_visit_date);
 
     const medicalRecordsStats = [
         {
@@ -43,6 +48,7 @@ export function MedicalRecordsHistory({ patient }) {
                   }),
         },
     ];
+
     return (
         <>
             <div className="flex flex-[1.6] flex-col divide-y-2 divide-accent-200 rounded-md border shadow">
@@ -80,10 +86,73 @@ export function MedicalRecordsHistory({ patient }) {
                         Medication Refill
                     </button>
                 </div>
-                <div className="p-4 pt-8">
-                    <p className="text-center text-accent-500">
-                        This Patient has no medical history yet
-                    </p>
+                <div className="flex flex-col gap-1 p-4 pt-8">
+                    {medicalRecords.length > 0 ? (
+                        medicalRecords.map((record) => (
+                            <div
+                                key={record.id}
+                                className="flex items-stretch gap-2"
+                            >
+                                <div className="flex flex-col items-center gap-[2px]">
+                                    <span className="block rounded-full bg-[#EAECF0] p-2">
+                                        <img
+                                            src="/assets/icons/file-icon.svg"
+                                            alt="File icon"
+                                            className="h-3 w-3"
+                                        />
+                                    </span>
+                                    <div className="w-[2px] flex-1 bg-[#EAECF0]"></div>
+                                </div>
+                                <div className="flex flex-col gap-2 pb-4 pt-1.5 text-xs">
+                                    <p className="text-[#666666]">
+                                        {new Date(
+                                            record.appointment.appointment_date,
+                                        ).toLocaleDateString("en-US", {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                        })}{" "}
+                                        |{" "}
+                                        {record.appointment.service_charge.name}
+                                    </p>
+                                    <div className="">
+                                        <Link
+                                            href={route(
+                                                "patientvisitform.index",
+                                                {
+                                                    patient_id:
+                                                        record.patient_id,
+                                                    appointment_id:
+                                                        record.appointment_id,
+                                                },
+                                            )}
+                                            className="text-sm font-semibold hover:underline"
+                                        >
+                                            {user.role === "secretary"
+                                                ? record.appointment
+                                                      .service_charge.name
+                                                : record.diagnosis}
+                                        </Link>
+                                        <p className="text-[#666666]">
+                                            Prescribed Medications:{" "}
+                                            {record.prescribed_medications.join(
+                                                ", ",
+                                            )}
+                                        </p>
+                                    </div>
+                                    <p className="text-[#5E8696]">
+                                        {record.doctor.first_name},{" "}
+                                        {record.doctor.middle_initial}{" "}
+                                        {record.doctor.last_name} MD
+                                    </p>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <p className="text-center text-accent-500">
+                            This Patient has no medical history yet
+                        </p>
+                    )}
                 </div>
             </div>
 

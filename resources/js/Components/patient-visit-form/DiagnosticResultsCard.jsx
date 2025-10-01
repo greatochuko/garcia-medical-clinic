@@ -180,7 +180,9 @@ const initialDiagnosticResults = [
     },
 ];
 
-export default function DiagnosticResultsCard() {
+export default function DiagnosticResultsCard({ appointmentIsClosed }) {
+    const [currentTab, setCurrentTab] = useState("hematology");
+    const [addResultsModalOpen, setAddResultsModalOpen] = useState(false);
     const [diagnosticResults, setDiagnosticResults] = useState(
         initialDiagnosticResults.map((res) => ({
             ...res,
@@ -195,23 +197,29 @@ export default function DiagnosticResultsCard() {
         })),
     );
 
-    const [currentTab, setCurrentTab] = useState("hematology");
-    const [addResultsModalOpen, setAddResultsModalOpen] = useState(false);
-
     return (
         <>
-            <div className="divide-y-2 divide-accent-200 rounded-md bg-white shadow-md">
+            <div
+                className={`divide-y-2 divide-accent-200 rounded-md bg-white shadow-md ${appointmentIsClosed ? "grayscale" : ""}`}
+            >
                 <div className="relative p-2 pb-20 text-center md:pb-6">
                     <h2 className="text-sm font-bold">DIAGNOSTIC RESULTS</h2>
-                    <button className="absolute right-3 top-3 rounded-md border border-transparent p-1 duration-200 hover:border-accent-400 hover:bg-accent-200">
+                    <button
+                        disabled={appointmentIsClosed}
+                        className="absolute right-3 top-3 rounded-md border border-transparent p-1 duration-200 hover:border-accent-400 hover:bg-accent-200 disabled:pointer-events-none"
+                    >
                         <ExpandIcon
                             className="h-3.5 w-3.5 text-accent"
                             strokeWidth={2.5}
                         />
                     </button>
                     <button
-                        onClick={() => setAddResultsModalOpen(true)}
-                        className="absolute left-1/2 top-12 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 text-xs font-medium duration-200 hover:bg-accent-200 md:left-4 md:top-full md:translate-x-0"
+                        disabled={appointmentIsClosed}
+                        onClick={() => {
+                            if (appointmentIsClosed) return;
+                            setAddResultsModalOpen(true);
+                        }}
+                        className="absolute left-1/2 top-12 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 text-xs font-medium duration-200 hover:bg-accent-200 disabled:pointer-events-none md:left-4 md:top-full md:translate-x-0"
                     >
                         <PlusIcon size={12} />
                         ADD RESULTS

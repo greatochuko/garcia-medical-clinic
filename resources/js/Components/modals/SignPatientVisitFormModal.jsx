@@ -9,24 +9,29 @@ export default function SignPatientVisitFormModal({
     open,
     closeModal: closeSignModal,
     appointmentId,
+    diagnosis,
+    prescribed_medications,
 }) {
     const [loading, setLoading] = useState();
 
     function handleSignAppointment() {
         router.put(
             route("appointments.close-form", { id: appointmentId }),
-            {},
+            { diagnosis, prescribed_medications },
             {
                 preserveScroll: true,
                 // preserveState: true,
                 onStart: () => {
-                    setLoading?.(true);
+                    setLoading(true);
+                },
+                onFinish: () => {
+                    setLoading(false);
                 },
                 onSuccess: () => {
                     closeModal();
                 },
                 onError: (errors) => {
-                    console.log(errors);
+                    console.error(errors);
                 },
             },
         );

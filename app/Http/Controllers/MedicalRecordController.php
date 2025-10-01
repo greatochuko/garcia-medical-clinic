@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointment;
 use App\Models\Patient;
 use Illuminate\Support\Facades\DB;
 use App\Models\MedicalHistory;
@@ -70,7 +71,7 @@ class MedicalRecordController extends Controller
         if (!$patient) {
             abort(404, 'Patient not found.');
         }
-        $medicalRecords = MedicalRecord::where('patient_id', $patient['patient_id'])->get();
+        $medicalRecords = MedicalRecord::with(['appointment.serviceCharge', 'doctor', 'patient'])->where('patient_id', $patient['patient_id'])->get();
         $medicalHistory = MedicalHistory::where('patient_id', $patient['patient_id']);
 
         return Inertia::render('MedicalRecords/ViewMedicalRecord', [

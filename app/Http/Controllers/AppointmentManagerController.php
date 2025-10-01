@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\Patient;
 use App\Models\Appointment;
 use App\Models\ClosedAppointment;
+use App\Models\MedicalRecord;
 use App\Models\MedicationList;
 use App\Models\ServiceCharge;
 use Illuminate\Support\Facades\DB;
@@ -469,21 +470,43 @@ class AppointmentManagerController extends Controller
         // ]);
     }
 
-    public function closeForm($id)
+    public function closeForm(Request $request, $id)
     {
-        // return response()->json(['success' => false, 'status' => "new"]);
-        $appointment = Appointment::where('id', $id)->first();
+        $user = auth()->user();
 
-        if (!$appointment) {
-            return response()->json(['error' => 'Appointment not found'], 404);
+        // Role check
+        if (!in_array($user->role, ['doctor', 'admin'])) {
+            return back()->withErrors(['error' => 'Form closed and medical record created successfully!']);
         }
 
+        // Find appointment
+        $appointment = Appointment::find($id);
+        if (!$appointment) {
+            return back()->withErrors(['error' => 'Appointment not found']);
+        }
+
+        // Validate request data
+        $validated = $request->validate([
+            'diagnosis'              => 'required|string|max:1000',
+            'prescribed_medications' => 'nullable|array',
+            'prescribed_medications.*' => 'string|max:255', // each medication string
+        ]);
+
+        // Update appointment status
         $appointment->status = "for_billing";
         $appointment->save();
 
-        return redirect()->route('appointments.index')->with('success', 'Form closed successfully!');
+        // Create medical record
+        MedicalRecord::create([
+            'appointment_id'         => $appointment->id,
+            'diagnosis'              => $validated['diagnosis'],
+            'prescribed_medications' => $validated['prescribed_medications'] ?? [],
+            'doctor_id'              => $user->id,
+            'patient_id'             => $appointment->patient_id,
+        ]);
 
-        // return response()->json(['success' => true, 'status' => $appointment->status]);
+        return redirect()->route('appointments.index')
+            ->with('success', 'Form closed and medical record created successfully!');
     }
 
     public function updateStatus(Request $request, $id)

@@ -30,6 +30,7 @@ export default function Footer() {
                     ))}
                 </ul>
                 <Link
+                    target="_blank"
                     href={"https://www.klinicaresolutions.com/help"}
                     className="flex items-center gap-2 py-2 hover:underline xl:ml-auto"
                 >
