@@ -486,11 +486,23 @@ class AppointmentManagerController extends Controller
         }
 
         // Validate request data
-        $validated = $request->validate([
-            'diagnosis'              => 'required|string|max:1000',
-            'prescribed_medications' => 'nullable|array',
-            'prescribed_medications.*' => 'string|max:255', // each medication string
-        ]);
+        $validated = $request->validate(
+            [
+                'diagnosis'                  => 'required|string|max:1000',
+                'prescribed_medications'     => 'nullable|array',
+                'prescribed_medications.*'   => 'string|max:255',
+            ],
+            [
+                'diagnosis.required'         => 'A diagnosis is required before closing the form.',
+                'diagnosis.string'           => 'The diagnosis must be a valid text.',
+                'diagnosis.max'              => 'The diagnosis cannot exceed 1000 characters.',
+
+                'prescribed_medications.array'   => 'Prescribed medications must be a valid list.',
+                'prescribed_medications.*.string' => 'Each medication must be a valid text.',
+                'prescribed_medications.*.max'    => 'Each medication cannot exceed 255 characters.',
+            ]
+        );
+
 
         // Update appointment status
         $appointment->status = "for_billing";

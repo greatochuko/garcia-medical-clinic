@@ -13,7 +13,6 @@ export default function PatientSummaryPanel({
     labRequest,
     prescriptions,
     appointmentIsClosed,
-    diagnosis,
     medications,
 }) {
     const [currentTab, setCurrentTab] = useState("medicalHistory");
@@ -259,7 +258,7 @@ export default function PatientSummaryPanel({
                 appointmentId={appointmentId}
                 closeModal={() => setSignFormModalOpen(false)}
                 open={signFormModalOpen}
-                diagnosis={diagnosis}
+                diagnosis={medicalCertificate?.diagnosis}
                 prescribed_medications={medications}
             />
         </>

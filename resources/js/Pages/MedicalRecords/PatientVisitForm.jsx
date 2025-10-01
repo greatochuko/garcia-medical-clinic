@@ -30,7 +30,6 @@ export default function PatientVisitForm({
     auth,
 }) {
     const [user, setUser] = useState(auth.user);
-    const appointmentId = appointment.id;
     const [patient, setPatient] = useState(initialPatient);
     const [patientEntryData, setPatientEntryData] = useState({
         chief_complaint: {
@@ -56,7 +55,10 @@ export default function PatientVisitForm({
         },
     });
 
-    const appointmentIsClosed = appointment.status === "for_billing";
+    const appointmentId = appointment.id;
+    const appointmentIsClosed =
+        appointment.status === "for_billing" ||
+        appointment.status === "checked_out";
 
     return (
         <AuthenticatedLayout
@@ -73,9 +75,6 @@ export default function PatientVisitForm({
                     labRequest={laboratoryRequest}
                     prescriptions={prescriptions}
                     appointmentIsClosed={appointmentIsClosed}
-                    diagnosis={patientEntryData.diagnosis.data
-                        .map((diag) => diag.diagnosis)
-                        .join(",")}
                     medications={prescriptions.map(
                         (pres) => pres.medication.name,
                     )}

@@ -4,6 +4,7 @@ import XIcon from "../icons/XIcon";
 import LoadingIndicator from "../layout/LoadingIndicator";
 import { route } from "ziggy-js";
 import { router } from "@inertiajs/react";
+import toast from "react-hot-toast";
 
 export default function SignPatientVisitFormModal({
     open,
@@ -31,7 +32,9 @@ export default function SignPatientVisitFormModal({
                     closeModal();
                 },
                 onError: (errors) => {
-                    console.error(errors);
+                    Object.values(errors).forEach((err) => {
+                        toast.error(err);
+                    });
                 },
             },
         );

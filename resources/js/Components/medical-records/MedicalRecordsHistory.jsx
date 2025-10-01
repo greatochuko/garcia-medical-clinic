@@ -114,23 +114,29 @@ export function MedicalRecordsHistory({ patient, user }) {
                                         {record.appointment.service_charge.name}
                                     </p>
                                     <div className="">
-                                        <Link
-                                            href={route(
-                                                "patientvisitform.index",
+                                        {user.role === "secretary" ? (
+                                            <h4 className="text-sm font-semibold">
                                                 {
-                                                    patient_id:
-                                                        record.patient_id,
-                                                    appointment_id:
-                                                        record.appointment_id,
-                                                },
-                                            )}
-                                            className="text-sm font-semibold hover:underline"
-                                        >
-                                            {user.role === "secretary"
-                                                ? record.appointment
-                                                      .service_charge.name
-                                                : record.diagnosis}
-                                        </Link>
+                                                    record.appointment
+                                                        .service_charge.name
+                                                }
+                                            </h4>
+                                        ) : (
+                                            <Link
+                                                href={route(
+                                                    "patientvisitform.index",
+                                                    {
+                                                        patient_id:
+                                                            record.patient_id,
+                                                        appointment_id:
+                                                            record.appointment_id,
+                                                    },
+                                                )}
+                                                className="text-sm font-semibold hover:underline"
+                                            >
+                                                {record.diagnosis}
+                                            </Link>
+                                        )}
                                         <p className="text-[#666666]">
                                             Prescribed Medications:{" "}
                                             {record.prescribed_medications.join(
