@@ -5,8 +5,6 @@ import { route } from "ziggy-js";
 
 export function MedicalRecordsHistory({ patient, user }) {
     const { medicalRecords } = usePage().props;
-    console.clear();
-    console.log(medicalRecords[0].doctor);
     const [refillModalOpen, setRefillModalOpen] = useState(false);
 
     const lastVisitDate = new Date(patient.last_visit_date);

@@ -77,7 +77,7 @@ export default function MedicalCertificate({
                 </div>
 
                 <div className="flex justify-end">
-                    <div className="text-14px w-64 text-center">
+                    <div className="text-14px text-center">
                         <div className="mb-2 border-t border-gray-400"></div>
                         <div className="font-montserrat text-base font-bold">
                             {doctor.name}

@@ -94,14 +94,14 @@ export default function Print({ prescription }) {
                             <div className="medication-item" key={index}>
                                 <div className="med-line">
                                     <span>
-                                        {globalIndex}. {med.name}
+                                        {globalIndex}. {med.name.name}
                                     </span>
                                     <span className="tab-count">
                                         #{med.amount}
                                     </span>
                                 </div>
                                 <div className="sig-line">
-                                    Sig: {med.quantity} {med.sig}
+                                    Sig: {med.quantity} {med.sig.name}
                                 </div>
                             </div>
                         );
