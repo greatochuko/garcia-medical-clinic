@@ -98,8 +98,18 @@ export default function BillingModal({
         setLoading(true);
         try {
             const data = {
-                patient,
-                service: service,
+                patient: {
+                    id: patient.id,
+                    patient_id: patient.patient_id,
+                    fullName: `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`,
+                    age: patient.age,
+                    gender: patient.gender,
+                },
+                service: {
+                    id: service.id,
+                    name: service.name,
+                    charge: service.charge,
+                },
                 prescriptions,
                 total: subtotal,
                 discount,

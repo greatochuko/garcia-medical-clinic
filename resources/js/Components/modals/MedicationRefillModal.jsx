@@ -19,6 +19,8 @@ export default function MedicationRefillModal({
     closeModal: closeBillingModal,
     medications,
     readOnly = false,
+    patient,
+    type,
 }) {
     const { auth } = usePage().props;
     const [prescriptions, setPrescriptions] = useState([]);
@@ -27,6 +29,10 @@ export default function MedicationRefillModal({
     const [loading, setLoading] = useState(false);
     const [medicationInput, setMedicationInput] = useState("");
     const [medication, setMedication] = useState(null);
+
+    const patientFullName = patient
+        ? `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`
+        : "WALK IN PATIENT";
 
     function closeModal() {
         if (paymentModalOpen || loading) return;
@@ -99,13 +105,26 @@ export default function MedicationRefillModal({
     async function handleSubmit() {
         setLoading(true);
         try {
-            const res = await axios.post(route("billingrecord.add"), {
-                services: "Walk In",
+            const data = {
+                patient: {
+                    id: patient.id,
+                    patient_id: patient.patient_id,
+                    fullName: `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`,
+                    age: patient.age,
+                    gender: patient.gender,
+                },
+                service: {
+                    id: "0",
+                    name: type === "refill" ? "Prescription Refill" : "Walk In",
+                    charge: 0,
+                },
+                prescriptions,
                 total: subtotal,
-                final_total: total,
                 discount,
+                final_total: total,
                 paid: true,
-            });
+            };
+            const res = await axios.post(route("billingrecord.add"), data);
 
             if (res.data.success) {
                 setPaid(true);
@@ -157,7 +176,9 @@ export default function MedicationRefillModal({
                     >
                         <div className="relative flex items-center justify-center p-4">
                             <h5 className="font-semibold">
-                                CHECK UP BILLING FORM
+                                {type === "refill"
+                                    ? "REFILL MEDICATION BILLING FORM"
+                                    : "WALK IN MEDICATION BILLING FORM"}
                             </h5>
                             <button
                                 type="button"
@@ -178,10 +199,12 @@ export default function MedicationRefillModal({
                                         />
                                         <div className="flex flex-col gap-1">
                                             <h4 className="font-bold">
-                                                WALK IN PATIENT
+                                                {patientFullName}
                                             </h4>
                                             <p className="text-xs text-[#47778B]">
-                                                No data found
+                                                {patient
+                                                    ? `${patient.age}, ${patient.gender}`
+                                                    : "No data found"}
                                             </p>
                                         </div>
                                     </div>

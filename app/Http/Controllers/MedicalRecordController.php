@@ -7,6 +7,7 @@ use App\Models\Patient;
 use Illuminate\Support\Facades\DB;
 use App\Models\MedicalHistory;
 use App\Models\MedicalRecord;
+use App\Models\MedicationList;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -73,10 +74,12 @@ class MedicalRecordController extends Controller
         }
         $medicalRecords = MedicalRecord::with(['appointment.serviceCharge', 'doctor', 'patient'])->where('patient_id', $patient['patient_id'])->get();
         $medicalHistory = MedicalHistory::where('patient_id', $patient['patient_id']);
+        $medications = MedicationList::all();
 
         return Inertia::render('MedicalRecords/ViewMedicalRecord', [
             'patient' => $patient,
             'medicalRecords' => $medicalRecords,
+            'medications' => $medications,
             'medicalHistory' => $medicalHistory,
             'totalappointments' => 5
         ]);

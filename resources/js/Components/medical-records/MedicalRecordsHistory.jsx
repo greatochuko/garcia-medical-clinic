@@ -4,7 +4,7 @@ import { Link, usePage } from "@inertiajs/react";
 import { route } from "ziggy-js";
 
 export function MedicalRecordsHistory({ patient, user }) {
-    const { medicalRecords } = usePage().props;
+    const { medicalRecords, medications } = usePage().props;
     const [refillModalOpen, setRefillModalOpen] = useState(false);
 
     const lastVisitDate = new Date(patient.last_visit_date);
@@ -160,11 +160,13 @@ export function MedicalRecordsHistory({ patient, user }) {
                 </div>
             </div>
 
-            {/* <MedicationRefillModal
+            <MedicationRefillModal
                 open={refillModalOpen}
                 closeModal={() => setRefillModalOpen(false)}
+                medications={medications || []}
                 patient={patient}
-            /> */}
+                type="refill"
+            />
         </>
     );
 }
