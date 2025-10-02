@@ -23,7 +23,7 @@ export default function DeleteAppointmentModal({
                     closeModal();
                 },
                 onError: () => {
-                    toast.error("An error occured deleting appointment");
+                    toast.error("An error occurred deleting appointment");
                 },
                 preserveState: true,
                 preserveScroll: true,

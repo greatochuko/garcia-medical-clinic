@@ -160,11 +160,11 @@ export function MedicalRecordsHistory({ patient, user }) {
                 </div>
             </div>
 
-            <MedicationRefillModal
+            {/* <MedicationRefillModal
                 open={refillModalOpen}
                 closeModal={() => setRefillModalOpen(false)}
                 patient={patient}
-            />
+            /> */}
         </>
     );
 }

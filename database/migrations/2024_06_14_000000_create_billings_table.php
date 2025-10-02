@@ -10,16 +10,14 @@ return new class extends Migration
     {
         Schema::create('billings', function (Blueprint $table) {
             $table->id();
-            $table->string('patient_id');
-            $table->string('appointment_id')->nullable();
-            $table->text('services'); // JSON or comma-separated string
+            $table->json('patient');
+            $table->json('service');
+            $table->json('prescriptions')->nullable();
             $table->decimal('total', 10, 2);
             $table->decimal('discount', 10, 2)->nullable();
             $table->decimal('final_total', 10, 2);
             $table->boolean('paid')->default(false);
             $table->timestamps();
-
-            // $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
         });
     }
 
@@ -27,4 +25,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('billings');
     }
-}; 
+};

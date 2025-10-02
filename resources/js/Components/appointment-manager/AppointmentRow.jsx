@@ -71,7 +71,7 @@ export function AppointmentRow({
             setPrescriptions(data.data);
             setBillingModalOpen(true);
         } catch (error) {
-            toast.error("An error occured fetching prescriptions");
+            toast.error("An error occurred fetching prescriptions");
             console.error(error);
         }
         setCheckOutLoading(false);
@@ -224,6 +224,10 @@ export function AppointmentRow({
                                     isLast={!!isLast}
                                 />
                                 <button
+                                    hidden={
+                                        appointment.status === "for_billing" ||
+                                        appointment.status === "checked_out"
+                                    }
                                     onClick={() => setDeleteModalOpen(true)}
                                     className="rounded-md border border-transparent p-2 duration-100 hover:border-accent-400 hover:bg-accent-300"
                                 >
@@ -262,6 +266,7 @@ export function AppointmentRow({
                         patient={appointment.patient}
                         prescriptions={prescriptions}
                         setAppointment={setAppointment}
+                        service={appointment.service_charge}
                     />
                 </>
             )}

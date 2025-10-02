@@ -3,8 +3,6 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Input from "@/Components/layout/Input";
 import Paginator from "@/Components/layout/Paginator";
 import BillingModal from "@/Components/modals/BillingModal";
-import { route } from "ziggy-js";
-import toast from "react-hot-toast";
 
 function formatPHP(amount) {
     return `PHP ${Number(amount).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -13,28 +11,12 @@ function formatPHP(amount) {
 export default function Billingrecord({ auth, billingData }) {
     const [user, setUser] = useState(auth.user);
     const [searchQuery, setSearchQuery] = useState("");
-
-    // Shared modal state
     const [billingModalOpen, setBillingModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
-    const [prescriptions, setPrescriptions] = useState([]);
 
     async function handleShowBilling(record) {
-        try {
-            const res = await fetch(
-                route("patientvisitform.patientprescriptionget", {
-                    id: record.patient.patient_id,
-                    app_id: record.appointment.id,
-                }),
-            );
-            const data = await res.json();
-            setPrescriptions(data.data);
-            setSelectedRecord(record);
-            setBillingModalOpen(true);
-        } catch (error) {
-            toast.error("An error occurred fetching prescriptions");
-            console.error(error);
-        }
+        setSelectedRecord(record);
+        setBillingModalOpen(true);
     }
 
     return (
@@ -72,29 +54,31 @@ export default function Billingrecord({ auth, billingData }) {
                         </form>
                     </div>
 
-                    <table className="text-sm">
-                        <thead>
-                            <tr>
-                                <th className="p-4">Invoice</th>
-                                <th className="p-4 text-left">
-                                    Patient Information
-                                </th>
-                                <th className="p-4">Date</th>
-                                <th className="p-4">Services</th>
-                                <th className="p-4">Total Amount Paid</th>
-                                <th className="p-4">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {billingData.data.map((record) => (
-                                <BillingRow
-                                    key={record.id}
-                                    record={record}
-                                    onShowBilling={handleShowBilling}
-                                />
-                            ))}
-                        </tbody>
-                    </table>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead>
+                                <tr className="whitespace-nowrap">
+                                    <th className="p-4">Invoice</th>
+                                    <th className="min-w-44 p-4 text-left">
+                                        Patient Information
+                                    </th>
+                                    <th className="min-w-40 p-4">Date</th>
+                                    <th className="min-w-40 p-4">Services</th>
+                                    <th className="p-4">Total Amount Paid</th>
+                                    <th className="p-4">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {billingData.data.map((record) => (
+                                    <BillingRow
+                                        key={record.id}
+                                        record={record}
+                                        onShowBilling={handleShowBilling}
+                                    />
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
                     <Paginator
                         currentPage={billingData.current_page}
@@ -111,9 +95,10 @@ export default function Billingrecord({ auth, billingData }) {
                             appointment={selectedRecord.appointment}
                             patient={selectedRecord.patient}
                             closeModal={() => setBillingModalOpen(false)}
-                            prescriptions={prescriptions}
+                            prescriptions={selectedRecord.prescriptions}
                             invoiceNumber={selectedRecord.id}
                             readOnly
+                            service={selectedRecord.service}
                         />
                     )}
                 </div>
@@ -123,6 +108,11 @@ export default function Billingrecord({ auth, billingData }) {
 }
 
 function BillingRow({ record, onShowBilling }) {
+    const patient = record.patient;
+    const patientFullName = patient
+        ? `${patient.first_name}, ${patient.middle_initial} ${patient.last_name}`
+        : "Walk-In Patient";
+
     return (
         <tr
             onClick={() => onShowBilling(record)}
@@ -130,14 +120,14 @@ function BillingRow({ record, onShowBilling }) {
         >
             <td className="p-4 text-center">#{record.id}</td>
             <td className="p-4">
-                <p className="font-bold">
-                    {record.patient.first_name}
-                    {", "}
-                    {record.patient.middle_initial} {record.patient.last_name}
-                </p>
-                <span className="text-xs text-[#666666]">
-                    {record.patient.age}, {record.patient.gender}
-                </span>
+                <p className="font-bold">{patientFullName}</p>
+                {patient ? (
+                    <span className="text-xs text-[#666666]">
+                        {patient.age}, {patient.gender}
+                    </span>
+                ) : (
+                    <></>
+                )}
             </td>
             <td className="p-4 text-center">
                 {new Date(record.created_at).toLocaleDateString("en-US", {

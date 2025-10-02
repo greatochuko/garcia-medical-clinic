@@ -12,7 +12,9 @@ export default function PaymentModal({
     onSubmit,
     loading,
 }) {
-    const patientFullName = `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`;
+    const patientFullName = patient
+        ? `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`
+        : "WALK IN PATIENT";
     const [cashTendered, setCashTendered] = useState("");
 
     const handleNumberClick = (val) => {
@@ -40,7 +42,7 @@ export default function PaymentModal({
         <ModalContainer open={open} closeModal={closeModal}>
             <div
                 onClick={(e) => e.stopPropagation()}
-                className="w-[90%] max-w-lg divide-y-2 divide-accent-200 overflow-hidden rounded-lg bg-white"
+                className="max-h-[85%] w-[90%] max-w-lg divide-y-2 divide-accent-200 overflow-hidden rounded-lg bg-white"
             >
                 <div className="relative p-4">
                     <h4 className="text-center text-sm font-semibold">
@@ -55,7 +57,7 @@ export default function PaymentModal({
                         <XIcon size={16} strokeWidth={4} />
                     </button>
                 </div>
-                <div className="flex gap-4 p-4">
+                <div className="flex flex-col gap-4 p-4 sm:flex-row sm:gap-6">
                     <div className="flex flex-[1.2] flex-col justify-between">
                         <div className="flex items-center gap-4">
                             <img
@@ -66,7 +68,9 @@ export default function PaymentModal({
                             <div className="flex flex-col gap-1">
                                 <h4>{patientFullName}</h4>
                                 <p className="text-xs text-[#47778B]">
-                                    {patient.age}, {patient.gender}
+                                    {patient
+                                        ? `${patient.age}, ${patient.gender}`
+                                        : "No data found"}
                                 </p>
                             </div>
                         </div>
@@ -98,7 +102,7 @@ export default function PaymentModal({
                                 disabled={loading}
                                 key={i}
                                 onClick={() => handleNumberClick(String(i + 1))}
-                                className="aspect-[1.2] rounded-md border border-[#D5D9E0] text-3xl duration-200 hover:bg-accent-200"
+                                className="rounded-md border border-[#D5D9E0] p-2 text-3xl duration-200 hover:bg-accent-200"
                             >
                                 {i + 1}
                             </button>
@@ -106,7 +110,7 @@ export default function PaymentModal({
                         <button
                             disabled={loading}
                             onClick={handleBackspace}
-                            className="flex aspect-[1.2] items-center justify-center rounded-md border border-[#D5D9E0] text-3xl duration-200 hover:bg-accent-200"
+                            className="flex items-center justify-center rounded-md border border-[#D5D9E0] p-2 text-3xl duration-200 hover:bg-accent-200"
                         >
                             <img
                                 src="/assets/icons/backspace-icon.svg"
@@ -117,14 +121,14 @@ export default function PaymentModal({
                         <button
                             disabled={loading}
                             onClick={() => handleNumberClick("0")}
-                            className="aspect-[1.2] rounded-md border border-[#D5D9E0] text-3xl duration-200 hover:bg-accent-200"
+                            className="rounded-md border border-[#D5D9E0] p-2 text-3xl duration-200 hover:bg-accent-200"
                         >
                             0
                         </button>
                         <button
                             disabled={loading}
                             onClick={() => handleNumberClick(".")}
-                            className="aspect-[1.2] rounded-md border border-[#D5D9E0] text-3xl duration-200 hover:bg-accent-200"
+                            className="rounded-md border border-[#D5D9E0] p-2 text-3xl duration-200 hover:bg-accent-200"
                         >
                             .
                         </button>

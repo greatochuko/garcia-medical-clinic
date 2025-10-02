@@ -21,6 +21,7 @@ export default function BillingModal({
     setAppointment,
     readOnly = false,
     invoiceNumber,
+    service,
 }) {
     const { auth } = usePage().props;
     const [prescriptions, setPrescriptions] = useState(initialPrescriptions);
@@ -84,7 +85,7 @@ export default function BillingModal({
 
     function calculateSubtotal() {
         return (
-            Number(appointment.service_charge.charge) +
+            Number(service.charge) +
             prescriptions.reduce((sum, pres) => sum + calculateTotal(pres), 0)
         );
     }
@@ -96,15 +97,17 @@ export default function BillingModal({
     async function handleSubmit() {
         setLoading(true);
         try {
-            const res = await axios.post(route("billingrecord.add"), {
-                patient_id: patient.patient_id,
-                appointment_id: String(appointment.id),
-                services: appointment.service_charge.name,
+            const data = {
+                patient,
+                service: service,
+                prescriptions,
                 total: subtotal,
-                final_total: total,
                 discount,
+                final_total: total,
                 paid: true,
-            });
+                appointment_id: appointment.id,
+            };
+            const res = await axios.post(route("billingrecord.add"), data);
 
             if (res.data.success) {
                 setPaid(true);
@@ -117,7 +120,7 @@ export default function BillingModal({
                 toast.error("Failed to bill client");
             }
         } catch (error) {
-            toast.error("An error occured while billing client");
+            toast.error("An error occurred while billing client");
             console.error(error);
         }
         setLoading(false);
@@ -178,7 +181,7 @@ export default function BillingModal({
                                             alt="patient profile picture"
                                             className="h-12 w-12 rounded-full"
                                         />
-                                        <div className="flex flex-col gap-1">
+                                        <div className="flex-ol flex gap-1">
                                             <h4 className="font-bold">
                                                 {patientFullName}
                                             </h4>
@@ -240,8 +243,7 @@ export default function BillingModal({
                                         <tr>
                                             <td className="p-2">
                                                 {readOnly ? (
-                                                    appointment.service_charge
-                                                        .name
+                                                    service.name
                                                 ) : (
                                                     <select
                                                         name="serviceType"
@@ -253,11 +255,7 @@ export default function BillingModal({
                                                                 appointment.service
                                                             }
                                                         >
-                                                            {
-                                                                appointment
-                                                                    .service_charge
-                                                                    .name
-                                                            }
+                                                            {service.name}
                                                         </option>
                                                     </select>
                                                 )}
@@ -266,16 +264,10 @@ export default function BillingModal({
                                                 1
                                             </td>
                                             <td className="p-2 text-center">
-                                                {
-                                                    appointment.service_charge
-                                                        .charge
-                                                }
+                                                {service.charge}
                                             </td>
                                             <td className="p-2 text-center">
-                                                {formatPHP(
-                                                    appointment.service_charge
-                                                        .charge,
-                                                )}
+                                                {formatPHP(service.charge)}
                                             </td>
                                         </tr>
 

@@ -89,7 +89,7 @@ export default function VitalsModal({
                 },
                 onError: (err) => {
                     console.error(err);
-                    toast.error("An unexpected error occured");
+                    toast.error("An unexpected error occurred");
                 },
             });
         } else {
@@ -100,7 +100,7 @@ export default function VitalsModal({
                 },
                 onError: (err) => {
                     console.error(err);
-                    toast.error("An unexpected error occured");
+                    toast.error("An unexpected error occurred");
                 },
             });
         }

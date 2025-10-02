@@ -15,7 +15,7 @@ export default function DeletePatientModal({ open, closeModal, patientId }) {
                 closeModal();
             },
             onError: () => {
-                toast.error("An error occured deleting patient record");
+                toast.error("An error occurred deleting patient record");
             },
             preserveState: false,
         });
