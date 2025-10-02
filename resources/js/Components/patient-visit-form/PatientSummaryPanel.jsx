@@ -3,7 +3,6 @@ import MedicalHistoryButton from "./MedicalHistoryButton";
 import VitalSignsButton from "./VitalSignsButton";
 import SignPatientVisitFormModal from "../modals/SignPatientVisitFormModal";
 import { route } from "ziggy-js";
-import { router } from "@inertiajs/react";
 
 export default function PatientSummaryPanel({
     appointmentId,
@@ -183,11 +182,12 @@ export default function PatientSummaryPanel({
                     <div className="flex items-center gap-2 p-4">
                         <button
                             onClick={() =>
-                                router.visit(
+                                window.open(
                                     route("prescriptions.print", {
                                         id: patient.patient_id,
                                         app_id: appointmentId,
                                     }),
+                                    "_blank",
                                 )
                             }
                             disabled={!prescriptions.length}
@@ -206,11 +206,12 @@ export default function PatientSummaryPanel({
                         </button>
                         <button
                             onClick={() =>
-                                router.visit(
+                                window.open(
                                     route("laboratory.print", {
                                         id: patient.patient_id,
                                         app_id: appointmentId,
                                     }),
+                                    "_blank",
                                 )
                             }
                             disabled={!labRequest.length}
@@ -229,11 +230,12 @@ export default function PatientSummaryPanel({
                         </button>
                         <button
                             onClick={() =>
-                                router.visit(
+                                window.open(
                                     route("medical-certificate.show", {
                                         id: patient.patient_id,
                                         app_id: appointmentId,
                                     }),
+                                    "_blank",
                                 )
                             }
                             disabled={!medicalCertificate}

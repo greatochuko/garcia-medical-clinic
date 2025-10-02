@@ -17,27 +17,27 @@ class DashboardController extends Controller
 {
     public function show()
     {
-        $summary = $this->getSummary();
-        $upcomingPatients = $this->getUpcomingPatients();
-        $pendingProcedures = $this->getPendingProcedures();
-        $calendarData = $this->getMonthlyCalendar();
-        $billingItems = $this->getBillingItems();
-        $queueData = $this->getQueueNumber();
-        $reminders = $this->getReminders();
-        $todayActivities = $this->getTodayActivities();
+        // $summary = $this->getSummary();
+        // $upcomingPatients = $this->getUpcomingPatients();
+        // $pendingProcedures = $this->getPendingProcedures();
+        // $calendarData = $this->getMonthlyCalendar();
+        // $billingItems = $this->getBillingItems();
+        // $queueData = $this->getQueueNumber();
+        // $reminders = $this->getReminders();
+        // $todayActivities = $this->getTodayActivities();
 
         return Inertia::render('Dashboard', [
             'auth' => [
                 'user' => Auth::user(),
             ],
-            'summary' => $summary,
-            'upcomingPatients' => $upcomingPatients,
-            'pendingProcedures' => $pendingProcedures,
-            'calendarData' => $calendarData,
-            'billingItems' => $billingItems,
-            'queueData' => $queueData,
-            'reminders' => $reminders,
-            'todayActivities' => $todayActivities,
+            // 'summary' => $summary,
+            // 'upcomingPatients' => $upcomingPatients,
+            // 'pendingProcedures' => $pendingProcedures,
+            // 'calendarData' => $calendarData,
+            // 'billingItems' => $billingItems,
+            // 'queueData' => $queueData,
+            // 'reminders' => $reminders,
+            // 'todayActivities' => $todayActivities,
         ]);
     }
 
@@ -102,20 +102,20 @@ class DashboardController extends Controller
 
     public function getBillingItems()
     {
-       $billingPatients = DB::table('patient_records')
-    ->join('appointments', 'appointments.patient_id', '=', 'patient_records.patient_id')
-    ->join('billings', 'billings.patient_id', '=', 'appointments.patient_id')
-    ->join('service_charges', 'appointments.service', '=', 'service_charges.id') // <-- Added join
-    ->where('appointments.appointment_date', Carbon::today())
-    ->where('appointments.status', 'for_billing')
-    ->select(
-        'patient_records.*',
-        'appointments.*',
-        'billings.*',
-        'service_charges.name as service_name',
-        'service_charges.charge as amount'
-    )
-    ->get();
+        $billingPatients = DB::table('patient_records')
+            ->join('appointments', 'appointments.patient_id', '=', 'patient_records.patient_id')
+            ->join('billings', 'billings.patient_id', '=', 'appointments.patient_id')
+            ->join('service_charges', 'appointments.service', '=', 'service_charges.id') // <-- Added join
+            ->where('appointments.appointment_date', Carbon::today())
+            ->where('appointments.status', 'for_billing')
+            ->select(
+                'patient_records.*',
+                'appointments.*',
+                'billings.*',
+                'service_charges.name as service_name',
+                'service_charges.charge as amount'
+            )
+            ->get();
 
         return $billingPatients;
     }
