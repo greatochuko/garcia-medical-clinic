@@ -49,7 +49,7 @@ export function MedicalRecordsHistory({ patient, user }) {
 
     return (
         <>
-            <div className="flex flex-[1.6] flex-col divide-y-2 divide-accent-200 rounded-md border shadow">
+            <div className="flex flex-[1.6] flex-col divide-y-2 divide-accent-200 rounded-md border border-[#efefef] shadow">
                 <h2 className="p-4 text-center font-bold">MEDICAL RECORDS</h2>
                 <div className="relative grid grid-cols-2 gap-4 p-4 pb-8 xl:grid-cols-4">
                     {medicalRecordsStats.map((stat) => (

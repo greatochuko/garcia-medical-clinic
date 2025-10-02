@@ -95,7 +95,7 @@ export default function PatientProfile({ patient, medicalHistory }) {
     ];
 
     return (
-        <div className="flex flex-1 flex-col divide-y-2 divide-accent-200 rounded-md border shadow">
+        <div className="flex flex-1 flex-col divide-y-2 divide-accent-200 rounded-md border border-[#efefef] shadow">
             <h2 className="p-4 text-center font-bold">PATIENT PROFILE</h2>
             <div className="relative flex items-center gap-4 p-4 py-6">
                 <img

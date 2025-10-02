@@ -489,7 +489,7 @@ class AppointmentManagerController extends Controller
         $validated = $request->validate(
             [
                 'diagnosis'                  => 'required|string|max:1000',
-                'prescribed_medications'     => 'nullable|array',
+                'prescribed_medications'     => 'required|array',
                 'prescribed_medications.*'   => 'string|max:255',
             ],
             [
@@ -497,6 +497,7 @@ class AppointmentManagerController extends Controller
                 'diagnosis.string'           => 'The diagnosis must be a valid text.',
                 'diagnosis.max'              => 'The diagnosis cannot exceed 1000 characters.',
 
+                'prescribed_medications.required'   => 'Prescribed medications are required before closing the form.',
                 'prescribed_medications.array'   => 'Prescribed medications must be a valid list.',
                 'prescribed_medications.*.string' => 'Each medication must be a valid text.',
                 'prescribed_medications.*.max'    => 'Each medication cannot exceed 255 characters.',
