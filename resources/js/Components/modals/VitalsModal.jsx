@@ -81,6 +81,7 @@ export default function VitalsModal({
 
     function handleSaveVitalSigns(e) {
         e.preventDefault();
+
         if (patient.vitals) {
             put(route("vitalsignsmodal.update", { id: patient.vitals.id }), {
                 onSuccess: () => {
@@ -91,6 +92,7 @@ export default function VitalsModal({
                     console.error(err);
                     toast.error("An unexpected error occurred");
                 },
+                preserveScroll: true,
             });
         } else {
             post(route("vitalsignsmodal.add"), {
@@ -102,6 +104,7 @@ export default function VitalsModal({
                     console.error(err);
                     toast.error("An unexpected error occurred");
                 },
+                preserveScroll: true,
             });
         }
     }
@@ -116,6 +119,8 @@ export default function VitalsModal({
         if (processing) return;
         closeModal();
     }
+
+    const patientFullName = `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`;
 
     return (
         <ModalContainer closeModal={closeVitalsModal} open={open}>
@@ -145,7 +150,7 @@ export default function VitalsModal({
                         className="rounded-full shadow-md"
                     />
                     <div className="flex flex-col">
-                        <h5>{patient.name}</h5>
+                        <h5>{patientFullName}</h5>
                         <p className="text-xs text-[#47778B]">
                             {patient.age}, {patient.gender}
                         </p>

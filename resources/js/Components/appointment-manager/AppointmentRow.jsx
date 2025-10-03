@@ -191,7 +191,9 @@ export function AppointmentRow({
                                             setVitalSignsModalOpen(true)
                                         }
                                         disabled={
-                                            appointment.status !== "waiting"
+                                            !["waiting", "checked_in"].includes(
+                                                appointment.status,
+                                            )
                                         }
                                         className="rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
                                     >

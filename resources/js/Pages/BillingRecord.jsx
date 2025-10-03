@@ -93,7 +93,11 @@ export default function Billingrecord({ auth, billingData }) {
                         <BillingModal
                             open={billingModalOpen}
                             appointment={selectedRecord.appointment}
-                            patient={selectedRecord.patient}
+                            patient={
+                                selectedRecord.patient.id
+                                    ? selectedRecord.patient
+                                    : { ...selectedRecord.patient }
+                            }
                             closeModal={() => setBillingModalOpen(false)}
                             prescriptions={selectedRecord.prescriptions}
                             invoiceNumber={selectedRecord.id}
@@ -109,7 +113,7 @@ export default function Billingrecord({ auth, billingData }) {
 
 function BillingRow({ record, onShowBilling }) {
     const patient = record.patient;
-    const patientFullName = patient
+    const patientFullName = patient?.id
         ? `${patient.first_name}, ${patient.middle_initial} ${patient.last_name}`
         : "Walk-In Patient";
 
@@ -121,13 +125,11 @@ function BillingRow({ record, onShowBilling }) {
             <td className="p-4 text-center">#{record.id}</td>
             <td className="p-4">
                 <p className="font-bold">{patientFullName}</p>
-                {patient ? (
-                    <span className="text-xs text-[#666666]">
-                        {patient.age}, {patient.gender}
-                    </span>
-                ) : (
-                    <></>
-                )}
+                <span className="text-xs text-[#666666]">
+                    {patient?.id
+                        ? `${patient.age}, ${patient.gender}`
+                        : "No data found"}
+                </span>
             </td>
             <td className="p-4 text-center">
                 {new Date(record.created_at).toLocaleDateString("en-US", {

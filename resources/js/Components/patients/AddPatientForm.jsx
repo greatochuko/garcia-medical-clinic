@@ -1,4 +1,4 @@
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import { useForm } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 import { route } from "ziggy-js";
@@ -48,7 +48,12 @@ const formFields = [
     { id: "address", label: "Home Address", type: "text", required: true },
 ];
 
-export default function AddPatientForm({ patientId, patient }) {
+export default function AddPatientForm() {
+    const { url, props } = usePage();
+    const params = new URLSearchParams(url.split("?")[1] || {});
+    const redirectTo = params.get("redirect_to");
+    const patient = props.patient;
+    const patientId = props.patient?.patient_id || props.patientId;
     const { data, setData, post, put, processing } = useForm({
         patient_id: patientId.toString(),
         first_name: patient?.first_name || "",
@@ -162,7 +167,7 @@ export default function AddPatientForm({ patientId, patient }) {
             return;
         }
 
-        post(route("patients.register"), {
+        post(route("patients.register", { redirect_to: redirectTo }), {
             onError: (serverErrors) => {
                 setValidationErrors(Object.values(serverErrors));
             },

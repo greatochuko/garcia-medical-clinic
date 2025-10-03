@@ -50,46 +50,48 @@ export default function PatientProfile({ patient, medicalHistory }) {
                 ? `${patient.vitals.weight} kg`
                 : "N/A",
         },
-        {
-            id: "temperature",
-            label: "Temperature",
-            icon: "/assets/icons/temperature-icon.svg",
-            value: patient.vitals?.temperature
-                ? `${patient.vitals.temperature} °C`
-                : "N/A",
-        },
-        {
-            id: "blood-pressure",
-            label: "Blood Pressure",
-            icon: "/assets/icons/blood-pressure-icon.svg",
-            value:
-                patient.vitals?.blood_systolic_pressure &&
-                patient.vitals?.blood_diastolic_pressure
-                    ? `${patient.vitals.blood_systolic_pressure}/${patient.vitals.blood_diastolic_pressure} mmHg`
-                    : "N/A",
-        },
-        {
-            id: "oxygen",
-            label: "Oxygen Saturation",
-            icon: "/assets/icons/oxygen-icon.svg",
-            value: patient.vitals?.o2saturation
-                ? `${patient.vitals.o2saturation}%`
-                : "N/A",
-        },
-        {
-            id: "heart-rate",
-            label: "Heart Rate",
-            icon: "/assets/icons/heart-icon.svg",
-            value: patient.vitals?.heart_rate
-                ? `${patient.vitals.heart_rate} bpm`
-                : "N/A",
-        },
+        // {
+        //     id: "temperature",
+        //     label: "Temperature",
+        //     icon: "/assets/icons/temperature-icon.svg",
+        //     value: patient.vitals?.temperature
+        //         ? `${patient.vitals.temperature} °C`
+        //         : "N/A",
+        // },
+        // {
+        //     id: "blood-pressure",
+        //     label: "Blood Pressure",
+        //     icon: "/assets/icons/blood-pressure-icon.svg",
+        //     value:
+        //         patient.vitals?.blood_systolic_pressure &&
+        //         patient.vitals?.blood_diastolic_pressure
+        //             ? `${patient.vitals.blood_systolic_pressure}/${patient.vitals.blood_diastolic_pressure} mmHg`
+        //             : "N/A",
+        // },
+        // {
+        //     id: "oxygen",
+        //     label: "Oxygen Saturation",
+        //     icon: "/assets/icons/oxygen-icon.svg",
+        //     value: patient.vitals?.o2saturation
+        //         ? `${patient.vitals.o2saturation}%`
+        //         : "N/A",
+        // },
+        // {
+        //     id: "heart-rate",
+        //     label: "Heart Rate",
+        //     icon: "/assets/icons/heart-icon.svg",
+        //     value: patient.vitals?.heart_rate
+        //         ? `${patient.vitals.heart_rate} bpm`
+        //         : "N/A",
+        // },
         {
             id: "medical-history",
             label: "Medical History",
             icon: "/assets/icons/medical-history-icon.svg",
             value:
-                medicalHistory.length > 0 ? medicalHistory.join(", ") : "N/A",
+                medicalHistory.length > 0
+                    ? medicalHistory.map((medHis) => medHis.disease).join(", ")
+                    : "N/A",
             colSpan: 2,
         },
     ];

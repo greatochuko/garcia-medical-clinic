@@ -77,7 +77,7 @@ class MedicalRecordController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $medicalHistory = MedicalHistory::where('patient_id', $patient['patient_id']);
+        $medicalHistory = MedicalHistory::where('patient_id', $patient['patient_id'])->get();
         $medications = MedicationList::all();
 
         return Inertia::render('MedicalRecords/ViewMedicalRecord', [

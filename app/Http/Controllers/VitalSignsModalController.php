@@ -19,15 +19,15 @@ class VitalSignsModalController extends Controller
     public function AddPatientVitals(Request $request)
     {
         $validated = $request->validate([
-            'patient_id'               => 'required|integer|exists:patient_records,patient_id',
-            'blood_diastolic_pressure' => 'nullable|integer|min:0',
-            'blood_systolic_pressure'  => 'nullable|integer|min:0',
-            'heart_rate'               => 'nullable|integer|min:0',
-            'o2saturation'             => 'nullable|integer|min:0|max:100',
-            'temperature'              => 'nullable|integer',
-            'height_ft'                => 'nullable|integer|min:0',
-            'height_in'                => 'nullable|integer|min:0|max:11',
-            'weight'                   => 'nullable|integer|min:0',
+            'patient_id'               => 'required|numeric|exists:patient_records,patient_id',
+            'blood_diastolic_pressure' => 'nullable|numeric|min:0',
+            'blood_systolic_pressure'  => 'nullable|numeric|min:0',
+            'heart_rate'               => 'nullable|numeric|min:0',
+            'o2saturation'             => 'nullable|numeric|min:0|max:100',
+            'temperature'              => 'nullable|numeric|min:0',
+            'height_ft'                => 'nullable|numeric|min:0',
+            'height_in'                => 'nullable|numeric|min:0|max:11',
+            'weight'                   => 'nullable|numeric|min:0',
         ]);
 
         $vitals = VitalSignsModal::create($validated);
@@ -35,18 +35,19 @@ class VitalSignsModalController extends Controller
     }
 
 
+
     public function updatePatientVitals(Request $request, $id)
     {
         $validated = $request->validate([
-            'patient_id'               => 'required|integer|exists:patient_records,patient_id',
-            'blood_diastolic_pressure' => 'nullable|integer|min:0',
-            'blood_systolic_pressure'  => 'nullable|integer|min:0',
-            'heart_rate'               => 'nullable|integer|min:0',
-            'o2saturation'             => 'nullable|integer|min:0|max:100',
-            'temperature'              => 'nullable|integer',
-            'height_ft'                => 'nullable|integer|min:0',
-            'height_in'                => 'nullable|integer|min:0|max:11',
-            'weight'                   => 'nullable|integer|min:0',
+            'patient_id'               => 'required|numeric|exists:patient_records,patient_id',
+            'blood_diastolic_pressure' => 'nullable|numeric|min:0',
+            'blood_systolic_pressure'  => 'nullable|numeric|min:0',
+            'heart_rate'               => 'nullable|numeric|min:0',
+            'o2saturation'             => 'nullable|numeric|min:0|max:100',
+            'temperature'              => 'nullable|numeric',
+            'height_ft'                => 'nullable|numeric|min:0',
+            'height_in'                => 'nullable|numeric|min:0|max:11',
+            'weight'                   => 'nullable|numeric|min:0',
         ]);
 
         $vitals = VitalSignsModal::find($id);

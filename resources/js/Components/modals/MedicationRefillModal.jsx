@@ -104,15 +104,29 @@ export default function MedicationRefillModal({
 
     async function handleSubmit() {
         setLoading(true);
+        const patientData = patient
+            ? {
+                  id: patient.id,
+                  patient_id: patient.patient_id,
+                  first_name: patient.first_name,
+                  middle_initial: patient.middle_initial,
+                  last_name: patient.last_name,
+                  age: patient.age,
+                  gender: patient.gender,
+              }
+            : {
+                  id: null,
+                  patient_id: null,
+                  first_name: "",
+                  middle_initial: "",
+                  last_name: "",
+                  age: null,
+                  gender: "",
+              };
+
         try {
             const data = {
-                patient: {
-                    id: patient.id,
-                    patient_id: patient.patient_id,
-                    fullName: `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`,
-                    age: patient.age,
-                    gender: patient.gender,
-                },
+                patient: patientData,
                 service: {
                     id: "0",
                     name: type === "refill" ? "Prescription Refill" : "Walk In",
@@ -134,8 +148,7 @@ export default function MedicationRefillModal({
             }
         } catch (error) {
             toast.error("An error occurred while billing client");
-            console.clear();
-            console.error(error.response.data);
+            console.error(error?.response?.data?.error || error.message);
         }
         setLoading(false);
     }

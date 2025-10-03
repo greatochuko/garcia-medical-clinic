@@ -144,25 +144,22 @@ class AllPatientController extends Controller
             'address'        => 'required|string|max:500',
         ]);
 
-        $patient = Patient::create([
-            'patient_id'     => $validated['patient_id'],
-            'first_name'     => $validated['first_name'],
-            'last_name'      => $validated['last_name'],
-            'middle_initial' => $validated['middle_initial'],
-            'dob'            => $validated['dob'],
-            'age'            => $validated['age'],
-            'gender'         => $validated['gender'],
-            'patient_type'   => $validated['patient_type'],
-            'phone'          => $validated['phone'],
-            'address'        => $validated['address'],
-        ]);
+        $patient = Patient::create($validated);
+
+        // check if redirect_to param exists
+        $redirectTo = $request->query('redirect_to');
+
+        if ($redirectTo) {
+            return redirect($redirectTo)
+                ->with('success', 'Patient registered successfully!');
+        }
 
         return redirect()
             ->route('appointments.create', ['id' => $patient->patient_id])
             ->with('success', 'Patient registered successfully!')
-            ->with('id', ['id' => $validated['patient_id'], 'age' => $validated['age']]);
-        // ->with('age', $patient->age);
+            ->with('id', ['id' => $patient->patient_id, 'age' => $patient->age]);
     }
+
 
     public function update(Request $request)
     {

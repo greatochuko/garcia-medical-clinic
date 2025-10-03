@@ -33,7 +33,7 @@ export default function PatientSummaryPanel({
             id: "temperature",
             label: "Temperature",
             value: patient.vitals?.temperature
-                ? parseInt(patient.vitals.temperature) + " °C"
+                ? parseFloat(patient.vitals.temperature) + " °C"
                 : "",
         },
         {

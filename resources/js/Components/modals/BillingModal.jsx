@@ -46,7 +46,9 @@ export default function BillingModal({
         }, 200);
     }
 
-    const patientFullName = `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`;
+    const patientFullName = patient.id
+        ? `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`
+        : "WALK IN PATIENT";
 
     const billingStats = [
         { id: "doctor", label: "Doctor:", value: auth.user.first_name },
@@ -193,12 +195,14 @@ export default function BillingModal({
                                             alt="patient profile picture"
                                             className="h-12 w-12 rounded-full"
                                         />
-                                        <div className="flex-ol flex gap-1">
+                                        <div className="flex flex-col gap-1">
                                             <h4 className="font-bold">
                                                 {patientFullName}
                                             </h4>
                                             <p className="text-xs">
-                                                {patient.age}, {patient.gender}
+                                                {patient.age
+                                                    ? `${patient.age}, ${patient.gender}`
+                                                    : "No data found"}
                                             </p>
                                         </div>
                                     </div>
@@ -300,7 +304,9 @@ export default function BillingModal({
                                                             .name
                                                     }
                                                     <p className="text-[10px] text-[#8C8C8C]">
-                                                        {`${prescription.dosage} ${prescription.frequency.name} for ${prescription.duration} days - #${parseInt(prescription.amount)}`}
+                                                        {prescription.dosage
+                                                            ? `${prescription.dosage} ${prescription.frequency.name} for ${prescription.duration} days - #${parseInt(prescription.amount)}`
+                                                            : "No data found"}
                                                     </p>
                                                 </td>
                                                 <td className="p-2 text-center">

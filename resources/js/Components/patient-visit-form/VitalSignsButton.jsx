@@ -5,7 +5,10 @@ export default function VitalSignsButton({ patient, setPatient }) {
     const [modalOpen, setModalOpen] = useState(false);
 
     function updateVitals(newVitals) {
-        setPatient((prev) => ({ ...prev, vitals: newVitals }));
+        setPatient((prev) => ({
+            ...prev,
+            vitals: { ...prev.vitals, ...newVitals },
+        }));
     }
 
     return (
