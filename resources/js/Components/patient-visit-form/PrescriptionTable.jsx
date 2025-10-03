@@ -87,22 +87,7 @@ export default function PrescriptionTable({
                                 {pres.amount}
                             </td>
                             <td className="px-2 py-4 pr-4 text-center">
-                                <div className="flex gap-2">
-                                    <button
-                                        type="button"
-                                        className="rounded-md border border-transparent p-1 duration-100 hover:border-accent-400 hover:bg-accent-300"
-                                        disabled={
-                                            prescriptionLoading === pres.id
-                                        }
-                                    >
-                                        <img
-                                            src="/assets/icons/edit-icon.svg"
-                                            alt="Edit Icon"
-                                            width={16}
-                                            height={16}
-                                            className="h-4 w-4"
-                                        />
-                                    </button>
+                                <div className="flex items-center justify-center gap-2">
                                     <button
                                         type="button"
                                         onClick={() =>

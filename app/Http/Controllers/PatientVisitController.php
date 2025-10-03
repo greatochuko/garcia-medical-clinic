@@ -86,6 +86,8 @@ class PatientVisitController extends Controller
         return;
     }
 
+
+    // ---------------- CHIEF COMPLAINT ----------------
     public function get_patient_chief_complaint($id, $app_id)
     {
         $patient_chief_complaint = PatientChiefComplaint::where('patient_id', $id)
@@ -94,61 +96,340 @@ class PatientVisitController extends Controller
         return $patient_chief_complaint;
     }
 
-    public function update_patient_chief_complaint(Request $request)
+    public function add_patient_chief_complaint(Request $request)
     {
-        $entriesToUpdate = $request->entriesToUpdate ?? [];
-        $entriesToDelete = $request->entriesToDelete ?? [];
+        try {
+            $request->validate([
+                'patient_id' => 'required|string|max:255',
+                'chief_complaint' => 'required|string|max:1000',
+                'appointment_id' => 'required'
+            ]);
 
-        // Delete entries
-        if (!empty($entriesToDelete)) {
-            $idsToDelete = array_column($entriesToDelete, 'id');
-            PatientChiefComplaint::whereIn('id', $idsToDelete)->delete();
+            PatientChiefComplaint::updateOrCreate(
+                [
+                    'patient_id'      => $request->patient_id,
+                    'chief_complaint' => $request->chief_complaint,
+                    'appointment_id'  => $request->appointment_id
+                ],
+                ['updated_at' => now()]
+            );
+
+            return back()->with('success', 'Chief complaint added or updated successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
         }
-
-        // Update entries
-        if (!empty($entriesToUpdate)) {
-            foreach ($entriesToUpdate as $entry) {
-                PatientChiefComplaint::where('id', $entry['id'])
-                    ->update(['chief_complaint' => $entry['chief_complaint']]);
-            }
-        }
-
-        return back()->with('success', 'Chief complaint entry updated successfully');
     }
 
+    public function update_patient_chief_complaint(Request $request)
+    {
+        try {
+            $entriesToUpdate = $request->entriesToUpdate ?? [];
+            $entriesToDelete = $request->entriesToDelete ?? [];
+
+            if (!empty($entriesToDelete)) {
+                $idsToDelete = array_column($entriesToDelete, 'id');
+                PatientChiefComplaint::whereIn('id', $idsToDelete)->delete();
+            }
+
+            if (!empty($entriesToUpdate)) {
+                foreach ($entriesToUpdate as $entry) {
+                    PatientChiefComplaint::where('id', $entry['id'])
+                        ->update(['chief_complaint' => $entry['chief_complaint']]);
+                }
+            }
+
+            return back()->with('success', 'Chief complaint entry updated successfully');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
 
     public function delete_patient_chief_complaint(Request $request)
     {
-        $patient_chief_complaint = PatientChiefComplaint::where('chief_complaint', $request->chief_complaint)->delete();
-        return true;
+        try {
+            PatientChiefComplaint::where('chief_complaint', $request->chief_complaint)->delete();
+            return back()->with('success', 'Chief complaint deleted successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
-    public function add_patient_chief_complaint(Request $request)
+    // ---------------- PHYSICAL EXAM ----------------
+    public function get_patient_physical_exam($id, $app_id)
     {
-        $request->validate([
-            'patient_id' => 'required|string|max:255',
-            'chief_complaint' => 'required|string|max:1000',
-            'appointment_id' => 'required'
+        $patient_physical_exam = PatientPhysicalExam::where('patient_id', $id)->where('appointment_id', $app_id)->get();
+        return $patient_physical_exam;
+    }
+
+    public function add_patient_physical_exam(Request $request)
+    {
+        try {
+            $request->validate([
+                'patient_id'     => 'required|string|max:255',
+                'physical_exam'  => 'required|string|max:1000',
+                'appointment_id' => 'required',
+            ]);
+
+            PatientPhysicalExam::updateOrCreate(
+                [
+                    'patient_id'    => $request->patient_id,
+                    'physical_exam' => $request->physical_exam,
+                    'appointment_id' => $request->appointment_id,
+                ],
+                ['updated_at' => now()]
+            );
+
+            return back()->with('success', 'Physical exam added or updated successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function update_patient_physical_exam(Request $request)
+    {
+        try {
+            $entriesToUpdate = $request->entriesToUpdate ?? [];
+            $entriesToDelete = $request->entriesToDelete ?? [];
+
+            if (!empty($entriesToDelete)) {
+                $idsToDelete = array_column($entriesToDelete, 'id');
+                PatientPhysicalExam::whereIn('id', $idsToDelete)->delete();
+            }
+
+            if (!empty($entriesToUpdate)) {
+                foreach ($entriesToUpdate as $entry) {
+                    PatientPhysicalExam::where('id', $entry['id'])
+                        ->update(['physical_exam' => $entry['physical_exam']]);
+                }
+            }
+
+            return back()->with('success', 'Physical exam entry updated successfully');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function delete_patient_physical_exam(Request $request)
+    {
+        try {
+            PatientPhysicalExam::where('physical_exam', $request->physical_exam)->delete();
+            return back()->with('success', 'Physical exam deleted successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    // ---------------- PLANS ----------------
+    public function get_patient_plans($id, $app_id)
+    {
+        $patient_plans = PatientPlans::where('patient_id', $id)->where('appointment_id', $app_id)->get();
+        return $patient_plans;
+    }
+
+    public function add_patient_plans(Request $request)
+    {
+        try {
+            $request->validate([
+                'patient_id'     => 'required',
+                'plan'           => 'required|string|max:255',
+                'appointment_id' => 'required'
+            ]);
+
+            PatientPlans::updateOrCreate(
+                [
+                    'patient_id'     => $request->patient_id,
+                    'plan'           => $request->plan,
+                    'appointment_id' => $request->appointment_id,
+                ],
+                ['updated_at' => now()]
+            );
+
+            return back()->with('success', 'Plan added or updated successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function update_patient_plan(Request $request)
+    {
+        try {
+            $entriesToUpdate = $request->entriesToUpdate ?? [];
+            $entriesToDelete = $request->entriesToDelete ?? [];
+
+            if (!empty($entriesToDelete)) {
+                $idsToDelete = array_column($entriesToDelete, 'id');
+                PatientPlans::whereIn('id', $idsToDelete)->delete();
+            }
+
+            if (!empty($entriesToUpdate)) {
+                foreach ($entriesToUpdate as $entry) {
+                    PatientPlans::where('id', $entry['id'])
+                        ->update(['plan' => $entry['plan']]);
+                }
+            }
+
+            return back()->with('success', 'Plan entry updated successfully');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function delete_patient_plans(Request $request)
+    {
+        try {
+            PatientPlans::where('plan', $request->plan)->delete();
+            return back()->with('success', 'Plan deleted successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    // ---------------- DIAGNOSIS ----------------
+    public function get_patient_diagnosis($id, $app_id)
+    {
+        $patient_plans = PatientDiagnosis::where('patient_id', $id)->where('appointment_id', $app_id)->get();
+        return $patient_plans;
+    }
+
+    public function add_patient_diagnosis(Request $request)
+    {
+        try {
+            $request->validate([
+                'patient_id'     => 'required|string',
+                'diagnosis'      => 'required|string',
+                'appointment_id' => 'required'
+            ]);
+
+            PatientDiagnosis::updateOrCreate(
+                [
+                    'patient_id'     => $request->patient_id,
+                    'diagnosis'      => $request->diagnosis,
+                    'appointment_id' => $request->appointment_id,
+                ],
+                $request->all()
+            );
+
+            return back()->with('success', 'Diagnosis added or updated successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function update_patient_diagnosis(Request $request)
+    {
+        try {
+            $entriesToUpdate = $request->entriesToUpdate ?? [];
+            $entriesToDelete = $request->entriesToDelete ?? [];
+
+            if (!empty($entriesToDelete)) {
+                $idsToDelete = array_column($entriesToDelete, 'id');
+                PatientDiagnosis::whereIn('id', $idsToDelete)->delete();
+            }
+
+            if (!empty($entriesToUpdate)) {
+                foreach ($entriesToUpdate as $entry) {
+                    PatientDiagnosis::where('id', $entry['id'])
+                        ->update(['diagnosis' => $entry['diagnosis']]);
+                }
+            }
+
+            return back()->with('success', 'Diagnosis entry updated successfully');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function delete_patient_diagnosis(Request $request)
+    {
+        try {
+            PatientDiagnosis::where('diagnosis', $request->diagnosis)->delete();
+            return back()->with('success', 'Diagnosis deleted successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    // ---------------- PRESCRIPTIONS ----------------
+    public function patientprescription_get($id, $app_id)
+    {
+        $prescriptions = PatientPrescription::with(["medication", "frequency"])->where('patient_id', $id)->where('appointment_id', $app_id)->get();
+        return response()->json([
+            'success' => true,
+            'data' => $prescriptions,
         ]);
+    }
 
-        $patientChiefComplaint = PatientChiefComplaint::updateOrCreate(
-            [
-                'patient_id'       => $request->patient_id,
-                'chief_complaint'  => $request->chief_complaint,
-                'appointment_id' =>   $request->appointment_id
-            ],
-            [
-                'updated_at' => now() // optional to reflect update time
-            ]
-        );
+    public function patientprescription_add(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'patient_id'      => 'required|exists:patient_records,patient_id',
+                'medication_id'   => 'required|exists:medication_lists,id',
+                'dosage'          => 'required|string|max:255',
+                'frequency_id'    => 'required|exists:frequency_lists,id',
+                'amount'          => 'required|string|max:255',
+                'duration'        => 'required|string|max:255',
+                'appointment_id'  => 'required',
+            ]);
 
-        return;
+            $medication = MedicationList::findOrFail($validated['medication_id']);
+            $frequency  = FrequencyList::findOrFail($validated['frequency_id']);
 
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Chief complaint added or updated successfully.',
-        //     'data'    => $patientChiefComplaint,
-        // ]);
+            PatientPrescription::create([
+                'patient_id'     => $validated['patient_id'],
+                'doctor_id'      => Auth::id(),
+                'medication_id'  => $medication->id,
+                'dosage'         => $validated['dosage'],
+                'frequency_id'   => $frequency->id,
+                'amount'         => $validated['amount'],
+                'duration'       => $validated['duration'],
+                'appointment_id' => $validated['appointment_id'],
+            ]);
+
+            return back()->with('success', 'Prescription added successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function patientprescription_update(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'id'         => 'required',
+                'patient_id' => 'required|exists:patient_records,patient_id',
+                'medication' => 'required|string|max:255',
+                'dosage'     => 'nullable|string|max:255',
+                'frequency'  => 'required|string|max:255',
+                'amount'     => 'nullable|string|max:255',
+                'duration'   => 'nullable|string|max:255',
+            ]);
+
+            $prescription = PatientPrescription::findOrFail($validated['id']);
+            $prescription->update($validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Prescription updated successfully.',
+                'data'    => $prescription
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating the prescription.',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function patientprescription_remove($id)
+    {
+        try {
+            PatientPrescription::destroy($id);
+            return back()->with('success', 'Prescription removed successfully.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 
     public function update_status($id, $app_id, Request $request)
@@ -206,69 +487,6 @@ class PatientVisitController extends Controller
         return $check;
     }
 
-    public function get_patient_physical_exam($id, $app_id)
-    {
-        $patient_physical_exam = PatientPhysicalExam::where('patient_id', $id)->where('appointment_id', $app_id)->get();
-        return $patient_physical_exam;
-    }
-
-    public function delete_patient_physical_exam(Request $request)
-    {
-        $patient_physical_exam = PatientPhysicalExam::where('physical_exam', $request->physical_exam)->delete();
-        return true;
-    }
-
-    public function add_patient_physical_exam(Request $request)
-    {
-        $request->validate([
-            'patient_id'     => 'required|string|max:255',
-            'physical_exam'  => 'required|string|max:1000',
-            'appointment_id'  => 'required',
-        ]);
-
-        // Update if exists, otherwise create new
-        $patientPhysicalExam = PatientPhysicalExam::updateOrCreate(
-            [
-                'patient_id'    => $request->patient_id,
-                'physical_exam' => $request->physical_exam,
-                'appointment_id' => $request->appointment_id,
-            ],
-            [
-                'updated_at' => now() // Optional: update timestamp if already exists
-            ]
-        );
-
-        return;
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Physical exam added or updated successfully.',
-        //     'data' => $patientPhysicalExam
-        // ]);
-    }
-
-    public function update_patient_physical_exam(Request $request)
-    {
-        $entriesToUpdate = $request->entriesToUpdate ?? [];
-        $entriesToDelete = $request->entriesToDelete ?? [];
-
-        // Delete entries
-        if (!empty($entriesToDelete)) {
-            $idsToDelete = array_column($entriesToDelete, 'id');
-            PatientPhysicalExam::whereIn('id', $idsToDelete)->delete();
-        }
-
-        // Update entries
-        if (!empty($entriesToUpdate)) {
-            foreach ($entriesToUpdate as $entry) {
-                PatientPhysicalExam::where('id', $entry['id'])
-                    ->update(['physical_exam' => $entry['physical_exam']]);
-            }
-        }
-
-        return back()->with('success', 'Physical exam entry updated successfully');
-    }
-
-
     public function get_patient_notes($id, $app_id)
     {
         $patient_notes = PatientNotes::where('patient_id', $id)->where('appointment_id', $app_id)->get();
@@ -308,223 +526,5 @@ class PatientVisitController extends Controller
             'message' => 'Patient note added or updated successfully.',
             'data' => $patientNote
         ]);
-    }
-
-
-    public function get_patient_plans($id, $app_id)
-    {
-        $patient_plans = PatientPlans::where('patient_id', $id)->where('appointment_id', $app_id)->get();
-        return $patient_plans;
-    }
-
-    public function delete_patient_plans(Request $request)
-    {
-        $patient_plans = PatientPlans::where('plan', $request->plan)->delete();
-        return true;
-    }
-
-
-    public function add_patient_plans(Request $request)
-    {
-        $request->validate([
-            'patient_id' => 'required',
-            'plan' => 'required|string|max:255',
-            'appointment_id' => 'required'
-        ]);
-
-        $planName = $request->plan;
-
-        // Step 1: Ensure the plan exists in the master Plan table
-        // $existingPlan = Plan::firstOrCreate(['name' => $planName]);
-
-        // Step 2: Update if already exists or create new in patient_plans
-        $patientPlan = PatientPlans::updateOrCreate(
-            [
-                'patient_id' => $request->patient_id,
-                'plan'       => $planName,
-                'appointment_id'       => $request->appointment_id,
-            ],
-            [
-                'updated_at' => now(), // This ensures that even if the record exists, its timestamp is refreshed
-            ]
-        );
-
-        return;
-
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Patient plan added or updated successfully.',
-        //     'data' => $patientPlan,
-        // ]);
-    }
-
-    public function update_patient_plan(Request $request)
-    {
-        $entriesToUpdate = $request->entriesToUpdate ?? [];
-        $entriesToDelete = $request->entriesToDelete ?? [];
-
-        // Delete entries
-        if (!empty($entriesToDelete)) {
-            $idsToDelete = array_column($entriesToDelete, 'id');
-            PatientPlans::whereIn('id', $idsToDelete)->delete();
-        }
-
-        // Update entries
-        if (!empty($entriesToUpdate)) {
-            foreach ($entriesToUpdate as $entry) {
-                PatientPlans::where('id', $entry['id'])
-                    ->update(['plan' => $entry['plan']]);
-            }
-        }
-
-        return back()->with('success', 'Plan entry updated successfully');
-    }
-
-    public function get_patient_diagnosis($id, $app_id)
-    {
-        $patient_plans = PatientDiagnosis::where('patient_id', $id)->where('appointment_id', $app_id)->get();
-        return $patient_plans;
-    }
-
-    public function delete_patient_diagnosis(Request $request)
-    {
-        $patient_plans = PatientDiagnosis::where('diagnosis', $request->diagnosis)->delete();
-        return true;
-    }
-
-
-    public function add_patient_diagnosis(Request $request)
-    {
-        $request->validate([
-            'patient_id' => 'required|string',
-            'diagnosis' => 'required|string',
-            'appointment_id' => 'required'
-        ]);
-
-        // Update if exists, otherwise create
-        $patientDiagnosis = PatientDiagnosis::updateOrCreate(
-            [
-                'patient_id' => $request->patient_id,
-                'diagnosis'  => $request->diagnosis,
-                'appointment_id'  => $request->appointment_id,
-            ],
-            $request->all() // You can also specify fields explicitly if needed
-        );
-
-        return;
-        // return response()->json([
-        //     'success' => true,
-        //     'message' => 'Diagnosis added or updated successfully.',
-        //     'data' => $patientDiagnosis
-        // ]);
-    }
-
-    public function update_patient_diagnosis(Request $request)
-    {
-        $entriesToUpdate = $request->entriesToUpdate ?? [];
-        $entriesToDelete = $request->entriesToDelete ?? [];
-
-        // Delete entries
-        if (!empty($entriesToDelete)) {
-            $idsToDelete = array_column($entriesToDelete, 'id');
-            PatientPlans::whereIn('id', $idsToDelete)->delete();
-        }
-
-        // Update entries
-        if (!empty($entriesToUpdate)) {
-            foreach ($entriesToUpdate as $entry) {
-                PatientPlans::where('id', $entry['id'])
-                    ->update(['diagnosis' => $entry['diagnosis']]);
-            }
-        }
-
-        return back()->with('success', 'Dignosis entry updated successfully');
-    }
-
-    public function patientprescription_add(Request $request)
-    {
-        // Step 1: Validate input (all required)
-        $validated = $request->validate([
-            'patient_id'      => 'required|exists:patient_records,patient_id',
-            'medication_id'   => 'required|exists:medication_lists,id',
-            'dosage'          => 'required|string|max:255',
-            'frequency_id'    => 'required|exists:frequency_lists,id',
-            'amount'          => 'required|string|max:255',
-            'duration'        => 'required|string|max:255',
-            'appointment_id'  => 'required',
-        ]);
-
-        try {
-            // Step 2: Fetch related records (will throw if not found)
-            $medication = MedicationList::findOrFail($validated['medication_id']);
-            $frequency  = FrequencyList::findOrFail($validated['frequency_id']);
-
-            // Step 3: Save the prescription
-            $prescription = PatientPrescription::create([
-                'patient_id'     => $validated['patient_id'],
-                'doctor_id'      => Auth::id(),
-                'medication_id'  => $medication->id,
-                'dosage'         => $validated['dosage'],
-                'frequency_id'   => $frequency->id,
-                'amount'         => $validated['amount'],
-                'duration'       => $validated['duration'],
-                'appointment_id' => $validated['appointment_id'],
-            ]);
-
-            return redirect()->back()->with('success', 'Prescription added successfully.');
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => $e->getMessage()]);
-        }
-    }
-
-    public function patientprescription_update(Request $request)
-    {
-        // Step 1: Validate input
-        $validated = $request->validate([
-            'id'         => 'required',
-            'patient_id' => 'required|exists:patient_records,patient_id',
-            'medication' => 'required|string|max:255',
-            'dosage'     => 'nullable|string|max:255',
-            'frequency'  => 'required|string|max:255',
-            'amount'     => 'nullable|string|max:255',
-            'duration'   => 'nullable|string|max:255',
-        ]);
-
-        try {
-            // Step 2: Create the prescription
-            $prescription = PatientPrescription::findOrFail($validated['id']);
-
-            // Step 3: Update fields
-            $prescription->update($validated);
-
-            // Step 3: Return a JSON success response
-            return response()->json([
-                'success' => true,
-                'message' => 'Prescription added successfully.',
-                'data' => $prescription
-            ]);
-        } catch (\Exception $e) {
-            // Step 4: Return a JSON error response
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while saving the prescription.',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function patientprescription_get($id, $app_id)
-    {
-        $prescriptions = PatientPrescription::with(["medication", "frequency"])->where('patient_id', $id)->where('appointment_id', $app_id)->get();
-        return response()->json([
-            'success' => true,
-            'data' => $prescriptions,
-        ]);
-    }
-
-    public function patientprescription_remove($id)
-    {
-        $prescription_delete = PatientPrescription::destroy($id);
-        return redirect()->back()->with('success', 'Prescription removed successfully.');
     }
 }

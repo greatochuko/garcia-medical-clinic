@@ -493,7 +493,7 @@ class AppointmentManagerController extends Controller
                 'prescribed_medications.*'   => 'string|max:255',
             ],
             [
-                'diagnosis.required'         => 'A diagnosis is required before closing the form.',
+                'diagnosis.required'         => 'A medical certificate is required before closing the form.',
                 'diagnosis.string'           => 'The diagnosis must be a valid text.',
                 'diagnosis.max'              => 'The diagnosis cannot exceed 1000 characters.',
 

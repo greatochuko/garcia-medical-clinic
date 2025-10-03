@@ -43,7 +43,7 @@ export default function PrescriptionSection({
                     </div>
                 </div>
                 <div className="flex-1 overflow-y-auto p-4 pt-8 sm:pt-4">
-                    <ol className="flex h-80 flex-col gap-4 xl:h-[666px]">
+                    <ol className="flex h-80 flex-col gap-4 pt-2 xl:h-[666px]">
                         {prescriptions.map((pres, i) => (
                             <li key={pres.id} className="flex gap-2">
                                 <span className="font-bold">{i + 1}.</span>

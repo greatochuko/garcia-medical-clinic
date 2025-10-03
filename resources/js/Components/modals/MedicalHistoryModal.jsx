@@ -21,6 +21,7 @@ export default function MedicalHistoryModal({
     const [inputValue, setInputValue] = useState("");
 
     function closeModal() {
+        if (processing) return;
         closeMedicalHistoryModal();
         setTimeout(() => {
             setData((prev) => ({ ...prev, diseases: medicalHistory }));
@@ -57,23 +58,19 @@ export default function MedicalHistoryModal({
             onSuccess: () => {
                 updateMedicalHistory(data.diseases);
                 toast.success("Medical history updated successfully");
-                closeModal();
+                closeMedicalHistoryModal();
             },
-
             onError: (err) => {
                 console.error(err);
                 toast.error("Failed to update medical history");
             },
+            preserveScroll: true,
+            preserveState: true,
         });
     }
 
-    function closeDeleteModal() {
-        if (processing) return;
-        closeModal();
-    }
-
     return (
-        <ModalContainer closeModal={closeDeleteModal} open={open}>
+        <ModalContainer closeModal={closeModal} open={open}>
             <div
                 onClick={(e) => e.stopPropagation()}
                 className={`w-[90%] max-w-xl divide-y-2 divide-accent-200 rounded-lg bg-white text-sm duration-200 ${open ? "" : "translate-y-2"}`}
@@ -81,7 +78,7 @@ export default function MedicalHistoryModal({
                 <div className="flex items-center justify-between p-2 px-4 pr-2">
                     <h5 className="font-semibold">Update Medical History</h5>
                     <button
-                        onClick={closeDeleteModal}
+                        onClick={closeModal}
                         className="rounded-full p-2 duration-200 hover:bg-accent-200"
                     >
                         <XIcon size={20} />
@@ -132,7 +129,7 @@ export default function MedicalHistoryModal({
 
                 <div className="flex items-center justify-end gap-4 p-4 text-xs">
                     <button
-                        onClick={closeDeleteModal}
+                        onClick={closeModal}
                         disabled={processing}
                         className="btn rounded-md border border-accent px-4 py-2 duration-200 hover:bg-accent-200"
                     >

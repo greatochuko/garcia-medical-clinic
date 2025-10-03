@@ -4,6 +4,7 @@ import ModalContainer from "../layout/ModalContainer";
 import { useForm } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import PrescriptionTable from "../patient-visit-form/PrescriptionTable";
+import toast from "react-hot-toast";
 
 export default function AddPrescriptionModal({
     closeModal,
@@ -40,6 +41,7 @@ export default function AddPrescriptionModal({
                 setData(initialData);
             },
             onError: (errors) => {
+                toast.error(Object.values(errors)[0]);
                 console.error(errors);
             },
             preserveScroll: true,

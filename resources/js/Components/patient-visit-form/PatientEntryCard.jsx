@@ -138,7 +138,10 @@ export default function PatientEntryCard({
                 <div className="relative p-4">
                     <h3 className="text-center font-semibold">{entry.title}</h3>
                     <button
-                        disabled={appointmentIsClosed}
+                        disabled={
+                            appointmentIsClosed ||
+                            entry.id === "medical_records"
+                        }
                         onClick={openPatientEntryModal}
                         className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md border border-transparent p-1.5 duration-200 hover:border-accent-400 hover:bg-accent-200 disabled:pointer-events-none"
                     >
@@ -183,13 +186,34 @@ export default function PatientEntryCard({
                         </div>
                     )}
                 </div>
-                <ul className="flex h-60 flex-col gap-2 overflow-y-auto break-words p-4">
+                <ul
+                    className={`flex h-60 flex-col gap-2 overflow-y-auto break-words p-4 ${entry.id === "plan" ? "pt-6" : ""}`}
+                >
                     {patientEntryData[entry.id].data.map((datum) => (
                         <li key={datum.id}>
                             <span className="mr-2 font-bold">&gt;</span>
                             {datum[entry.id]}
                         </li>
                     ))}
+                    {entry.id === "plan" && (
+                        <>
+                            {laboratoryRequest && (
+                                <li className="text-[#429ABF]">
+                                    <span className="mr-2 font-bold">&gt;</span>
+                                    For{" "}
+                                    {laboratoryRequest
+                                        .map((labReq) => labReq.test_name)
+                                        .join(", ")}
+                                </li>
+                            )}
+                            {laboratoryRequest && (
+                                <li className="text-[#429ABF]">
+                                    <span className="mr-2 font-bold">&gt;</span>
+                                    Issued Medical Certificate
+                                </li>
+                            )}
+                        </>
+                    )}
                 </ul>
                 {!entry.hideInput && (
                     <div className="p-4">
