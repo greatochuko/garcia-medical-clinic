@@ -101,7 +101,9 @@ export default function BillingModal({
                 patient: {
                     id: patient.id,
                     patient_id: patient.patient_id,
-                    fullName: `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`,
+                    first_name: patient.first_name,
+                    middle_initial: patient.middle_initial,
+                    last_name: patient.last_name,
                     age: patient.age,
                     gender: patient.gender,
                 },

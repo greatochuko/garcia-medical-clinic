@@ -21,6 +21,7 @@ export default function PatientEntryCard({
     medicalCertificate,
     laboratoryRequest,
     appointmentIsClosed,
+    medicalRecords = [],
 }) {
     const [loading, setLoading] = useState(false);
     const [labRequestModalOpen, setLabRequestModalOpen] = useState(false);
@@ -187,17 +188,54 @@ export default function PatientEntryCard({
                     )}
                 </div>
                 <ul
-                    className={`flex h-60 flex-col gap-2 overflow-y-auto break-words p-4 ${entry.id === "plan" ? "pt-6" : ""}`}
+                    className={`flex min-h-60 flex-1 flex-col gap-2 overflow-y-auto break-words p-4 ${entry.id === "plan" ? "pt-6" : ""}`}
                 >
-                    {patientEntryData[entry.id].data.map((datum) => (
-                        <li key={datum.id}>
-                            <span className="mr-2 font-bold">&gt;</span>
-                            {datum[entry.id]}
-                        </li>
-                    ))}
+                    {entry.id === "medical_records"
+                        ? medicalRecords.map((record) => (
+                              <div
+                                  key={record.id}
+                                  className="-mt-1.5 flex items-stretch gap-2 first:mt-0"
+                              >
+                                  <div className="flex flex-col items-center gap-[2px]">
+                                      <span className="block rounded-full bg-[#EAECF0] p-2">
+                                          <img
+                                              src="/assets/icons/file-icon.svg"
+                                              alt="File icon"
+                                              className="h-3 w-3"
+                                          />
+                                      </span>
+                                      <div className="w-[2px] flex-1 bg-[#EAECF0]"></div>
+                                  </div>
+                                  <div className="flex flex-col gap-1 pb-2 pt-1.5 text-xs">
+                                      <p className="text-[#666666]">
+                                          {new Date(
+                                              record.appointment.appointment_date,
+                                          ).toLocaleDateString("en-US", {
+                                              year: "numeric",
+                                              month: "long",
+                                              day: "numeric",
+                                          })}
+                                      </p>
+                                      <h4 className="text-sm font-semibold">
+                                          {record.diagnosis}
+                                      </h4>
+                                      <p className="text-[#5E8696]">
+                                          {record.doctor.first_name},{" "}
+                                          {record.doctor.middle_initial}{" "}
+                                          {record.doctor.last_name} MD
+                                      </p>
+                                  </div>
+                              </div>
+                          ))
+                        : patientEntryData[entry.id].data.map((datum) => (
+                              <li key={datum.id}>
+                                  <span className="mr-2 font-bold">&gt;</span>
+                                  {datum[entry.id]}
+                              </li>
+                          ))}
                     {entry.id === "plan" && (
                         <>
-                            {laboratoryRequest && (
+                            {laboratoryRequest.length > 0 && (
                                 <li className="text-[#429ABF]">
                                     <span className="mr-2 font-bold">&gt;</span>
                                     For{" "}
@@ -206,7 +244,7 @@ export default function PatientEntryCard({
                                         .join(", ")}
                                 </li>
                             )}
-                            {laboratoryRequest && (
+                            {medicalCertificate && (
                                 <li className="text-[#429ABF]">
                                     <span className="mr-2 font-bold">&gt;</span>
                                     Issued Medical Certificate

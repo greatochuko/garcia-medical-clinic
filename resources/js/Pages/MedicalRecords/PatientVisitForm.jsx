@@ -27,6 +27,7 @@ export default function PatientVisitForm({
     medicalCertificate,
     laboratoryRequest,
     appointment,
+    medicalRecords,
     auth,
 }) {
     const [user, setUser] = useState(auth.user);
@@ -128,6 +129,7 @@ export default function PatientVisitForm({
                                 medicalCertificate={medicalCertificate}
                                 laboratoryRequest={laboratoryRequest}
                                 appointmentIsClosed={appointmentIsClosed}
+                                medicalRecords={medicalRecords}
                             />
                         ))}
                     </div>

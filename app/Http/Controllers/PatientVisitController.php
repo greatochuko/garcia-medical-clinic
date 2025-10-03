@@ -46,9 +46,11 @@ class PatientVisitController extends Controller
         $laboratoryRequest = LaboratoryRequest::where('patient_id', $id)
             ->where('appointment_id', $appointment_id)->get();
         $appointment = Appointment::where('id', $appointment_id)->first();
+        $medicalRecords = MedicalRecord::with(['appointment.serviceCharge', 'doctor', 'patient'])
+            ->where('patient_id', $patient['patient_id'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-
-        // dd($medicalCertificate);
 
         return Inertia::render('MedicalRecords/PatientVisitForm', [
             'patient' => $patient,
@@ -56,6 +58,7 @@ class PatientVisitController extends Controller
             "prescriptions" => $prescriptions,
             "inputOptions" => $inputOptions,
             "medicalCertificate" => $medicalCertificate,
+            "medicalRecords" => $medicalRecords,
             "laboratoryRequest" => $laboratoryRequest,
         ]);
     }

@@ -72,7 +72,11 @@ class MedicalRecordController extends Controller
         if (!$patient) {
             abort(404, 'Patient not found.');
         }
-        $medicalRecords = MedicalRecord::with(['appointment.serviceCharge', 'doctor', 'patient'])->where('patient_id', $patient['patient_id'])->get();
+        $medicalRecords = MedicalRecord::with(['appointment.serviceCharge', 'doctor', 'patient'])
+            ->where('patient_id', $patient['patient_id'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         $medicalHistory = MedicalHistory::where('patient_id', $patient['patient_id']);
         $medications = MedicationList::all();
 
