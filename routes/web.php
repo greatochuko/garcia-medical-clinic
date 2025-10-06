@@ -13,6 +13,7 @@ use App\Http\Controllers\FrequencyListController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\LaboratoryTestController;
 use App\Http\Controllers\AppointmentManagerController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\UnfinishedDocsController;
 use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\MedicalCertificateController;
@@ -239,6 +240,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/billing/{patient_id}', [BillingController::class, 'showByPatient'])->name('billing.showByPatient');
     Route::get('/services', [BillingController::class, 'getServices'])->name('billing.services');
     Route::delete('/billing/{id}', [BillingController::class, 'destroy'])->name('billing.destroy');
+
+    // Inventory routes
+    Route::get("inventory", [InventoryController::class, 'index'])->name('inventory.index');
 });
 
 

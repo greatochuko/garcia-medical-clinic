@@ -138,7 +138,7 @@ function BillingRow({ record, onShowBilling }) {
                     day: "numeric",
                 })}
             </td>
-            <td className="p-4 text-center">{record.services}</td>
+            <td className="p-4 text-center">{record.services || "Walk In"}</td>
             <td className="p-4 text-center">{formatPHP(record.final_total)}</td>
             <td className="p-4 text-center">
                 <span
