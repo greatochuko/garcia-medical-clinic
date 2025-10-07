@@ -6,6 +6,34 @@ import React, { useMemo, useState } from "react";
 import { FaSort } from "react-icons/fa6";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
+const allCategories = [
+    "Pain Relief",
+    "Antibiotic",
+    "Diabetes",
+    "Gastrointestinal",
+    "Cardiovascular",
+    "CNS",
+    "Antifungal",
+    "Antiviral",
+    "Respiratory",
+    "Allergy",
+    "Dermatological",
+    "Vitamins & Supplements",
+    "Hormonal",
+    "Ophthalmic",
+    "ENT (Ear, Nose & Throat)",
+    "Musculoskeletal",
+    "Oncology",
+    "Renal",
+    "Immunological",
+    "Psychiatric",
+    "Anesthetic",
+    "Antiseptic",
+    "Antimalarial",
+    "Anti-inflammatory",
+    "Antihypertensive",
+];
+
 export default function Inventory({ auth, medications: medicationList }) {
     const [user, setUser] = useState(auth.user);
     const [medicineModalOpen, setMedicineModalOpen] = useState(false);
@@ -89,7 +117,7 @@ export default function Inventory({ auth, medications: medicationList }) {
         return filtered;
     }, [medicationList, searchQuery, selectedCategory, selectedStatus, sortBy]);
 
-    const { inventoryStats, uniqueCategories } = useMemo(() => {
+    const { inventoryStats } = useMemo(() => {
         const uniqueCategories = [
             ...new Set(medicationList.map((med) => med.category)),
         ];
@@ -221,7 +249,7 @@ export default function Inventory({ auth, medications: medicationList }) {
                                         className="cursor-pointer rounded-lg border-accent p-2.5 pr-6 text-xs outline-none focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50 disabled:cursor-not-allowed disabled:bg-[#E4E4E4] disabled:text-gray-500"
                                     >
                                         <option value="">All Categories</option>
-                                        {uniqueCategories.map((cat) => (
+                                        {allCategories.map((cat) => (
                                             <option key={cat} value={cat}>
                                                 {cat}
                                             </option>
@@ -251,10 +279,10 @@ export default function Inventory({ auth, medications: medicationList }) {
                             </div>
 
                             <div className="overflow-x-auto">
-                                <table className="w-full text-xs">
+                                <table className="w-full text-xs sm:text-sm">
                                     <thead>
                                         <tr className="whitespace-nowrap text-sm">
-                                            <th className="w-[10%] min-w-32 p-4">
+                                            <th className="w-[10%] min-w-32 p-4 sm:min-w-36">
                                                 <span
                                                     onClick={() =>
                                                         handleSortBy("date")
@@ -434,7 +462,7 @@ export default function Inventory({ auth, medications: medicationList }) {
                                                 <td className="p-4 text-center">
                                                     {med.quantity}
                                                 </td>
-                                                <td className="flex items-center justify-center p-4 text-center">
+                                                <td className="flex items-center justify-center p-4 text-center text-xs">
                                                     {med.quantity > 10 ? (
                                                         <span className="block w-24 rounded-md bg-accent p-1 text-white">
                                                             In Stock
@@ -463,12 +491,12 @@ export default function Inventory({ auth, medications: medicationList }) {
                                                                     true,
                                                                 );
                                                             }}
-                                                            className="rounded-md border border-transparent p-2 duration-100 hover:border-accent-400 hover:bg-accent-300"
+                                                            className="rounded-md border border-transparent p-1.5 duration-100 hover:border-accent-400 hover:bg-accent-300"
                                                         >
                                                             <img
                                                                 src="/assets/icons/edit-icon.svg"
                                                                 alt="Edit Icon"
-                                                                className="h-3.5 w-3.5 object-contain"
+                                                                className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4"
                                                             />
                                                         </button>
                                                         <button
@@ -480,12 +508,12 @@ export default function Inventory({ auth, medications: medicationList }) {
                                                                     med,
                                                                 );
                                                             }}
-                                                            className="rounded-md border border-transparent p-2 duration-100 hover:border-accent-400 hover:bg-accent-300"
+                                                            className="rounded-md border border-transparent p-1.5 duration-100 hover:border-accent-400 hover:bg-accent-300"
                                                         >
                                                             <img
                                                                 src="/assets/icons/delete-icon.svg"
                                                                 alt="Edit Icon"
-                                                                className="h-3.5 w-3.5 object-contain"
+                                                                className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4"
                                                             />
                                                         </button>
                                                     </div>
