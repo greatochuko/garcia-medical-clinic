@@ -243,6 +243,9 @@ Route::middleware('auth')->group(function () {
 
     // Inventory routes
     Route::get("inventory", [InventoryController::class, 'index'])->name('inventory.index');
+    Route::post("inventory", [InventoryController::class, 'add'])->name('inventory.add');
+    Route::put("inventory/{id}", [InventoryController::class, 'update'])->name('inventory.update');
+    Route::delete("inventory/{id}", [InventoryController::class, 'delete'])->name('inventory.delete');
 });
 
 
