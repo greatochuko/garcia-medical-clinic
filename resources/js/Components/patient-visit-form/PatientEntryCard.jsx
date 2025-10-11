@@ -240,7 +240,11 @@ export default function PatientEntryCard({
                                     <span className="mr-2 font-bold">&gt;</span>
                                     For{" "}
                                     {laboratoryRequest
-                                        .map((labReq) => labReq.test_name)
+                                        .map(
+                                            (labReq) =>
+                                                labReq.test_name ||
+                                                labReq.others,
+                                        )
                                         .join(", ")}
                                 </li>
                             )}

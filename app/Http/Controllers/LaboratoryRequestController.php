@@ -65,10 +65,8 @@ class LaboratoryRequestController extends Controller
             $existing = LaboratoryRequest::where('patient_id', $patientId)
                 ->where('appointment_id', $appointment_id)
                 ->where('doctor_id', Auth::id())
-                ->where('others', '!=', NULL)
+                ->whereNotNull('others')
                 ->first();
-
-            // dd($existing);
 
             if ($existing) {
                 if ($validated['others'] == '') {

@@ -97,11 +97,13 @@ export default function AddLabRequestModal({
     appointmentId,
     laboratoryRequest,
 }) {
+    const otherTests = laboratoryRequest.filter((req) => req.others);
+
     const initialData = {
         patient_id: patientId,
         appointment_id: appointmentId.toString(),
         test_names: laboratoryRequest.map((lr) => lr.test_name) || [],
-        others: "",
+        others: otherTests[0]?.others || "",
     };
     const { processing, data, setData, post } = useForm(initialData);
 
@@ -161,6 +163,14 @@ export default function AddLabRequestModal({
                                         <Input
                                             key={i}
                                             type="text"
+                                            placeholder={test.placeholder}
+                                            value={data.others}
+                                            onChange={(e) =>
+                                                setData((prev) => ({
+                                                    ...prev,
+                                                    others: e.target.value,
+                                                }))
+                                            }
                                             className="col-span-2"
                                         />
                                     ) : (
