@@ -138,6 +138,22 @@ class LaboratoryRequestController extends Controller
             abort(404, 'No laboratory tests found.');
         }
 
+        $medications = $patient_laboratory->flatMap(function ($item) {
+            // If the record has standard test_name
+            if ($item->test_name) {
+                return [['name' => $item->test_name]];
+            }
+
+            // If it's the 'others' record, split by comma
+            if ($item->others) {
+                return collect(explode(',', $item->others))
+                    ->map(fn($name) => ['name' => trim($name)]);
+            }
+
+            // Default fallback
+            return [['name' => 'N/A']];
+        })->values();
+
         // Prepare data
         $laboratory = [
             'patient_name' => $patient->first_name ?? 'N/A',
@@ -148,11 +164,7 @@ class LaboratoryRequestController extends Controller
             'doctor_name' => ($doctor->doctor_name ?? '') . ' ' . ($doctor->doctor_last_name ?? ''),
             'license_no' => $doctor->license_number ?? 'N/A',
             'ptr_no' => $doctor->ptr_number ?? 'N/A',
-            'medications' => $patient_laboratory->map(function ($item) {
-                return [
-                    'name' => $item->test_name ?? 'N/A'
-                ];
-            })->toArray()
+            'medications' => $medications
         ];
 
         return Inertia::render('Laboratory/Print', [
