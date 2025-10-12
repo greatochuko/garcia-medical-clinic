@@ -57,44 +57,65 @@ class FrequencyListController extends Controller
         // ]);
     }
 
-    public function getlist(){
-         $frequency = FrequencyList::all();
+    public function getlist()
+    {
+        $frequency = FrequencyList::all();
         return response()->json([
-        'success' => true,
-        'data' => $frequency,
-    ]);
+            'success' => true,
+            'data' => $frequency,
+        ]);
         return $frequency;
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+            ]);
 
-        // Create new frequency
-        $frequency = FrequencyList::create($validated);
+            $frequency = FrequencyList::create($validated);
 
-        return redirect()->route('frequency-list')->with('success', 'Frequency added successfully');
+            return redirect()->back()->with('success', 'Frequency added successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()])
+                ->withInput();
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+            ]);
 
-        $frequency = FrequencyList::findOrFail($id);
-        $frequency->update($validated);
+            $frequency = FrequencyList::findOrFail($id);
+            $frequency->update($validated);
 
-        return redirect()->route('frequency-list')->with('success', 'Frequency updated successfully');
+            return redirect()->back()->with('success', 'Frequency updated successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()])
+                ->withInput();
+        }
     }
 
     public function destroy($id)
     {
-        $frequency = FrequencyList::findOrFail($id);
-        $frequency->delete();
+        try {
+            $frequency = FrequencyList::findOrFail($id);
+            $frequency->delete();
 
-        return redirect()->route('frequency-list')->with('success', 'Frequency deleted successfully');
+            return redirect()->back()->with('success', 'Frequency deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()])
+                ->withInput();
+        }
     }
-} 
+}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FrequencyList;
 use App\Models\ServiceCharge;
 use Inertia\Inertia;
 
@@ -21,5 +22,12 @@ class SettingsController extends Controller
         })->toArray();
 
         return Inertia::render('Settings/Services', ['services' => $services]);
+    }
+
+    public function frequency_index()
+    {
+        $frequencies = FrequencyList::orderBy('created_at', 'desc')->get();
+
+        return Inertia::render('Settings/Frequency', ['frequencies' => $frequencies]);
     }
 }

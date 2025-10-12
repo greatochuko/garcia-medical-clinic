@@ -3,22 +3,23 @@ import React, { useMemo, useState } from "react";
 import SettingsSidebar from "./SettingsSidebar";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { FaSort } from "react-icons/fa6";
-import AddServiceModal from "@/Components/modals/AddServiceModal";
-import DeleteServiceModal from "@/Components/modals/DeleteServiceModal";
+import AddFrequencyModal from "@/Components/modals/AddFrequencyModal";
+import DeleteFrequencyModal from "@/Components/modals/DeleteFrequencyModal";
 
-export default function Services({ auth, services: serviceList }) {
+export default function Frequency({ auth, frequencies: frequencyList }) {
     const [user, setUser] = useState(auth.user);
     const [sortBy, setSortBy] = useState({ field: "date", type: "desc" });
-    const [serviceModalOpen, setServiceModalOpen] = useState(false);
-    const [serviceToEdit, setServiceToEdit] = useState(null);
-    const [deleteServiceModalOpen, setDeleteServiceModalOpen] = useState(false);
-    const [serviceToDelete, setServiceToDelete] = useState(null);
+    const [frequencyModalOpen, setFrequencyModalOpen] = useState(false);
+    const [frequencyToEdit, setFrequencyToEdit] = useState(null);
+    const [deleteFrequencyModalOpen, setDeleteFrequencyModalOpen] =
+        useState(false);
+    const [frequencyToDelete, setFrequencyToDelete] = useState(null);
 
-    const services = useMemo(() => {
+    const frequencies = useMemo(() => {
         const { field, type } = sortBy;
-        if (!field) return [...serviceList];
+        if (!field) return [...frequencyList];
 
-        return [...serviceList].sort((a, b) => {
+        return [...frequencyList].sort((a, b) => {
             let valA, valB;
 
             switch (field) {
@@ -26,17 +27,9 @@ export default function Services({ auth, services: serviceList }) {
                     valA = new Date(a.created_at);
                     valB = new Date(b.created_at);
                     break;
-                case "service":
+                case "name":
                     valA = a.name.toLowerCase();
                     valB = b.name.toLowerCase();
-                    break;
-                case "patient":
-                    valA = a.patient_type.toLowerCase();
-                    valB = b.patient_type.toLowerCase();
-                    break;
-                case "price":
-                    valA = parseFloat(a.charge.toString().replace(/,/g, ""));
-                    valB = parseFloat(b.charge.toString().replace(/,/g, ""));
                     break;
                 default:
                     return 0;
@@ -46,7 +39,7 @@ export default function Services({ auth, services: serviceList }) {
             if (valA > valB) return type === "asc" ? 1 : -1;
             return 0;
         });
-    }, [serviceList, sortBy]);
+    }, [frequencyList, sortBy]);
 
     function handleSortBy(field) {
         setSortBy((prev) => {
@@ -63,7 +56,7 @@ export default function Services({ auth, services: serviceList }) {
     return (
         <>
             <AuthenticatedLayout
-                pageTitle="Settings: Services"
+                pageTitle="Settings: Frequency"
                 user={user}
                 setUser={setUser}
             >
@@ -72,10 +65,10 @@ export default function Services({ auth, services: serviceList }) {
                     <div className="mx-[2.5%] mt-6 flex flex-1 flex-col overflow-hidden rounded-lg bg-white text-accent">
                         <div className="relative mb-2 flex flex-col items-center gap-1 border-b-2 border-accent-200 p-4 px-4 pb-6">
                             <h1 className="text-center text-sm font-bold sm:text-base">
-                                SERVICES
+                                FREQUENCY
                             </h1>
                             <button
-                                onClick={() => setServiceModalOpen(true)}
+                                onClick={() => setFrequencyModalOpen(true)}
                                 className="absolute bottom-0 left-1/2 flex w-fit -translate-x-1/2 translate-y-1/2 items-center gap-2 rounded-md border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300 sm:left-auto sm:right-4 sm:translate-x-0 md:rounded-lg"
                             >
                                 <img
@@ -85,7 +78,7 @@ export default function Services({ auth, services: serviceList }) {
                                     height={14}
                                     className="h-3 w-3 sm:h-3.5 sm:w-3.5"
                                 />
-                                Add Services
+                                Add Frequency
                             </button>
                         </div>
                         <div className="flex flex-1 flex-col gap-4 p-4">
@@ -132,63 +125,12 @@ export default function Services({ auth, services: serviceList }) {
                                             <th className="w-4/12 min-w-52 p-4">
                                                 <span
                                                     onClick={() =>
-                                                        handleSortBy("service")
+                                                        handleSortBy("name")
                                                     }
                                                     className="flex w-fit cursor-pointer items-center gap-2"
                                                 >
-                                                    Service Name
-                                                    {sortBy.field ===
-                                                    "service" ? (
-                                                        sortBy.type ===
-                                                        "asc" ? (
-                                                            <TiArrowSortedUp
-                                                                size={16}
-                                                            />
-                                                        ) : (
-                                                            <TiArrowSortedDown
-                                                                size={16}
-                                                            />
-                                                        )
-                                                    ) : (
-                                                        <FaSort size={14} />
-                                                    )}
-                                                </span>
-                                            </th>
-                                            <th className="w-2/12 p-4 text-left">
-                                                <span
-                                                    onClick={() =>
-                                                        handleSortBy("patient")
-                                                    }
-                                                    className="flex w-fit cursor-pointer items-center gap-2"
-                                                >
-                                                    Patient Type
-                                                    {sortBy.field ===
-                                                    "patient" ? (
-                                                        sortBy.type ===
-                                                        "asc" ? (
-                                                            <TiArrowSortedUp
-                                                                size={16}
-                                                            />
-                                                        ) : (
-                                                            <TiArrowSortedDown
-                                                                size={16}
-                                                            />
-                                                        )
-                                                    ) : (
-                                                        <FaSort size={14} />
-                                                    )}
-                                                </span>
-                                            </th>
-                                            <th className="w-2/12 p-4 text-left">
-                                                <span
-                                                    onClick={() =>
-                                                        handleSortBy("price")
-                                                    }
-                                                    className="flex w-fit cursor-pointer items-center gap-2"
-                                                >
-                                                    Price
-                                                    {sortBy.field ===
-                                                    "price" ? (
+                                                    Frequency Name
+                                                    {sortBy.field === "name" ? (
                                                         sortBy.type ===
                                                         "asc" ? (
                                                             <TiArrowSortedUp
@@ -210,11 +152,11 @@ export default function Services({ auth, services: serviceList }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {services.map((serv) => (
-                                            <tr key={serv.id}>
+                                        {frequencies.map((freq) => (
+                                            <tr key={freq.id}>
                                                 <td className="whitespace-nowrap p-4">
                                                     {new Date(
-                                                        serv.created_at,
+                                                        freq.created_at,
                                                     ).toLocaleDateString(
                                                         "us-en",
                                                         {
@@ -225,23 +167,17 @@ export default function Services({ auth, services: serviceList }) {
                                                     )}
                                                 </td>
                                                 <td className="p-4">
-                                                    {serv.name}
-                                                </td>
-                                                <td className="p-4">
-                                                    {serv.patient_type}
-                                                </td>
-                                                <td className="p-4">
-                                                    {serv.charge}
+                                                    {freq.name}
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex items-center justify-center gap-2">
                                                         <button
                                                             onClick={() => {
-                                                                setServiceModalOpen(
+                                                                setFrequencyModalOpen(
                                                                     true,
                                                                 );
-                                                                setServiceToEdit(
-                                                                    serv,
+                                                                setFrequencyToEdit(
+                                                                    freq,
                                                                 );
                                                             }}
                                                             className="rounded-md border border-transparent p-2 duration-100 hover:border-accent-400 hover:bg-accent-300"
@@ -255,11 +191,11 @@ export default function Services({ auth, services: serviceList }) {
                                                         </button>
                                                         <button
                                                             onClick={() => {
-                                                                setDeleteServiceModalOpen(
+                                                                setDeleteFrequencyModalOpen(
                                                                     true,
                                                                 );
-                                                                setServiceToDelete(
-                                                                    serv,
+                                                                setFrequencyToDelete(
+                                                                    freq,
                                                                 );
                                                             }}
                                                             className="rounded-md border border-transparent p-2 duration-100 hover:border-accent-400 hover:bg-accent-300"
@@ -283,22 +219,22 @@ export default function Services({ auth, services: serviceList }) {
                 </div>
             </AuthenticatedLayout>
 
-            <AddServiceModal
-                open={serviceModalOpen}
+            <AddFrequencyModal
+                open={frequencyModalOpen}
                 closeModal={() => {
-                    setServiceModalOpen(false);
-                    setServiceToEdit(null);
+                    setFrequencyModalOpen(false);
+                    setFrequencyToEdit(null);
                 }}
-                serviceToEdit={serviceToEdit}
+                frequencyToEdit={frequencyToEdit}
             />
 
-            <DeleteServiceModal
+            <DeleteFrequencyModal
                 closeModal={() => {
-                    setDeleteServiceModalOpen(false);
-                    setServiceToDelete(null);
+                    setDeleteFrequencyModalOpen(false);
+                    setFrequencyToDelete(null);
                 }}
-                open={deleteServiceModalOpen}
-                serviceToDelete={serviceToDelete}
+                open={deleteFrequencyModalOpen}
+                frequencyToDelete={frequencyToDelete}
             />
         </>
     );

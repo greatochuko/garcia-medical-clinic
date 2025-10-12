@@ -96,9 +96,16 @@ class ServiceChargesController extends Controller
 
     public function destroy($id)
     {
-        $service = ServiceCharge::findOrFail($id);
-        $service->delete();
+        try {
+            $service = ServiceCharge::findOrFail($id);
+            $service->delete();
 
-        return redirect()->back()->with('success', 'Service deleted successfully');
+            return redirect()->back()->with('success', 'Service deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()])
+                ->withInput();
+        }
     }
 }
