@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\ServiceCharge;
+use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ServiceChargesController extends Controller
@@ -48,33 +49,49 @@ class ServiceChargesController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'charge' => 'required|numeric|min:0',
-            'patient_type' => 'required',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'charge' => 'required|numeric|min:0',
+                'patient_type' => 'required',
+            ]);
 
-        $patient_type = $request->input('patient_type') == 'Regular' ? 0 : 1;
-        $validated['patient_type'] = $patient_type;
-        $service = ServiceCharge::create($validated);
+            $patient_type = $request->input('patient_type') == 'Regular' ? 0 : 1;
+            $validated['patient_type'] = $patient_type;
+            $service = ServiceCharge::create($validated);
 
-        return redirect()->route('service-charges')->with('success', 'Service charge created successfully');
+            return redirect()->back()->with('success', 'Service created successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()])
+                ->withInput();
+        }
     }
 
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'charge' => 'required|numeric|min:0',
-            'patient_type' => 'required',
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'charge' => 'required|numeric|min:0',
+                'patient_type' => 'required',
+            ]);
 
-        $service = ServiceCharge::findOrFail($id);
-        $patient_type = $request->input('patient_type') == 'Regular' ? 0 : 1;
-        $validated['patient_type'] = $patient_type;
-        $service->update($validated);
+            $service = ServiceCharge::findOrFail($id);
+            $patient_type = $request->input('patient_type') == 'Regular' ? 0 : 1;
+            $validated['patient_type'] = $patient_type;
+            $service->update($validated);
 
-        return redirect()->route('service-charges')->with('success', 'Service charge updated successfully');
+
+
+            return redirect()->back()->with('success', 'Service updated successfully');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()])
+                ->withInput();
+        }
     }
 
     public function destroy($id)
@@ -82,6 +99,6 @@ class ServiceChargesController extends Controller
         $service = ServiceCharge::findOrFail($id);
         $service->delete();
 
-        return redirect()->route('service-charges')->with('success', 'Service charge deleted successfully');
+        return redirect()->back()->with('success', 'Service deleted successfully');
     }
 }

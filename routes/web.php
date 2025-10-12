@@ -21,6 +21,7 @@ use App\Http\Controllers\VitalSignsModalController;
 use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\PatientLaboratoryTestController;
 use App\Http\Controllers\LaboratoryRequestController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -246,6 +247,11 @@ Route::middleware('auth')->group(function () {
     Route::post("inventory", [InventoryController::class, 'add'])->name('inventory.add');
     Route::put("inventory/{id}", [InventoryController::class, 'update'])->name('inventory.update');
     Route::delete("inventory/{id}", [InventoryController::class, 'delete'])->name('inventory.delete');
+
+
+    // Settings routes
+    Route::get("settings", [SettingsController::class, 'index'])->name('settings.index');
+    Route::get("settings/services", [SettingsController::class, 'index'])->name('settings.services');
 });
 
 

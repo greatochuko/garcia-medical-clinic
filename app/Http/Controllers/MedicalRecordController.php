@@ -97,7 +97,7 @@ class MedicalRecordController extends Controller
 
             return redirect()->back()->with('success', 'Patient record deleted successfully');
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors('error', 'Failed to delete patient record. Please try again.');
+            return redirect()->back()->withErrors(['error' => 'Failed to delete patient record. Please try again.']);
         }
     }
 

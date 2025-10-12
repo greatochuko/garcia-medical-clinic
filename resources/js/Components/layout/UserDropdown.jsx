@@ -5,7 +5,7 @@ import useClickOutside from "@/hooks/useClickOutside";
 
 const dropdownLinks = [
     { text: "Reports", href: "#" },
-    { text: "Settings", href: "#" },
+    { text: "Settings", href: "/settings" },
     { text: "Logout", href: "#" },
 ];
 
