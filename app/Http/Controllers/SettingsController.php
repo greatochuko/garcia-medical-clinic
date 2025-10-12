@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FrequencyList;
+use App\Models\Plan;
 use App\Models\ServiceCharge;
 use Inertia\Inertia;
 
@@ -29,5 +30,12 @@ class SettingsController extends Controller
         $frequencies = FrequencyList::orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Settings/Frequency', ['frequencies' => $frequencies]);
+    }
+
+    public function plan_index()
+    {
+        $plans = Plan::orderBy('created_at', 'desc')->get();
+
+        return Inertia::render('Settings/Plan', ['plans' => $plans]);
     }
 }

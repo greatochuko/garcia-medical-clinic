@@ -253,6 +253,7 @@ Route::middleware('auth')->group(function () {
     Route::get("settings", [SettingsController::class, 'index'])->name('settings.index');
     Route::get("settings/services", [SettingsController::class, 'index'])->name('settings.services');
     Route::get("settings/frequency", [SettingsController::class, 'frequency_index'])->name('settings.frequency');
+    Route::get("settings/plan", [SettingsController::class, 'plan_index'])->name('settings.plan');
 });
 
 

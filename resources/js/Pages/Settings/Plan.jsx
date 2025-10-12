@@ -3,23 +3,22 @@ import React, { useMemo, useState } from "react";
 import SettingsSidebar from "./SettingsSidebar";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import { FaSort } from "react-icons/fa6";
-import AddFrequencyModal from "@/Components/modals/AddFrequencyModal";
-import DeleteFrequencyModal from "@/Components/modals/DeleteFrequencyModal";
+import AddPlanModal from "@/Components/modals/AddPlanModal";
+import DeletePlanModal from "@/Components/modals/DeletePlanModal";
 
-export default function Frequency({ auth, frequencies: frequencyList }) {
+export default function Plan({ auth, plans: planList }) {
     const [user, setUser] = useState(auth.user);
     const [sortBy, setSortBy] = useState({ field: "date", type: "desc" });
-    const [frequencyModalOpen, setFrequencyModalOpen] = useState(false);
-    const [frequencyToEdit, setFrequencyToEdit] = useState(null);
-    const [deleteFrequencyModalOpen, setDeleteFrequencyModalOpen] =
-        useState(false);
-    const [frequencyToDelete, setFrequencyToDelete] = useState(null);
+    const [planModalOpen, setPlanModalOpen] = useState(false);
+    const [planToEdit, setPlanToEdit] = useState(null);
+    const [deletePlanModalOpen, setDeletePlanModalOpen] = useState(false);
+    const [planToDelete, setPlanToDelete] = useState(null);
 
-    const frequencies = useMemo(() => {
+    const plans = useMemo(() => {
         const { field, type } = sortBy;
-        if (!field) return [...frequencyList];
+        if (!field) return [...planList];
 
-        return [...frequencyList].sort((a, b) => {
+        return [...planList].sort((a, b) => {
             let valA, valB;
 
             switch (field) {
@@ -39,7 +38,7 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
             if (valA > valB) return type === "asc" ? 1 : -1;
             return 0;
         });
-    }, [frequencyList, sortBy]);
+    }, [planList, sortBy]);
 
     function handleSortBy(field) {
         setSortBy((prev) => {
@@ -56,7 +55,7 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
     return (
         <>
             <AuthenticatedLayout
-                pageTitle="Settings: Frequency"
+                pageTitle="Settings: Plan"
                 user={user}
                 setUser={setUser}
             >
@@ -65,10 +64,10 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
                     <div className="mx-[2.5%] mt-6 flex flex-1 flex-col overflow-hidden rounded-lg bg-white text-accent">
                         <div className="relative mb-2 flex flex-col items-center gap-1 border-b-2 border-accent-200 p-4 px-4 pb-6">
                             <h1 className="text-center text-sm font-bold sm:text-base">
-                                FREQUENCY
+                                PLAN
                             </h1>
                             <button
-                                onClick={() => setFrequencyModalOpen(true)}
+                                onClick={() => setPlanModalOpen(true)}
                                 className="absolute bottom-0 left-1/2 flex w-fit -translate-x-1/2 translate-y-1/2 items-center gap-2 rounded-md border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300 sm:left-auto sm:right-4 sm:translate-x-0 md:rounded-lg"
                             >
                                 <img
@@ -78,7 +77,7 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
                                     height={14}
                                     className="h-3 w-3 sm:h-3.5 sm:w-3.5"
                                 />
-                                Add Frequency
+                                Add Plan
                             </button>
                         </div>
                         <div className="flex flex-1 flex-col gap-4 p-4">
@@ -89,9 +88,9 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
                                     width={14}
                                     height={14}
                                 />
-                                Lists of how often a medication should be
-                                administered or taken within a specific time
-                                period.
+                                Clinical goals, interventions, timelines, and
+                                follow-up actions into one coordinated plan of
+                                care.
                             </p>
 
                             <div className="max-w-full overflow-auto">
@@ -129,7 +128,7 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
                                                     }
                                                     className="flex w-fit cursor-pointer items-center gap-2"
                                                 >
-                                                    Frequency Name
+                                                    Plan Name
                                                     {sortBy.field === "name" ? (
                                                         sortBy.type ===
                                                         "asc" ? (
@@ -152,7 +151,7 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {frequencies.map((freq) => (
+                                        {plans.map((freq) => (
                                             <tr key={freq.id}>
                                                 <td className="whitespace-nowrap p-4">
                                                     {new Date(
@@ -173,10 +172,10 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
                                                     <div className="flex items-center justify-center gap-2">
                                                         <button
                                                             onClick={() => {
-                                                                setFrequencyModalOpen(
+                                                                setPlanModalOpen(
                                                                     true,
                                                                 );
-                                                                setFrequencyToEdit(
+                                                                setPlanToEdit(
                                                                     freq,
                                                                 );
                                                             }}
@@ -191,10 +190,10 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
                                                         </button>
                                                         <button
                                                             onClick={() => {
-                                                                setDeleteFrequencyModalOpen(
+                                                                setDeletePlanModalOpen(
                                                                     true,
                                                                 );
-                                                                setFrequencyToDelete(
+                                                                setPlanToDelete(
                                                                     freq,
                                                                 );
                                                             }}
@@ -219,22 +218,22 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
                 </div>
             </AuthenticatedLayout>
 
-            <AddFrequencyModal
-                open={frequencyModalOpen}
+            <AddPlanModal
+                open={planModalOpen}
                 closeModal={() => {
-                    setFrequencyModalOpen(false);
-                    setFrequencyToEdit(null);
+                    setPlanModalOpen(false);
+                    setPlanToEdit(null);
                 }}
-                frequencyToEdit={frequencyToEdit}
+                planToEdit={planToEdit}
             />
 
-            <DeleteFrequencyModal
+            <DeletePlanModal
                 closeModal={() => {
-                    setDeleteFrequencyModalOpen(false);
-                    setFrequencyToDelete(null);
+                    setDeletePlanModalOpen(false);
+                    setPlanToDelete(null);
                 }}
-                open={deleteFrequencyModalOpen}
-                frequencyToDelete={frequencyToDelete}
+                open={deletePlanModalOpen}
+                planToDelete={planToDelete}
             />
         </>
     );
