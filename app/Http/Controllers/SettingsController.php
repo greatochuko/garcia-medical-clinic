@@ -16,6 +16,7 @@ class SettingsController extends Controller
                 'name' => $service->name,
                 'charge' => number_format($service->charge, 2),
                 'patient_type' => $service->patient_type == 0 ? 'Regular' : 'Senior',
+                'created_at' => $service->created_at,
             ];
         })->toArray();
 
