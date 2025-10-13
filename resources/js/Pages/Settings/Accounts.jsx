@@ -281,6 +281,10 @@ export default function Accounts({ auth, accounts: accountList }) {
                                                                 account.id,
                                                             )
                                                         }
+                                                        disabled={
+                                                            account.id ===
+                                                            auth.user.id
+                                                        }
                                                     />
                                                 </td>
                                                 <td className="p-4">

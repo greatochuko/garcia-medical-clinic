@@ -16,12 +16,12 @@ export default function UserDropdown({ user }) {
 
     const [dropdownRef] = useClickOutside(() => setDropdownOpen(false));
 
-    const userFullName = user.first_name + " " + (user.last_name || "");
+    const userFullName = `${user?.first_name}${user?.middle_initial ? `, ${user.middle_initial}` : ""} ${user?.last_name}`;
 
     function handleLogout() {
         router.post(route("logout"), {
             onError: (errors) => {
-                console.log(errors);
+                console.error(errors);
             },
         });
     }
@@ -33,19 +33,21 @@ export default function UserDropdown({ user }) {
             onClick={() => setDropdownOpen((prev) => !prev)}
         >
             <div className="hidden flex-col items-end sm:flex">
-                <h4 className="text-xs text-white">{userFullName}</h4>
-                <p className="text-[10px] text-accent-orange">
+                <h4 className="text-xs capitalize text-white">
+                    {userFullName}
+                </h4>
+                <p
+                    className={`text-[10px] ${user.role === "admin" ? "text-accent-orange" : user.role === "doctor" ? "text-white" : "text-[#429ABF]"}`}
+                >
                     {user.role.toUpperCase()}
                 </p>
             </div>
             <img
-                src={
-                    user.profile_picture || "/images/admin-profile-picture.jpg"
-                }
+                src={user.avatar_url || "/images/placeholder-avatar.jpg"}
                 alt={userFullName + " profile picture"}
                 height={45}
                 width={45}
-                className={`overflow-hidden rounded-full border-2 object-cover ${user.role !== "secretary" ? "border-accent-orange" : "border-white"}`}
+                className={`overflow-hidden rounded-full border-2 object-cover ${user.role === "admin" ? "border-accent-orange" : user.role === "doctor" ? "border-white" : "border-[#429ABF]"}`}
             />
 
             <div

@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { Head, useForm } from "@inertiajs/react";
 import FlashMessage from "@/Components/FlashMessage";
 
-export default function Login({ status }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+export default function Login() {
+    const { data, setData, post, processing, reset } = useForm({
         email: "",
         login_id: "",
         password: "",
@@ -13,7 +13,7 @@ export default function Login({ status }) {
         return () => {
             reset("password");
         };
-    }, []);
+    }, [reset]);
 
     const submit = (e) => {
         e.preventDefault();
