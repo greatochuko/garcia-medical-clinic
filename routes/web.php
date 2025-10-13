@@ -259,6 +259,7 @@ Route::middleware('auth')->group(function () {
     Route::get("settings/accounts/new/secretary", [SettingsController::class, 'create_account'])->name('settings.accounts.create.secretary');
     Route::get("settings/accounts/new/admin", [SettingsController::class, 'create_account'])->name('settings.accounts.create.admin');
     Route::get("settings/accounts/edit/{id}", [SettingsController::class, 'update_account'])->name('settings.accounts.update');
+    Route::patch("settings/accounts/toggle_status/{id}", [SettingsController::class, 'toggle_user_status'])->name('settings.accounts.toggle_status');
 });
 
 

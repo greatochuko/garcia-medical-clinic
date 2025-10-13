@@ -74,7 +74,17 @@ export default function Accounts({ auth, accounts: accountList }) {
         });
     }
 
-    function toggleAccountIsActive(accountId) {}
+    function toggleAccountIsActive(accountId) {
+        router.patch(
+            route("settings.accounts.toggle_status", accountId),
+            {},
+            {
+                onError: (err) => {
+                    console.error(err);
+                },
+            },
+        );
+    }
 
     return (
         <>
