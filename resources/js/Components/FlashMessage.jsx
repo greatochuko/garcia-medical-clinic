@@ -1,25 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { usePage } from "@inertiajs/react";
-import { useEffect, useRef } from "react";
-
-import toast from "react-hot-toast";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 
 const FlashMessage = () => {
     const { flash } = usePage().props;
-    const shown = useRef(false);
 
     useEffect(() => {
-        if (!shown.current) {
-            if (flash?.success) {
-                toast.success(flash.success);
-                shown.current = true;
-            }
-            if (flash?.error) {
-                toast.error(flash.error);
-                shown.current = true;
-            }
-        }
+        if (flash?.success) toast.success(flash.success);
+        if (flash?.error) toast.error(flash.error);
     }, [flash]);
 
     return (

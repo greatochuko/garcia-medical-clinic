@@ -75,7 +75,7 @@ class SettingsController extends Controller
 
             $status = $user->isActive ? 'activated' : 'deactivated';
 
-            return redirect()->back()->with('success', "User account has been {$status} successfully.");
+            return redirect()->back()->with('success', "User account {$status} successfully.");
         } catch (\Exception $e) {
             Log::error('Error toggling user status:', ['user_id' => $id, 'error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'Failed to toggle user status.');

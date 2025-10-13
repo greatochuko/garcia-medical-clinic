@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Head, useForm } from "@inertiajs/react";
 import FlashMessage from "@/Components/FlashMessage";
+import toast from "react-hot-toast";
 
 export default function Login() {
     const { data, setData, post, processing, reset } = useForm({
@@ -17,7 +18,11 @@ export default function Login() {
 
     const submit = (e) => {
         e.preventDefault();
-        post("/login");
+        post("/login", {
+            onError: (err) => {
+                toast.error(Object.values(err)[0]);
+            },
+        });
     };
 
     return (
