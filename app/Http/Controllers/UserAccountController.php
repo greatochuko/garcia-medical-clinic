@@ -244,7 +244,7 @@ class UserAccountController extends Controller
             $user->delete();
 
             DB::commit();
-            return redirect()->route('users.index')->with('success', 'User account deleted successfully');
+            return redirect()->back()->with('success', 'User account deleted successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error deleting user:', [

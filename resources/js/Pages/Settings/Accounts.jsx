@@ -8,12 +8,15 @@ import useClickOutside from "@/hooks/useClickOutside";
 import { Link } from "@inertiajs/react";
 import { router } from "@inertiajs/react";
 import { route } from "ziggy-js";
+import DeleteAccountModal from "@/Components/modals/DeleteAccountModal";
 
 function getUserFullName(account) {
     return `${account.first_name} ${account.middle_initial ? `${account.middle_initial},` : ""} ${account.last_name}`;
 }
 
 export default function Accounts({ auth, accounts: accountList }) {
+    const [accountToDelete, setAccountToDelete] = useState(null);
+    const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(false);
     const [sortBy, setSortBy] = useState({ field: "date", type: "desc" });
 
     const accounts = useMemo(() => {
@@ -287,14 +290,14 @@ export default function Accounts({ auth, accounts: accountList }) {
                                                             />
                                                         </Link>
                                                         <button
-                                                            // onClick={() => {
-                                                            //     setDeleteAccountModalOpen(
-                                                            //         true,
-                                                            //     );
-                                                            //     setAccountToDelete(
-                                                            //         freq,
-                                                            //     );
-                                                            // }}
+                                                            onClick={() => {
+                                                                setDeleteAccountModalOpen(
+                                                                    true,
+                                                                );
+                                                                setAccountToDelete(
+                                                                    account,
+                                                                );
+                                                            }}
                                                             hidden={
                                                                 account.id ===
                                                                 auth.user.id
@@ -320,14 +323,14 @@ export default function Accounts({ auth, accounts: accountList }) {
                 </div>
             </AuthenticatedLayout>
 
-            {/* <DeleteAccountModal
+            <DeleteAccountModal
                 closeModal={() => {
                     setDeleteAccountModalOpen(false);
                     setAccountToDelete(null);
                 }}
                 open={deleteAccountModalOpen}
                 accountToDelete={accountToDelete}
-            /> */}
+            />
         </>
     );
 }

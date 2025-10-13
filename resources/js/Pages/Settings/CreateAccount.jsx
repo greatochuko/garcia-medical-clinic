@@ -25,7 +25,6 @@ const inputFields = [
 const doctorFields = ["license_number", "ptr_number"];
 
 export default function CreateAccount({ accountToUpdate }) {
-    console.log(accountToUpdate);
     const pathname = window.location.pathname;
     const role = pathname.split("/").at(-1);
 
@@ -85,7 +84,7 @@ export default function CreateAccount({ accountToUpdate }) {
         if (accountToUpdate) {
             put(route("users.update", accountToUpdate.id), {
                 onError: (err) => {
-                    console.log(err);
+                    console.error(err);
                     setError(Object.values(err)[0]);
                 },
                 preserveScroll: true,
@@ -93,7 +92,7 @@ export default function CreateAccount({ accountToUpdate }) {
         } else {
             post(route("users.store"), {
                 onError: (err) => {
-                    console.log(err);
+                    console.error(err);
                     setError(Object.values(err)[0]);
                 },
                 preserveScroll: true,

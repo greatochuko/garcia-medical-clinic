@@ -67,7 +67,7 @@ class UserAccountController extends Controller
                 'name' => 'dummy data from controller',
                 'role' => 'doctor',
                 'registration_date' => 'November 27, 2025'
-            ],    
+            ],
         ];
 
         // Convert the array to a collection
@@ -150,7 +150,6 @@ class UserAccountController extends Controller
             DB::commit();
 
             return redirect()->route('users.index')->with('success', 'User account created successfully');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to create user account. Please try again.']);
@@ -160,7 +159,7 @@ class UserAccountController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        
+
         $validated = $request->validate([
             'firstName' => 'required|string|max:255',
             'lastName' => 'required|string|max:255',
@@ -217,7 +216,6 @@ class UserAccountController extends Controller
             DB::commit();
 
             return back()->with('success', 'User account updated successfully');
-
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to update user account. Please try again.']);
@@ -228,16 +226,15 @@ class UserAccountController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            
+
             DB::beginTransaction();
-            
+
             // This will cascade delete related records if set up in migration
             $user->delete();
-            
+
             DB::commit();
 
-            return redirect()->route('users.index')->with('success', 'User account deleted successfully');
-
+            return redirect()->back()->with('success', 'User account deleted successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to delete user account. Please try again.']);
@@ -267,4 +264,4 @@ class UserAccountController extends Controller
             'isEditing' => true
         ]);
     }
-} 
+}
