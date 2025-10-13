@@ -51,7 +51,7 @@ export const navLinks = [
     },
 ];
 
-export default function Header({ user, setUser }) {
+export default function Header({ user }) {
     const pathname = window.location.pathname;
 
     function linkIsActive(linkHref) {
@@ -95,7 +95,7 @@ export default function Header({ user, setUser }) {
                 ))}
             </ul>
             <div className="flex items-center gap-3">
-                <UserDropdown user={user} setUser={setUser} />
+                <UserDropdown user={user} />
                 <MobileNavButton />
             </div>
         </header>

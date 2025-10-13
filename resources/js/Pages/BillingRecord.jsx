@@ -8,8 +8,7 @@ function formatPHP(amount) {
     return `PHP ${Number(amount).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-export default function Billingrecord({ auth, billingData }) {
-    const [user, setUser] = useState(auth.user);
+export default function Billingrecord({ billingData }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [billingModalOpen, setBillingModalOpen] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
@@ -20,11 +19,7 @@ export default function Billingrecord({ auth, billingData }) {
     }
 
     return (
-        <AuthenticatedLayout
-            pageTitle="Billing Records"
-            user={user}
-            setUser={setUser}
-        >
+        <AuthenticatedLayout pageTitle="Billing Records">
             <div className="max-w-full flex-1 pt-6">
                 <div className="mx-auto flex h-full w-[95%] max-w-screen-2xl flex-col gap-4 bg-white text-accent">
                     <div className="relative mb-2 flex flex-col items-center gap-1 border-b-2 border-accent-200 p-4 px-4 pb-6 text-center">

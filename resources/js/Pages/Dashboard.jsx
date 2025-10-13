@@ -11,17 +11,11 @@ import { usePage } from "@inertiajs/react";
 export default function Dashboard() {
     const { auth } = usePage().props;
 
-    const [user, setUser] = useState(auth.user);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
 
     return (
-        <AuthenticatedLayout
-            pageTitle={"Dashboard"}
-            user={user}
-            setUser={setUser}
-        >
+        <AuthenticatedLayout pageTitle={"Dashboard"}>
             <VitalSignsModal
                 isOpen={isModalOpen}
                 setIsOpen={setIsModalOpen}
@@ -42,11 +36,11 @@ export default function Dashboard() {
                     <MiddleDashboard className="md:col-span-2 xl:order-2 xl:col-span-1" />
                     <LeftDashboard
                         className="xl:order-1"
-                        userRole={user.role}
+                        userRole={auth.user.role}
                     />
                     <RightDashboard
                         className="xl:order-3"
-                        userRole={user.role}
+                        userRole={auth.user.role}
                     />
                 </div>
             </div>

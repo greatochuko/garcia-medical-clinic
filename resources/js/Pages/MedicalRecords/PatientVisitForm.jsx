@@ -28,9 +28,7 @@ export default function PatientVisitForm({
     laboratoryRequest,
     appointment,
     medicalRecords,
-    auth,
 }) {
-    const [user, setUser] = useState(auth.user);
     const [patient, setPatient] = useState(initialPatient);
     const [patientEntryData, setPatientEntryData] = useState({
         chief_complaint: {
@@ -63,8 +61,6 @@ export default function PatientVisitForm({
 
     return (
         <AuthenticatedLayout
-            user={user}
-            setUser={setUser}
             pageTitle={`${patient.first_name} ${patient.last_name} Patient Visit Form`}
         >
             <div className="mx-auto mt-4 flex w-[90%] max-w-screen-2xl flex-col gap-4">

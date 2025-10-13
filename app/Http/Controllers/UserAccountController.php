@@ -29,7 +29,7 @@ class UserAccountController extends Controller
         // Transform the data to match the expected format
         $transformedUsers = $users->map(function ($user) {
             $fullName = $user->full_name;
-            
+
             // Add MD suffix for doctors
             if ($user->isDoctor() && $user->doctor) {
                 $fullName .= ', MD';
@@ -81,7 +81,8 @@ class UserAccountController extends Controller
                 'middle_initial' => 'nullable|string|max:10',
                 'login_id' => 'required|string|unique:users,login_id',
                 'password' => 'required|string|min:8',
-                'role' => 'required|string|in:doctor,admin,secretary'
+                'role' => 'required|string|in:doctor,admin,secretary',
+                'avatar_url' => 'required|string'
             ];
 
             // Add doctor-specific validation rules only if role is doctor
@@ -102,6 +103,7 @@ class UserAccountController extends Controller
                 'status' => 'active',
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
+                'avatar_url' => $validated['avatar_url'],
                 'middle_initial' => $validated['middle_initial']
             ]);
 
@@ -121,8 +123,7 @@ class UserAccountController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('users.index')->with('success', 'User account created successfully');
-
+            return redirect()->route('settings.accounts')->with('success', 'User account created successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             Log::error('Validation Error:', ['errors' => $e->errors()]);
@@ -138,21 +139,21 @@ class UserAccountController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-            
+
             // Log incoming request data
             Log::info('Update User Request Data:', [
                 'user_id' => $id,
                 'request_data' => $request->all()
             ]);
-            
+
             // Base validation rules
             $rules = [
                 'first_name' => 'required|string|max:255',
                 'last_name' => 'required|string|max:255',
                 'middle_initial' => 'nullable|string|max:10',
                 'login_id' => 'required|string|unique:users,login_id,' . $user->id,
-                'password' => 'nullable|string|min:8',
                 'role' => 'required|string|in:doctor,admin,secretary'
+                // 'password' => 'nullable|string|min:8',
             ];
 
             // Add doctor-specific validation rules only if role is doctor
@@ -164,7 +165,7 @@ class UserAccountController extends Controller
                 ];
                 $rules['ptr_number'] = 'nullable|string';
             }
-            
+
             $validated = $request->validate($rules);
 
             DB::beginTransaction();
@@ -172,7 +173,6 @@ class UserAccountController extends Controller
             // Update user account
             $userData = [
                 'login_id' => $validated['login_id'],
-                'role' => $validated['role'],
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
                 'middle_initial' => $validated['middle_initial']
@@ -211,8 +211,7 @@ class UserAccountController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('users.index')->with('success', 'User account updated successfully');
-
+            return redirect()->route('settings.accounts')->with('success', 'User account updated successfully');
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             Log::error('Validation Error:', ['errors' => $e->errors()]);
@@ -231,22 +230,21 @@ class UserAccountController extends Controller
     {
         try {
             DB::beginTransaction();
-            
+
             $user = User::findOrFail($id);
             Log::info('Deleting user:', ['user_id' => $id]);
-            
+
             // Delete doctor profile first if exists
             if ($user->doctor) {
                 $user->doctor->delete();
                 Log::info('Deleted doctor profile:', ['user_id' => $id]);
             }
-            
+
             // Delete user
             $user->delete();
-            
+
             DB::commit();
             return redirect()->route('users.index')->with('success', 'User account deleted successfully');
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error deleting user:', [
@@ -261,7 +259,7 @@ class UserAccountController extends Controller
     {
         try {
             $user = User::with('doctor')->findOrFail($id);
-            
+
             $userData = [
                 'id' => $user->id,
                 'first_name' =>  $user->first_name,
@@ -291,4 +289,4 @@ class UserAccountController extends Controller
             return redirect()->route('users.index')->with('error', 'User not found');
         }
     }
-} 
+}

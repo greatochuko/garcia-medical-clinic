@@ -2,19 +2,29 @@ import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
 import PropTypes from "prop-types";
 import useClickOutside from "@/hooks/useClickOutside";
+import { route } from "ziggy-js";
+import { router } from "@inertiajs/react";
 
 const dropdownLinks = [
-    { text: "Reports", href: "#" },
+    { text: "Profile", href: "/profile" },
     { text: "Settings", href: "/settings" },
-    { text: "Logout", href: "#" },
+    // { text: "Logout", href: route("profile.destroy") },
 ];
 
-export default function UserDropdown({ user, setUser }) {
+export default function UserDropdown({ user }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const [dropdownRef] = useClickOutside(() => setDropdownOpen(false));
 
     const userFullName = user.first_name + " " + (user.last_name || "");
+
+    function handleLogout() {
+        router.post(route("logout"), {
+            onError: (errors) => {
+                console.log(errors);
+            },
+        });
+    }
 
     return (
         <div
@@ -50,23 +60,13 @@ export default function UserDropdown({ user, setUser }) {
                         {link.text}
                     </Link>
                 ))}
-
-                {["admin", "doctor", "secretary"]
-                    .filter((role) => role !== user.role)
-                    .map((role) => (
-                        <button
-                            key={role}
-                            className="p-3 text-left duration-200 hover:bg-accent-300"
-                            onClick={() =>
-                                setUser((prev) => ({
-                                    ...prev,
-                                    role,
-                                }))
-                            }
-                        >
-                            Switch to {role}
-                        </button>
-                    ))}
+                <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="p-3 text-left duration-200 hover:bg-accent-300"
+                >
+                    Logout
+                </button>
             </div>
         </div>
     );

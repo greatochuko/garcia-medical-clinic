@@ -5,17 +5,12 @@ import MedicalRecordsHeader from "@/Components/medical-records/MedicalRecordsHea
 import PatientTableHeader from "@/Components/medical-records/PatientTableHeader";
 import PatientRow from "@/Components/medical-records/PatientRow";
 
-export default function MedicalRecords({ auth, patientData }) {
+export default function MedicalRecords({ patientData }) {
     const [currentTab, setCurrentTab] = useState("all");
-    const [user, setUser] = useState(auth.user);
     const patients = patientData.data;
 
     return (
-        <AuthenticatedLayout
-            pageTitle="Medical Records"
-            user={user}
-            setUser={setUser}
-        >
+        <AuthenticatedLayout pageTitle="Medical Records">
             <div className="max-w-full flex-1 pt-6">
                 <div className="mx-auto flex h-full w-[95%] max-w-screen-2xl flex-col gap-4 bg-white text-accent">
                     <MedicalRecordsHeader

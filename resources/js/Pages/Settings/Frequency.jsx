@@ -7,7 +7,6 @@ import AddFrequencyModal from "@/Components/modals/AddFrequencyModal";
 import DeleteFrequencyModal from "@/Components/modals/DeleteFrequencyModal";
 
 export default function Frequency({ auth, frequencies: frequencyList }) {
-    const [user, setUser] = useState(auth.user);
     const [sortBy, setSortBy] = useState({ field: "date", type: "desc" });
     const [frequencyModalOpen, setFrequencyModalOpen] = useState(false);
     const [frequencyToEdit, setFrequencyToEdit] = useState(null);
@@ -55,13 +54,9 @@ export default function Frequency({ auth, frequencies: frequencyList }) {
 
     return (
         <>
-            <AuthenticatedLayout
-                pageTitle="Settings: Frequency"
-                user={user}
-                setUser={setUser}
-            >
+            <AuthenticatedLayout pageTitle="Settings: Frequency">
                 <div className="flex max-w-full flex-1">
-                    <SettingsSidebar />
+                    <SettingsSidebar userRole={auth.user.role} />
                     <div className="mx-[2.5%] mt-6 flex flex-1 flex-col overflow-hidden rounded-lg bg-white text-accent">
                         <div className="relative mb-2 flex flex-col items-center gap-1 border-b-2 border-accent-200 p-4 px-4 pb-6">
                             <h1 className="text-center text-sm font-bold sm:text-base">

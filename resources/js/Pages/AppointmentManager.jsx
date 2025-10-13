@@ -12,7 +12,6 @@ export default function AppointmentManager({ appointments }) {
 
     const [currentTab, setCurrentTab] = useState("active");
     const [appointmentList, setAppointmentList] = useState(appointments.data);
-    const [user, setUser] = useState(auth.user);
 
     const uniqueDates = useMemo(
         () => [
@@ -93,11 +92,7 @@ export default function AppointmentManager({ appointments }) {
     }
 
     return (
-        <AuthenticatedLayout
-            pageTitle="Appointments"
-            user={user}
-            setUser={setUser}
-        >
+        <AuthenticatedLayout pageTitle="Appointments">
             <div className="max-w-full flex-1 pt-6">
                 <div className="mx-auto flex h-full w-[95%] max-w-screen-2xl flex-col gap-4 bg-white text-accent">
                     <AppointmentsHeader
@@ -118,7 +113,7 @@ export default function AppointmentManager({ appointments }) {
                                         isLastDate={
                                             index === uniqueDates.length - 1
                                         }
-                                        userRole={user.role}
+                                        userRole={auth.user.role}
                                         handleReorder={handleReorder}
                                     />
                                 ))}

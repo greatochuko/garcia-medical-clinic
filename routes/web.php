@@ -4,7 +4,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AllPatientController;
 use App\Http\Controllers\PatientVisitController;
-use App\Http\Controllers\UserAccountController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\MedicationTemplateController;
 use App\Http\Controllers\ServiceChargesController;
@@ -22,6 +21,7 @@ use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\PatientLaboratoryTestController;
 use App\Http\Controllers\LaboratoryRequestController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\UserAccountController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -254,6 +254,11 @@ Route::middleware('auth')->group(function () {
     Route::get("settings/services", [SettingsController::class, 'index'])->name('settings.services');
     Route::get("settings/frequency", [SettingsController::class, 'frequency_index'])->name('settings.frequency');
     Route::get("settings/plan", [SettingsController::class, 'plan_index'])->name('settings.plan');
+    Route::get("settings/accounts", [SettingsController::class, 'accounts_index'])->name('settings.accounts');
+    Route::get("settings/accounts/new/doctor", [SettingsController::class, 'create_account'])->name('settings.accounts.create.doctor');
+    Route::get("settings/accounts/new/secretary", [SettingsController::class, 'create_account'])->name('settings.accounts.create.secretary');
+    Route::get("settings/accounts/new/admin", [SettingsController::class, 'create_account'])->name('settings.accounts.create.admin');
+    Route::get("settings/accounts/edit/{id}", [SettingsController::class, 'update_account'])->name('settings.accounts.update');
 });
 
 

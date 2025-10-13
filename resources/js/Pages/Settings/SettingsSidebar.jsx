@@ -28,7 +28,7 @@ const sideNav = [
     },
 ];
 
-export default function SettingsSidebar() {
+export default function SettingsSidebar({ userRole }) {
     const pathname = window.location.pathname;
 
     function linkIsActive(href) {
@@ -45,7 +45,7 @@ export default function SettingsSidebar() {
                     <Link
                         key={nav.href}
                         href={`/settings/${nav.href}`}
-                        className={`flex flex-col items-center justify-center gap-2 rounded-lg p-2 text-xs duration-200 ${linkIsActive(nav.href) ? "bg-white text-[#082D3C]" : "text-white hover:bg-white/10"}`}
+                        className={`flex-col items-center justify-center gap-2 rounded-lg p-2 text-xs duration-200 ${linkIsActive(nav.href) ? "bg-white text-[#082D3C]" : "text-white hover:bg-white/10"} ${nav.href === "accounts" && userRole !== "admin" ? "hidden" : "flex"}`}
                     >
                         <img
                             width={24}

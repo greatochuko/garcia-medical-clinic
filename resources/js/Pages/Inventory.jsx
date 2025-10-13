@@ -34,8 +34,7 @@ const allCategories = [
     "Antihypertensive",
 ];
 
-export default function Inventory({ auth, medications: medicationList }) {
-    const [user, setUser] = useState(auth.user);
+export default function Inventory({ medications: medicationList }) {
     const [medicineModalOpen, setMedicineModalOpen] = useState(false);
     const [deleteMedicineModalOpen, setDeleteMedicineModalOpen] =
         useState(false);
@@ -166,11 +165,7 @@ export default function Inventory({ auth, medications: medicationList }) {
 
     return (
         <>
-            <AuthenticatedLayout
-                pageTitle="Inventory"
-                user={user}
-                setUser={setUser}
-            >
+            <AuthenticatedLayout pageTitle="Inventory">
                 <div className="max-w-full flex-1 pt-6">
                     <div className="mx-auto h-full w-[95%] max-w-screen-2xl rounded-lg bg-white text-accent">
                         <div className="relative mb-2 flex flex-col items-center gap-1 border-b-2 border-accent-200 p-4 px-4 pb-6 text-center">
