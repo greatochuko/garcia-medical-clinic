@@ -3,84 +3,78 @@ import * as am4core from "@amcharts/amcharts4/core";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import PropTypes from "prop-types";
+import { usePage } from "@inertiajs/react";
 
-const dailyProfessionalIncomeReport = [
-    {
-        category: "Regular Check Up",
-        price: 2400,
-        value: 8,
-        color: "#15475B",
-        foreground: "#FFFFFF",
-    },
-    {
-        category: "Regular Check Up + MC",
-        price: 1000,
-        value: 2,
-        color: "#1D607B",
-        foreground: "#FFFFFF",
-    },
-    {
-        category: "Senior Check Up",
-        price: 1250,
-        value: 5,
-        color: "#2F94BD",
-        foreground: "#FFFFFF",
-    },
-    {
-        category: "Senior Check Up + MC",
-        price: 500,
-        value: 1,
-        color: "#59D0FF",
-        foreground: "#000000",
-    },
-    {
-        category: "Medical Certificate Only",
-        price: 600,
-        value: 2,
-        color: "#E9EEF3",
-        foreground: "#000000",
-    },
-    {
-        category: "Circumcision (10 Below)",
-        price: 0,
-        value: 0,
-        color: "#E6E6E6",
-        foreground: "#000000",
-    },
-    {
-        category: "Circumcision (11 Above)",
-        price: 0,
-        value: 0,
-        color: "#BCBEBD",
-        foreground: "#000000",
-    },
+const colors = [
+    { color: "#15475B", foreground: "#FFFFFF" }, // Regular Check Up
+    { color: "#1D607B", foreground: "#FFFFFF" }, // Regular Check Up + MC
+    { color: "#2F94BD", foreground: "#FFFFFF" }, // Senior Check Up
+    { color: "#59D0FF", foreground: "#000000" }, // Senior Check Up + MC
+    { color: "#E9EEF3", foreground: "#000000" }, // Medical Certificate Only
+    { color: "#E6E6E6", foreground: "#000000" }, // Circumcision (10 Below)
+    { color: "#BCBEBD", foreground: "#000000" }, // Circumcision (11 Above)
+    { color: "#FFB347", foreground: "#000000" }, // Extra color 1
+    { color: "#FF7F50", foreground: "#000000" }, // Extra color 2
+    { color: "#A3C4BC", foreground: "#000000" }, // Extra color 3
 ];
 
-const totalProfessionalFeeEarnings = dailyProfessionalIncomeReport.reduce(
-    (acc, curr) => acc + curr.price,
-    0,
-);
-
-const dailyMedicineIncomeReport = [
-    { value: 8, medicine: "Co-Amoxiclav", price: 2400 },
-    { value: 2, medicine: "Cetirizine", price: 1000 },
-    { value: 5, medicine: "Paracetamol 25mg", price: 1250 },
-    { value: 1, medicine: "Levocetirizine 10mg", price: 500 },
-    { value: 2, medicine: "Omeprazole 40mg", price: 600 },
-    { value: 1, medicine: "Hyoscine N-Butylbromide 10mg/tab", price: 50 },
-    { value: 1, medicine: "Celecoxib 200mg tab", price: 40 },
-    { value: 8, medicine: "Co-Amoxiclav", price: 2400 },
-    { value: 2, medicine: "Cetirizine", price: 1000 },
-    { value: 5, medicine: "Paracetamol 25mg", price: 1250 },
-    { value: 1, medicine: "Levocetirizine 10mg", price: 500 },
-    { value: 2, medicine: "Omeprazole 40mg", price: 600 },
-];
-
-const totalMedicineEarnings = dailyMedicineIncomeReport.reduce(
-    (acc, curr) => acc + curr.price,
-    0,
-);
 export default function RightDashboard({ className, userRole }) {
+    const { billingItems } = usePage().props;
+
+    const dailyProfessionalIncomeReport = Object.values(
+        billingItems.reduce((acc, appt) => {
+            const serviceName = appt.service?.name || "Unknown";
+            const price = parseFloat(appt.service?.charge || 0);
+            if (!acc[serviceName]) {
+                acc[serviceName] = {
+                    category: serviceName,
+                    price: 0,
+                    value: 0,
+                };
+            }
+            acc[serviceName].price += price;
+            acc[serviceName].value += 1;
+            return acc;
+        }, {}),
+    ).map((report, i) => ({
+        ...report,
+        color: colors[i % colors.length].color,
+        foreground: colors[i % colors.length].foreground,
+    }));
+
+    const dailyMedicineIncomeReport = [];
+
+    billingItems.forEach((appointment) => {
+        appointment.prescriptions.forEach((prescription) => {
+            const med = prescription.medication;
+            if (!med) return; // skip if no medication
+
+            // Check if medicine already exists in report
+            const existing = dailyMedicineIncomeReport.find(
+                (item) => item.medicine === med.name,
+            );
+
+            if (existing) {
+                existing.value += prescription.amount;
+                existing.price += med.price * prescription.amount;
+            } else {
+                dailyMedicineIncomeReport.push({
+                    medicine: med.name,
+                    value: prescription.amount,
+                    price: med.price * prescription.amount,
+                });
+            }
+        });
+    });
+
+    const totalMedicineEarnings = dailyMedicineIncomeReport.reduce(
+        (acc, curr) => acc + curr.price,
+        0,
+    );
+    const totalProfessionalFeeEarnings = dailyProfessionalIncomeReport.reduce(
+        (acc, curr) => acc + curr.price,
+        0,
+    );
     const [currentTab, setCurrentTab] = useState("professional-fee");
 
     return (
@@ -111,7 +105,11 @@ export default function RightDashboard({ className, userRole }) {
                             Today&apos;s Earnings
                         </h3>
                         <div className="relative">
-                            <PieChart />
+                            <div className="relative z-20">
+                                <PieChart
+                                    incomeReport={dailyProfessionalIncomeReport}
+                                />
+                            </div>
                             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-left">
                                 <span className="text-xs">PHP</span>
                                 <p className="text-2xl">
@@ -138,8 +136,8 @@ export default function RightDashboard({ className, userRole }) {
                                 <span
                                     className="flex h-6 w-6 items-center justify-center rounded-md text-xs"
                                     style={{
-                                        backgroundColor: income.color,
-                                        color: income.foreground,
+                                        backgroundColor: colors[i].color,
+                                        color: colors[i].foreground,
                                     }}
                                 >
                                     {income.value}
@@ -198,7 +196,7 @@ export default function RightDashboard({ className, userRole }) {
 
 am4core.useTheme(am4themes_animated);
 
-function PieChart() {
+function PieChart({ incomeReport }) {
     useLayoutEffect(() => {
         // Create chart
         let chart = am4core.create("chartdiv", am4charts.PieChart);
@@ -206,7 +204,7 @@ function PieChart() {
         chart.margin(0, 0, 0, 0);
 
         // Sample data
-        chart.data = dailyProfessionalIncomeReport.map((service) => ({
+        chart.data = incomeReport.map((service) => ({
             category: service.category,
             value: service.price,
         }));
@@ -215,7 +213,7 @@ function PieChart() {
         let pieSeries = chart.series.push(new am4charts.PieSeries());
         pieSeries.dataFields.value = "value";
         pieSeries.dataFields.category = "category";
-        pieSeries.colors.list = dailyProfessionalIncomeReport.map((income) =>
+        pieSeries.colors.list = incomeReport.map((income) =>
             am4core.color(income.color),
         );
 
@@ -235,7 +233,7 @@ function PieChart() {
         return () => {
             chart.dispose();
         };
-    }, []);
+    }, [incomeReport]);
 
     return <div id="chartdiv" style={{ width: "100%", height: "256px" }}></div>;
 }

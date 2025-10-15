@@ -1,19 +1,44 @@
+import { usePage } from "@inertiajs/react";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 
-const patientStats = [
-    { title: "Blood Pressure", value: "110/70" },
-    { title: "Temperature", value: "37.6" },
-    { title: "Heart Rate", value: "" },
-    { title: "Height", value: "" },
-    { title: "o2 Saturation", value: "" },
-    { title: "Weight", value: "66" },
-];
-
-const patientMedicalHistory =
-    "Pneumonia, Asthma, Myocardial Infarction, Hyperlipidemia, Hypertension, AKI, CKD, CVA, Pneumonia, Asthma, Myocardial Infarction, Hyperlipidemia, Hypertension, AKI, CKD, CVA";
-
 export function PatientQuickView({ userRole }) {
+    const { nextPatient } = usePage().props;
+
+    const patientStats = [
+        {
+            title: "Blood Pressure",
+            value:
+                nextPatient?.blood_diastolic_pressure &&
+                nextPatient?.blood_systolic_pressure
+                    ? `${nextPatient?.blood_diastolic_pressure}/${nextPatient?.blood_systolic_pressure}`
+                    : null,
+        },
+        { title: "Temperature", value: nextPatient?.temperature },
+        { title: "Heart Rate", value: nextPatient?.heart_rate },
+        {
+            title: "Height",
+            value:
+                nextPatient?.vitals?.height_ft && nextPatient?.vitals?.height_in
+                    ? `${nextPatient?.vitals.height_ft} ft ${nextPatient?.vitals.height_in} in`
+                    : null,
+        },
+        { title: "o2 Saturation", value: nextPatient?.o2_saturation },
+        { title: "Weight", value: nextPatient?.weight },
+    ];
+
+    const patientMedicalHistory = nextPatient?.medical_history
+        .map((history) => history.disease)
+        .join(", ");
+
+    const patientFullName = nextPatient
+        ? nextPatient.first_name +
+          (nextPatient.middle_initial
+              ? ` ${nextPatient.middle_initial}, `
+              : " ") +
+          nextPatient.last_name
+        : "N/A";
+
     const [currentTab, setCurrentTab] = useState("vital-signs");
 
     return (
@@ -41,8 +66,20 @@ export function PatientQuickView({ userRole }) {
             </div>
             <div className="flex flex-col items-center gap-2 p-4 text-center">
                 <h4 className="text-sm">
-                    Your next patient <span className="font-bold">R2</span> is
-                    ready
+                    {nextPatient ? (
+                        <>
+                            Your next patient{" "}
+                            <span
+                                className={`font-bold ${nextPatient.queue_type === "S" ? "text-accent-orange" : ""}`}
+                            >
+                                {nextPatient.queue_type}
+                                {nextPatient.queue_number}
+                            </span>{" "}
+                            is ready
+                        </>
+                    ) : (
+                        "You don't have an upcoming patient"
+                    )}
                 </h4>
                 <img
                     src="/images/patient.png"
@@ -52,8 +89,12 @@ export function PatientQuickView({ userRole }) {
                     className="rounded-full shadow-xl shadow-black/20"
                 />
                 <div className="flex flex-col items-center gap-1">
-                    <h3 className="font-bold">Jennings, Mark Anthony</h3>
-                    <p className="text-sm">53, Female</p>
+                    <h3 className="font-bold">{patientFullName}</h3>
+                    <p className="text-sm">
+                        {nextPatient
+                            ? `${nextPatient.age}, ${nextPatient.gender}`
+                            : "N/A"}
+                    </p>
                 </div>
             </div>
             <hr className="border-2 border-accent-200" />

@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Patient;
 use App\Models\Appointment;
+use App\Models\Billing;
 use App\Models\ClosedAppointment;
+use App\Models\Doctor;
 use App\Models\UnfinishedDoc;
 use App\Models\Reminder;
 
@@ -17,24 +19,27 @@ class DashboardController extends Controller
 {
     public function show()
     {
-        // $summary = $this->getSummary();
-        // $upcomingPatients = $this->getUpcomingPatients();
-        // $pendingProcedures = $this->getPendingProcedures();
-        // $calendarData = $this->getMonthlyCalendar();
-        // $billingItems = $this->getBillingItems();
+        $summary = $this->getSummary();
+        $upcomingPatients = $this->getUpcomingPatients();
+        $pendingProcedures = $this->getPendingProcedures();
+        $nextPatient = $this->getNextPatientInLine();
+        $calendarData = $this->getCalendarData();
+        $billingItems = $this->getBillingItems();
         // $queueData = $this->getQueueNumber();
         // $reminders = $this->getReminders();
         // $todayActivities = $this->getTodayActivities();
+
 
         return Inertia::render('Dashboard', [
             'auth' => [
                 'user' => Auth::user(),
             ],
-            // 'summary' => $summary,
-            // 'upcomingPatients' => $upcomingPatients,
-            // 'pendingProcedures' => $pendingProcedures,
-            // 'calendarData' => $calendarData,
-            // 'billingItems' => $billingItems,
+            'summary' => $summary,
+            'upcomingPatients' => $upcomingPatients,
+            'pendingProcedures' => $pendingProcedures,
+            'nextPatient' => $nextPatient,
+            'calendarData' => $calendarData,
+            'billingItems' => $billingItems,
             // 'queueData' => $queueData,
             // 'reminders' => $reminders,
             // 'todayActivities' => $todayActivities,
@@ -46,10 +51,45 @@ class DashboardController extends Controller
 
         $total_patients = Patient::count();
         $total_appointments = Appointment::count();
+        $total_doctors = Doctor::count();
         return [
-            'total_patients' => $total_patients, // Placeholder
-            'total_appointments' => $total_appointments, // Placeholder
+            'total_patients' => $total_patients,
+            'total_appointments' => $total_appointments,
+            'total_doctors' => $total_doctors,
         ];
+    }
+
+    public function getNextPatientInLine()
+    {
+        $nextPatient = DB::table('patient_records')
+            ->join('appointments', 'appointments.patient_id', '=', 'patient_records.patient_id')
+            ->join('service_charges', 'service_charges.id', '=', 'appointments.service')
+            ->leftJoin('patient_vitals', 'patient_vitals.patient_id', '=', 'patient_records.patient_id')
+            ->whereDate('appointments.appointment_date', '>=', now()->toDateString()) // today and onwards
+            ->where('appointments.status', 'waiting')
+            ->orderBy('appointments.appointment_date', 'asc') // earliest upcoming
+            ->orderBy('appointments.queue_number', 'asc') // then by queue
+            ->select(
+                'patient_records.*',
+                'patient_vitals.*',
+                'appointments.id as appointment_id',
+                'appointments.status',
+                'appointments.appointment_date',
+                'appointments.queue_number',
+                'appointments.queue_type',
+                'service_charges.name as service_name'
+            )
+            ->first();
+
+        if ($nextPatient) {
+            $medicalHistory = DB::table('patient_medical_history')
+                ->where('patient_id', $nextPatient->patient_id)
+                ->get();
+
+            $nextPatient->medical_history = $medicalHistory;
+        }
+
+        return $nextPatient;
     }
 
     public function getUpcomingPatients()
@@ -90,34 +130,30 @@ class DashboardController extends Controller
         return $pendingPatients;
     }
 
-    public function getMonthlyCalendar()
+    public function getCalendarData()
     {
-        $now = Carbon::now();
-        return [
-            'month' => $now->format('F'),
-            'year' => $now->format('Y'),
-            // Add more calendar data here later, e.g., days with appointments
-        ];
+        // Group appointments by date and count them
+        $appointmentsByDate = Appointment::selectRaw('DATE(appointment_date) as date, COUNT(*) as total')
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
+
+        // Map to a simple array format
+        $calendarData = $appointmentsByDate->map(function ($item) {
+            return [
+                'date' => $item->date,
+                'appointments_count' => $item->total,
+            ];
+        });
+
+        return $calendarData;
     }
 
     public function getBillingItems()
     {
-        $billingPatients = DB::table('patient_records')
-            ->join('appointments', 'appointments.patient_id', '=', 'patient_records.patient_id')
-            ->join('billings', 'billings.patient_id', '=', 'appointments.patient_id')
-            ->join('service_charges', 'appointments.service', '=', 'service_charges.id') // <-- Added join
-            ->where('appointments.appointment_date', Carbon::today())
-            ->where('appointments.status', 'for_billing')
-            ->select(
-                'patient_records.*',
-                'appointments.*',
-                'billings.*',
-                'service_charges.name as service_name',
-                'service_charges.charge as amount'
-            )
-            ->get();
+        $billingRecords = Billing::where('created_at', Carbon::today())->get();
 
-        return $billingPatients;
+        return $billingRecords;
     }
 
     public function getQueueNumber()

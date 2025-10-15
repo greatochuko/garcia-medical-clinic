@@ -33,7 +33,6 @@ export default function Paginator({
                 perPage: newPerPage === 10 ? undefined : newPerPage,
                 page,
             },
-            preserveState: true,
         });
         setPerPage(newPerPage);
     }

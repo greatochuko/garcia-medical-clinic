@@ -39,7 +39,7 @@ class AppointmentManagerController extends Controller
         }
 
         // Fetch with pagination
-        $appointments = $query->orderBy('appointments.created_at', 'desc')
+        $appointments = $query->orderBy('appointments.appointment_date', 'desc')
             ->paginate($perPage)
             ->withQueryString();
 

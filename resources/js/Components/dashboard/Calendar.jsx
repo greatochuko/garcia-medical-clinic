@@ -1,3 +1,4 @@
+import { usePage } from "@inertiajs/react";
 import React, { useState } from "react";
 
 // Helper function to get number of days in a given month
@@ -10,16 +11,24 @@ const getDaysInPreviousMonth = (month, year) => {
     return new Date(year, month, 0).getDate();
 };
 
-const appointments = {
-    15: 20,
-    19: 3,
-    22: 1,
-};
-
 export default function Calendar() {
+    const { calendarData } = usePage().props;
+
     const today = new Date();
+
     const [currentMonth, setCurrentMonth] = useState(today.getMonth());
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
+
+    const appointments = calendarData.reduce((acc, item) => {
+        const date = new Date(item.date);
+        if (
+            date.getMonth() === currentMonth &&
+            date.getFullYear() === currentYear
+        ) {
+            acc[date.getDate()] = item.appointments_count;
+        }
+        return acc;
+    }, {});
 
     // Get the current month's details
     const daysInMonth = getDaysInMonth(currentMonth + 1, currentYear);
