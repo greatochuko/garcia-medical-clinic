@@ -4,11 +4,12 @@ import PropTypes from "prop-types";
 import useClickOutside from "@/hooks/useClickOutside";
 import { route } from "ziggy-js";
 import { router } from "@inertiajs/react";
+import { MdLogout, MdSettings } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 
 const dropdownLinks = [
-    { text: "Profile", href: "/profile" },
-    { text: "Settings", href: "/settings" },
-    // { text: "Logout", href: route("profile.destroy") },
+    { text: "Profile", href: "/profile", Icon: FaUser },
+    { text: "Settings", href: "/settings", Icon: MdSettings },
 ];
 
 export default function UserDropdown({ user }) {
@@ -57,16 +58,18 @@ export default function UserDropdown({ user }) {
                     <Link
                         key={i}
                         href={link.href}
-                        className="p-3 duration-200 hover:bg-accent-300"
+                        className="flex items-center gap-2 p-3 duration-200 hover:bg-accent-300"
                     >
+                        <link.Icon size={14} />
                         {link.text}
                     </Link>
                 ))}
                 <button
                     type="button"
                     onClick={handleLogout}
-                    className="p-3 text-left duration-200 hover:bg-accent-300"
+                    className="flex items-center gap-2 p-3 text-left text-[#8D2310] duration-200 hover:bg-[#8D2310]/10"
                 >
+                    <MdLogout size={14} />
                     Logout
                 </button>
             </div>

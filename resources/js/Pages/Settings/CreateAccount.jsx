@@ -269,7 +269,7 @@ export default function CreateAccount({ accountToUpdate }) {
                             </button>
                             <button
                                 disabled={processing}
-                                className="flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs text-white duration-200 hover:bg-accent/90"
+                                className="flex items-center gap-2 rounded-md bg-accent px-4 py-2 text-xs text-white duration-200 hover:bg-accent/90 disabled:opacity-50"
                                 type="submit"
                             >
                                 {processing ? (
