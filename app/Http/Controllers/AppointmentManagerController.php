@@ -20,8 +20,15 @@ class AppointmentManagerController extends Controller
     {
         $perPage = (int) $request->input('perPage', 10);
         $search  = $request->input('search', '');
+        $type  = $request->input('type', '');
 
         $query = Appointment::with(['patient.vitals', 'serviceCharge']);
+        if ($type === 'completed') {
+            $query->where('status', 'checked_out');
+        } else {
+            $query->where('status', '!=', 'checked_out');
+        }
+
         $medications = MedicationList::all();
 
         // Apply search filters
@@ -302,8 +309,12 @@ class AppointmentManagerController extends Controller
             return redirect()->back()->withErrors(['id' => 'Invalid patient ID']);
         }
 
-        $serviceTypes = ServiceCharge::select('id', 'name', 'charge')->where('patient_type', $patientData->patient_type)
+        $patientType = $patientData->age < 60 ? 'regular' : 'senior';
+
+        $serviceTypes = ServiceCharge::select('id', 'name', 'charge')
+            ->where('patient_type', $patientType)
             ->get();
+
 
         return Inertia::render('Appointments/CreateAppointment', [
             'serviceTypes' => $serviceTypes,
@@ -472,54 +483,59 @@ class AppointmentManagerController extends Controller
 
     public function closeForm(Request $request, $id)
     {
-        $user = auth()->user();
+        try {
+            $user = auth()->user();
 
-        // Role check
-        if (!in_array($user->role, ['doctor', 'admin'])) {
-            return back()->withErrors(['error' => 'Form closed and medical record created successfully!']);
+            // Role check
+            if (!in_array($user->role, ['doctor', 'admin'])) {
+                return back()->withErrors(['error' => 'Patient forms can only be closed ']);
+            }
+
+            // Find appointment
+            $appointment = Appointment::find($id);
+            if (!$appointment) {
+                return back()->withErrors(['error' => 'Appointment not found']);
+            }
+
+            // Validate request data
+            $validated = $request->validate(
+                [
+                    'diagnosis'                  => 'required|string|max:1000',
+                    'prescribed_medications'     => 'required|array',
+                    'prescribed_medications.*'   => 'string|max:255',
+                ],
+                [
+                    'diagnosis.required'         => 'A medical certificate is required before closing the form.',
+                    'diagnosis.string'           => 'The diagnosis must be a valid text.',
+                    'diagnosis.max'              => 'The diagnosis cannot exceed 1000 characters.',
+
+                    'prescribed_medications.required'   => 'Prescribed medications are required before closing the form.',
+                    'prescribed_medications.array'   => 'Prescribed medications must be a valid list.',
+                    'prescribed_medications.*.string' => 'Each medication must be a valid text.',
+                    'prescribed_medications.*.max'    => 'Each medication cannot exceed 255 characters.',
+                ]
+            );
+
+
+            // Update appointment status
+            $appointment->status = "for_billing";
+
+            // Create medical record
+            MedicalRecord::create([
+                'appointment_id'         => $appointment->id,
+                'diagnosis'              => $validated['diagnosis'],
+                'prescribed_medications' => $validated['prescribed_medications'] ?? [],
+                'doctor_id'              => $user->id,
+                'patient_id'             => $appointment->patient_id,
+            ]);
+
+            $appointment->save();
+
+            return redirect()->route('appointments.index')
+                ->with('success', 'Form closed and medical record created successfully!');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
         }
-
-        // Find appointment
-        $appointment = Appointment::find($id);
-        if (!$appointment) {
-            return back()->withErrors(['error' => 'Appointment not found']);
-        }
-
-        // Validate request data
-        $validated = $request->validate(
-            [
-                'diagnosis'                  => 'required|string|max:1000',
-                'prescribed_medications'     => 'required|array',
-                'prescribed_medications.*'   => 'string|max:255',
-            ],
-            [
-                'diagnosis.required'         => 'A medical certificate is required before closing the form.',
-                'diagnosis.string'           => 'The diagnosis must be a valid text.',
-                'diagnosis.max'              => 'The diagnosis cannot exceed 1000 characters.',
-
-                'prescribed_medications.required'   => 'Prescribed medications are required before closing the form.',
-                'prescribed_medications.array'   => 'Prescribed medications must be a valid list.',
-                'prescribed_medications.*.string' => 'Each medication must be a valid text.',
-                'prescribed_medications.*.max'    => 'Each medication cannot exceed 255 characters.',
-            ]
-        );
-
-
-        // Update appointment status
-        $appointment->status = "for_billing";
-        $appointment->save();
-
-        // Create medical record
-        MedicalRecord::create([
-            'appointment_id'         => $appointment->id,
-            'diagnosis'              => $validated['diagnosis'],
-            'prescribed_medications' => $validated['prescribed_medications'] ?? [],
-            'doctor_id'              => $user->id,
-            'patient_id'             => $appointment->patient_id,
-        ]);
-
-        return redirect()->route('appointments.index')
-            ->with('success', 'Form closed and medical record created successfully!');
     }
 
     public function updateStatus(Request $request, $id)

@@ -23,6 +23,7 @@ export function AppointmentRow({
     index,
     isLast,
     userRole,
+    removeAppointmentFromList,
 }) {
     const [appointment, setAppointment] = useState(originalAppointment);
     const [checkOutLoading, setCheckOutLoading] = useState(false);
@@ -267,7 +268,7 @@ export function AppointmentRow({
                         appointment={appointment}
                         patient={appointment.patient}
                         prescriptions={prescriptions}
-                        setAppointment={setAppointment}
+                        removeAppointmentFromList={removeAppointmentFromList}
                         service={appointment.service_charge}
                     />
                 </>

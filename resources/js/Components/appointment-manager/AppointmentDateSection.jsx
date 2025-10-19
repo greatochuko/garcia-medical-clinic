@@ -57,6 +57,15 @@ export function AppointmentDateSection({
                                         appointment={appointment}
                                         index={index}
                                         setAppointments={setAppointments}
+                                        removeAppointmentFromList={() =>
+                                            setAppointments((prev) =>
+                                                prev.filter(
+                                                    (app) =>
+                                                        app.id !==
+                                                        appointment.id,
+                                                ),
+                                            )
+                                        }
                                         isLast={
                                             isLastDate &&
                                             index === appointments.length - 1

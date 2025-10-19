@@ -26,7 +26,7 @@ return new class extends Migration
             $table->json('prescribed_medications')->nullable();
 
             $table->foreignId('doctor_id')
-                ->constrained('doctors')
+                ->constrained('users')
                 ->onDelete('cascade');
 
             $table->string('patient_id');

@@ -1,10 +1,22 @@
 import { Link, usePage } from "@inertiajs/react";
 import React, { useState } from "react";
 import MedicationRefillModal from "../modals/MedicationRefillModal";
+import { router } from "@inertiajs/react";
 
-export default function AppointmentsHeader({ currentTab, setCurrentTab }) {
+export default function AppointmentsHeader() {
     const { medications } = usePage().props;
     const [walkInBillingModalOpen, setWalkInBillingModalOpen] = useState(false);
+
+    const url = new URL(window.location.href);
+    const type = url.searchParams.get("type");
+    let currentTab = type === "completed" ? "completed" : "active";
+
+    function handleSwitchTab(tab) {
+        const newType = tab === "completed" ? "completed" : "";
+        const query = newType ? `?type=${newType}` : "";
+
+        router.visit(`/appointments${query}`);
+    }
 
     return (
         <>
@@ -16,7 +28,7 @@ export default function AppointmentsHeader({ currentTab, setCurrentTab }) {
                     {["active", "completed"].map((tab) => (
                         <button
                             key={tab}
-                            onClick={() => setCurrentTab(tab)}
+                            onClick={() => handleSwitchTab(tab)}
                             className={`rounded-md px-3 py-1.5 duration-100 ${
                                 currentTab === tab
                                     ? "bg-accent text-white"

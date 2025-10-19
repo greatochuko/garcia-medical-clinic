@@ -238,20 +238,29 @@ class PatientVisitController extends Controller
                 'appointment_id' => 'required'
             ]);
 
+            $existingPlan = Plan::whereRaw('LOWER(name) = ?', [strtolower($request->plan)])->first();
+
+            if (!$existingPlan) {
+                $existingPlan = Plan::create(['name' => $request->plan]);
+            }
+
             PatientPlans::updateOrCreate(
                 [
                     'patient_id'     => $request->patient_id,
-                    'plan'           => $request->plan,
                     'appointment_id' => $request->appointment_id,
+                    'plan'       => $existingPlan->name,
                 ],
-                ['updated_at' => now()]
+                [
+                    'updated_at' => now()
+                ]
             );
 
-            return back()->with('success', 'Plan added or updated successfully.');
+            return back()->with('success', 'Plan added successfully.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+
 
     public function update_patient_plan(Request $request)
     {
@@ -366,18 +375,38 @@ class PatientVisitController extends Controller
     {
         try {
             $validated = $request->validate([
-                'patient_id'      => 'required|exists:patient_records,patient_id',
-                'medication_id'   => 'required|exists:medication_lists,id',
-                'dosage'          => 'required|string|max:255',
-                'frequency_id'    => 'required|exists:frequency_lists,id',
-                'amount'          => 'required|string|max:255',
-                'duration'        => 'required|string|max:255',
-                'appointment_id'  => 'required',
+                'patient_id'     => 'required|exists:patient_records,patient_id',
+                'medication_id'  => 'nullable|integer',
+                'medication'     => 'required|string|max:255',
+                'dosage'         => 'required|string|max:255',
+                'frequency_id'   => 'nullable|integer',
+                'frequency'      => 'required|string|max:255',
+                'amount'         => 'required|string|max:255',
+                'duration'       => 'required|string|max:255',
+                'appointment_id' => 'required',
             ]);
 
-            $medication = MedicationList::findOrFail($validated['medication_id']);
-            $frequency  = FrequencyList::findOrFail($validated['frequency_id']);
+            // Get or create medication
+            if (!empty($validated['medication_id'])) {
+                $medication = MedicationList::findOrFail($validated['medication_id']);
+            } else {
+                $medication = MedicationList::create([
+                    'name'       => $validated['medication'],
+                    'category'   => 'General',
+                    'price'      => 0,
+                    'quantity'   => 0,
+                    'controlled' => false,
+                ]);
+            }
 
+            // Get or create frequency
+            if (!empty($validated['frequency_id'])) {
+                $frequency = FrequencyList::findOrFail($validated['frequency_id']);
+            } else {
+                $frequency = FrequencyList::firstOrCreate(['name' => $validated['frequency']]);
+            }
+
+            // Create prescription
             PatientPrescription::create([
                 'patient_id'     => $validated['patient_id'],
                 'doctor_id'      => Auth::id(),
@@ -395,35 +424,64 @@ class PatientVisitController extends Controller
         }
     }
 
-    public function patientprescription_update(Request $request)
+    public function patientprescription_update(Request $request, $id)
     {
         try {
             $validated = $request->validate([
-                'id'         => 'required',
-                'patient_id' => 'required|exists:patient_records,patient_id',
-                'medication' => 'required|string|max:255',
-                'dosage'     => 'nullable|string|max:255',
-                'frequency'  => 'required|string|max:255',
-                'amount'     => 'nullable|string|max:255',
-                'duration'   => 'nullable|string|max:255',
+                'patient_id'     => 'required|exists:patient_records,patient_id',
+                'medication_id'  => 'nullable|integer',
+                'medication'     => 'required|string|max:255',
+                'dosage'         => 'required|string|max:255',
+                'frequency_id'   => 'nullable|integer',
+                'frequency'      => 'required|string|max:255',
+                'amount'         => 'required|max:255',
+                'duration'       => 'required|max:255',
+                'appointment_id' => 'required',
             ]);
 
-            $prescription = PatientPrescription::findOrFail($validated['id']);
-            $prescription->update($validated);
+            // Find the existing prescription
+            $prescription = PatientPrescription::findOrFail($id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Prescription updated successfully.',
-                'data'    => $prescription
+            // Get or create medication
+            if (!empty($validated['medication_id'])) {
+                $medication = MedicationList::findOrFail($validated['medication_id']);
+            } else {
+                $medication = MedicationList::firstOrCreate(
+                    ['name' => $validated['medication']],
+                    [
+                        'category'   => 'General',
+                        'price'      => 0,
+                        'quantity'   => 0,
+                        'controlled' => false,
+                    ]
+                );
+            }
+
+            // Get or create frequency
+            if (!empty($validated['frequency_id'])) {
+                $frequency = FrequencyList::findOrFail($validated['frequency_id']);
+            } else {
+                $frequency = FrequencyList::firstOrCreate(['name' => $validated['frequency']]);
+            }
+
+            // Update prescription
+            $prescription->update([
+                'patient_id'     => $validated['patient_id'],
+                'doctor_id'      => Auth::id(),
+                'medication_id'  => $medication->id,
+                'dosage'         => $validated['dosage'],
+                'frequency_id'   => $frequency->id,
+                'amount'         => $validated['amount'],
+                'duration'       => $validated['duration'],
+                'appointment_id' => $validated['appointment_id'],
             ]);
+
+            return back()->with('success', 'Prescription updated successfully.');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'An error occurred while updating the prescription.',
-                'error'   => $e->getMessage()
-            ], 500);
+            return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+
 
     public function patientprescription_remove($id)
     {

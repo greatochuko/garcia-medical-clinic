@@ -97,7 +97,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::post('/patient/prescription/add', [PatientVisitController::class, 'patientprescription_add'])->name('patientvisitform.patientprescriptionadd');
-    Route::put('/patient/prescription/update', [PatientVisitController::class, 'patientprescription_update'])->name('patientvisitform.patientprescriptionupdate');
+    Route::put('/patient/prescription/update/{id}', [PatientVisitController::class, 'patientprescription_update'])->name('patientvisitform.patientprescriptionupdate');
     Route::get('/patient/prescription/get/{id}/{app_id}', [PatientVisitController::class, 'patientprescription_get'])->name('patientvisitform.patientprescriptionget');
     Route::delete('/patient/prescription/delete/{id}', [PatientVisitController::class, 'patientprescription_remove'])->name('patientvisitform.patientprescriptionremove');
 

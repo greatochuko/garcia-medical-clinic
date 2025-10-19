@@ -1,5 +1,5 @@
 import { useEscPress } from "@/hooks/useEscapePress";
-import React, { useEffect } from "react";
+import React from "react";
 import { twMerge } from "tailwind-merge";
 
 export default function ModalContainer({
@@ -8,13 +8,13 @@ export default function ModalContainer({
     children,
     className = "",
 }) {
-    useEffect(() => {
-        if (open) {
-            document.body.style.overflow = "hidden";
-        } else {
-            document.body.style.overflow = "auto";
-        }
-    }, [open]);
+    // useEffect(() => {
+    //     if (open) {
+    //         document.body.style.overflow = "hidden";
+    //     } else {
+    //         document.body.style.overflow = "auto";
+    //     }
+    // }, [open]);
 
     useEscPress(closeModal);
 

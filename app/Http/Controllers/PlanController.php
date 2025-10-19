@@ -132,7 +132,6 @@ class PlanController extends Controller
         if (!$existingPlan) {
             $plan->update($request->all());
         }
-    
 
         return redirect()->back()->with('success', 'Plan updated successfully.');
     }

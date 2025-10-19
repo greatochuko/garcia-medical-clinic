@@ -124,7 +124,7 @@ export default function AddLaboratoryResultsModal({
                                 type="button"
                                 onClick={() => setCurrentTab(result.id)}
                                 key={result.id}
-                                className={`whitespace-nowrap rounded-md px-2 py-1.5 text-xs font-medium ${
+                                className={`whitespace-nowrap rounded-md px-2 py-1.5 text-xs font-medium hover:bg-accent-300 ${
                                     currentTab === result.id
                                         ? "bg-accent text-white"
                                         : ""

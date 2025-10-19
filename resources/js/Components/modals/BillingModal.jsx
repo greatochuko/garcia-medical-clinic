@@ -18,7 +18,7 @@ export default function BillingModal({
     appointment,
     patient,
     prescriptions: initialPrescriptions,
-    setAppointment,
+    removeAppointmentFromList,
     readOnly = false,
     invoiceNumber,
     service,
@@ -126,10 +126,7 @@ export default function BillingModal({
             if (res.data.success) {
                 setPaid(true);
                 setPaymentModalOpen(false);
-                setAppointment?.((prev) => ({
-                    ...prev,
-                    status: "checked_out",
-                }));
+                removeAppointmentFromList?.();
             } else {
                 toast.error("Failed to bill client");
             }

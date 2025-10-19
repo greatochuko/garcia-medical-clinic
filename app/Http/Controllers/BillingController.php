@@ -47,7 +47,7 @@ class BillingController extends Controller
         $validated = $request->validate([
             'patient' => 'required|array',
             'service' => 'required|array',
-            'prescriptions' => 'required|array',
+            'prescriptions' => 'nullable|array',
             'total' => 'required|numeric',
             'discount' => 'nullable|numeric',
             'final_total' => 'required|numeric',

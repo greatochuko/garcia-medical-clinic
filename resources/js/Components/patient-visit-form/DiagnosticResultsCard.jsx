@@ -190,8 +190,8 @@ export default function DiagnosticResultsCard({ appointmentIsClosed }) {
                 ...pan,
                 tests: pan.tests.map((test) => ({
                     ...test,
-                    today: "120 (N)",
-                    todayInput: "120 (N)",
+                    today: "",
+                    todayInput: "",
                 })),
             })),
         })),
@@ -205,6 +205,10 @@ export default function DiagnosticResultsCard({ appointmentIsClosed }) {
                 <div className="relative p-2 pb-20 text-center md:pb-6">
                     <h2 className="text-sm font-bold">DIAGNOSTIC RESULTS</h2>
                     <button
+                        onClick={() => {
+                            if (appointmentIsClosed) return;
+                            setAddResultsModalOpen(true);
+                        }}
                         disabled={appointmentIsClosed}
                         className="absolute right-3 top-3 rounded-md border border-transparent p-1 duration-200 hover:border-accent-400 hover:bg-accent-200 disabled:pointer-events-none"
                     >
@@ -229,7 +233,7 @@ export default function DiagnosticResultsCard({ appointmentIsClosed }) {
                             <button
                                 onClick={() => setCurrentTab(result.id)}
                                 key={result.id}
-                                className={`whitespace-nowrap rounded-md px-2 py-1.5 text-xs font-medium ${currentTab === result.id ? "bg-accent text-white" : ""}`}
+                                className={`whitespace-nowrap rounded-md px-2 py-1.5 text-xs font-medium duration-200 ${currentTab === result.id ? "bg-accent text-white" : "hover:bg-accent-300"}`}
                             >
                                 {result.id === "serology_radiology_others" ? (
                                     <>
@@ -275,13 +279,13 @@ export default function DiagnosticResultsCard({ appointmentIsClosed }) {
                                         {panel.tests.map((test) => (
                                             <tr
                                                 key={test.name}
-                                                className="even:bg-[#FAFAFA]"
+                                                className="even:bg-[#FAFAFA] hover:bg-neutral-100"
                                             >
                                                 <td className="p-1">
                                                     {test.name}
                                                 </td>
                                                 <td className="p-1 text-center">
-                                                    {test.today}
+                                                    {test.today || "-"}
                                                 </td>
                                             </tr>
                                         ))}

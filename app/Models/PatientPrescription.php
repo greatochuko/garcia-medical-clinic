@@ -20,6 +20,11 @@ class PatientPrescription extends Model
         "duration",
     ];
 
+    protected $casts = [
+        'amount' => 'integer',
+        'duration' => 'integer',
+    ];
+
     public function medication()
     {
         return $this->belongsTo(MedicationList::class, 'medication_id');

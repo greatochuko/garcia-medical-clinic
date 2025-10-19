@@ -10,7 +10,6 @@ import { route } from "ziggy-js";
 export default function AppointmentManager({ appointments }) {
     const { auth } = usePage().props;
 
-    const [currentTab, setCurrentTab] = useState("active");
     const [appointmentList, setAppointmentList] = useState(appointments.data);
 
     const uniqueDates = useMemo(
@@ -95,10 +94,7 @@ export default function AppointmentManager({ appointments }) {
         <AuthenticatedLayout pageTitle="Appointments">
             <div className="max-w-full flex-1 pt-6">
                 <div className="mx-auto flex h-full w-[95%] max-w-screen-2xl flex-col gap-4 bg-white text-accent">
-                    <AppointmentsHeader
-                        currentTab={currentTab}
-                        setCurrentTab={setCurrentTab}
-                    />
+                    <AppointmentsHeader />
                     {appointmentList.length > 0 ? (
                         <div className="flex flex-1 flex-col">
                             <div className="flex flex-1 flex-col gap-6 divide-y divide-accent-200 overflow-x-auto text-sm">

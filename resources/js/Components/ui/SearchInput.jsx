@@ -7,6 +7,7 @@ export default function SearchInput({
     onSelect,
     options = [],
     className = "",
+    containerClassName = "",
     dropdownClassName = "",
     position = "top", // default top
     ...props
@@ -68,12 +69,15 @@ export default function SearchInput({
     }, [activeIndex]);
 
     return (
-        <div onBlur={() => setSuggestions([])} className="relative w-full">
+        <div
+            onBlur={() => setSuggestions([])}
+            className={"relative flex " + containerClassName}
+        >
             <Input
                 value={value}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
-                className={"w-full " + className}
+                className={"w-0 flex-1 " + className}
                 {...props}
             />
             {suggestions.length > 0 && (
