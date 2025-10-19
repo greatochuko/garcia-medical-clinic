@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AppointmentCreated;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Patient;
@@ -160,22 +161,6 @@ class AppointmentManagerController extends Controller
         ]);
     }
 
-    // public function getQueueNumbers2($age = null)
-    // {
-
-    //     $age >= 60 ? $queueTag = 'S' : $queueTag = 'R';
-    //     $queueNumbers = [];
-    //     for ($i = 1; $i <= 40; $i++) {
-    //         $queueNumbers[] = [
-    //             'number' => sprintf("$queueTag%d", $i),
-    //             'isAvailable' => rand(0, 1) === 1, // Randomly set availability
-    //         ];
-    //     }
-
-    //     // Log::info('Queue Numbers:', $queueNumbers);
-
-    //     return response()->json($queueNumbers);
-    // }
     public function getQueueNumbers(Request $request, $age = null)
     {
         $queueTag = ($age >= 60) ? 'S' : 'R';
@@ -230,67 +215,6 @@ class AppointmentManagerController extends Controller
             ->toArray();
     }
 
-
-    // public function getQueueNumbers(Request $request, $age = null)
-    // {
-    //     $queueTag = ($age >= 60) ? 'S' : 'R';
-    //     $cutoff = Carbon::now()->subHours(24);
-
-    //     // Date from frontend, e.g. ?date=2024-07-30
-    //     $excludeDate = $request->query('date'); // format: Y-m-d
-
-    //     $appointmentsQuery = Appointment::where('queue_type', $queueTag);
-
-    //     // Determine whether to apply 24-hour logic or future date filter
-    //     if ($excludeDate) {
-    //         $excludeDateCarbon = Carbon::parse($excludeDate)->startOfDay();
-    //         $today = Carbon::today();
-
-    //         if ($excludeDateCarbon->equalTo($today)) {
-    //             // It's today → apply 24-hour filter
-    //             $appointmentsQuery->where('created_at', '>=', $cutoff);
-    //         } else {
-    //             // It's a future date → exclude appointments on that date only
-    //             $appointmentsQuery->whereDate('created_at', '!=', $excludeDate);
-    //         }
-    //     } else {
-    //         // No date passed → apply 24-hour filter
-    //         $appointmentsQuery->where('created_at', '>=', $cutoff);
-    //     }
-
-    //     $takenFromAppointments = $appointmentsQuery
-    //         ->pluck('queue_number')
-    //         ->map(fn($num) => (int) $num)
-    //         ->toArray();
-
-    //     // Apply 24-hour filter to ClosedAppointment **only if today or no date**
-    //     $takenFromClosed = [];
-
-    //     if (!$excludeDate || Carbon::parse($excludeDate)->isToday()) {
-    //         $takenFromClosed = ClosedAppointment::where('queue_number', 'like', $queueTag . '%')
-    //             ->where('created_at', '>=', $cutoff)
-    //             ->pluck('queue_number')
-    //             ->map(fn($qn) => (int) str_replace($queueTag, '', $qn))
-    //             ->toArray();
-    //     }
-
-    //     $takenQueueNumbers = array_unique(array_merge($takenFromAppointments, $takenFromClosed));
-
-    //     $queueNumbers = [];
-    //     $current = 1;
-
-    //     while (count($queueNumbers) < 40) {
-    //         if (!in_array($current, $takenQueueNumbers)) {
-    //             $queueNumbers[] = [
-    //                 'number' => sprintf('%s%d', $queueTag, $current),
-    //             ];
-    //         }
-    //         $current++;
-    //     }
-
-    //     return response()->json($queueNumbers);
-    // }
-
     public function selectPatient()
     {
         $patients = Patient::select('id', 'first_name', 'last_name', 'patient_id')->get();
@@ -299,7 +223,6 @@ class AppointmentManagerController extends Controller
             'patients' => $patients,
         ]);
     }
-
 
     public function createAppointment(Request $request)
     {
@@ -328,24 +251,22 @@ class AppointmentManagerController extends Controller
         ]);
     }
 
-
     public function createNewAppointment(Request $request)
     {
         $request->validate([
             'patient_id'       => 'required',
             'appointment_date' => 'required|date',
-            'service_type'          => 'required|string|exists:service_charges,id',
+            'service_type'     => 'required|string|exists:service_charges,id',
             'status'           => 'required',
             'queue_number'     => 'required'
         ]);
-
 
         preg_match('/^([A-Z]+)(\d+)$/i', $request->queue_number, $matches);
         $queue_type = $matches[1];
         $queue_number = (int) $matches[2];
 
         try {
-            DB::transaction(function () use ($request, $queue_type, $queue_number) {
+            $appointment = DB::transaction(function () use ($request, $queue_type, $queue_number) {
                 $latestOrderNumber = DB::table('appointments')
                     ->lockForUpdate()
                     ->max('order_number') ?? 0;
@@ -361,7 +282,7 @@ class AppointmentManagerController extends Controller
                     throw new \Exception('That queue number is already assigned for this date.');
                 }
 
-                Appointment::create([
+                $appointment = Appointment::create([
                     'order_number'     => $newOrderNumber,
                     'patient_id'       => $request->patient_id,
                     'appointment_date' => $request->appointment_date,
@@ -371,11 +292,16 @@ class AppointmentManagerController extends Controller
                     'queue_number'     => $queue_number,
                 ]);
 
-
                 Patient::where('patient_id', $request->patient_id)->update([
                     'last_visit_date' => $request->appointment_date,
                 ]);
+
+                return $appointment;
             });
+
+            $appointment->load(['patient.vitals', 'serviceCharge']);
+
+            event(new AppointmentCreated($appointment));
 
             return redirect()
                 ->route('appointments.index')
@@ -544,7 +470,7 @@ class AppointmentManagerController extends Controller
         $appointment = Appointment::where('id', $id)->first();
 
         if (!$appointment) {
-            return response()->json(['error' => 'Appointment not found'], 404);
+            return back()->withErrors(['error' => 'Appointment not found']);
         }
 
         $appointment->status = $request->status;

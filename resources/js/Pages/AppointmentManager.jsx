@@ -1,6 +1,7 @@
 import { AppointmentDateSection } from "@/Components/appointment-manager/AppointmentDateSection";
 import AppointmentsHeader from "@/Components/appointment-manager/AppointmentsHeader";
 import Paginator from "@/Components/layout/Paginator";
+import useAppointments from "@/hooks/useAppointmets";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { usePage } from "@inertiajs/react";
 import axios from "axios";
@@ -11,6 +12,9 @@ export default function AppointmentManager({ appointments }) {
     const { auth } = usePage().props;
 
     const [appointmentList, setAppointmentList] = useState(appointments.data);
+    useAppointments((newAppointment) => {
+        setAppointmentList((prev) => [...prev, newAppointment]);
+    });
 
     const uniqueDates = useMemo(
         () => [
