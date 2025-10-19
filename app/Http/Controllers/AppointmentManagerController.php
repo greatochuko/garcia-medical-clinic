@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\AppointmentCreated;
+use App\Events\AppointmentUpdated;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Patient;
@@ -466,8 +467,7 @@ class AppointmentManagerController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        // return response()->json(['success' => false, 'status' => "new"]);
-        $appointment = Appointment::where('id', $id)->first();
+        $appointment = Appointment::with(['patient.vitals', 'serviceCharge'])->find($id);
 
         if (!$appointment) {
             return back()->withErrors(['error' => 'Appointment not found']);
@@ -476,9 +476,12 @@ class AppointmentManagerController extends Controller
         $appointment->status = $request->status;
         $appointment->save();
 
-        return;
+        // Reload relations after update to ensure fresh data
+        $appointment->load(['patient.vitals', 'serviceCharge']);
 
-        // return response()->json(['success' => true, 'status' => $appointment->status]);
+        broadcast(new AppointmentUpdated($appointment))->toOthers();
+
+        return back()->with('success', 'Appointment status updated successfully.');
     }
 
 

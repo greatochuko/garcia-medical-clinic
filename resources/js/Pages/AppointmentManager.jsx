@@ -12,8 +12,12 @@ export default function AppointmentManager({ appointments }) {
     const { auth } = usePage().props;
 
     const [appointmentList, setAppointmentList] = useState(appointments.data);
-    useAppointments((newAppointment) => {
-        setAppointmentList((prev) => [...prev, newAppointment]);
+
+    useAppointments(({ type, appointment }) => {
+        if (type === "created") {
+            console.log("New appointment:", appointment);
+            setAppointmentList((prev) => [appointment, ...prev]);
+        }
     });
 
     const uniqueDates = useMemo(

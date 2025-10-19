@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { Link, router } from "@inertiajs/react";
 import LoadingIndicator from "../layout/LoadingIndicator";
 import BillingModal from "../modals/BillingModal";
+import useAppointments from "@/hooks/useAppointmets";
 
 function formatStatus(status) {
     return status
@@ -32,6 +33,12 @@ export function AppointmentRow({
     const [vitalSignsModalOpen, setVitalSignsModalOpen] = useState(false);
     const [billingModalOpen, setBillingModalOpen] = useState(false);
     const [prescriptions, setPrescriptions] = useState([]);
+
+    useAppointments(({ type, appointment: updatedAppointment }) => {
+        if (type === "updated" && appointment.id === updatedAppointment.id) {
+            setAppointment(updatedAppointment);
+        }
+    });
 
     const patientFullName = `${appointment.patient.first_name}, ${appointment.patient.middle_initial || ""} ${appointment.patient.last_name}`;
 
@@ -93,10 +100,6 @@ export function AppointmentRow({
                         ...prev,
                         status: newStatus,
                     }));
-
-                    toast.success(
-                        "You have changed the status of the patient!",
-                    );
                     setLoading?.(false);
                 },
                 onError: (errors) => {
