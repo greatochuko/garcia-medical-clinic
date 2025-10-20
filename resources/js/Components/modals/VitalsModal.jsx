@@ -10,11 +10,11 @@ const viatlSignsFields = [
         fields: [
             {
                 type: "number",
-                id: "blood_diastolic_pressure",
+                id: "blood_systolic_pressure",
             },
             {
                 type: "number",
-                id: "blood_systolic_pressure",
+                id: "blood_diastolic_pressure",
             },
         ],
     },
@@ -84,7 +84,7 @@ export default function VitalsModal({
             <form
                 onClick={(e) => e.stopPropagation()}
                 onSubmit={handleSaveVitalSigns}
-                className={`w-[90%] max-w-xl divide-y-2 divide-accent-200 rounded-lg bg-white text-sm duration-200 ${open ? "" : "translate-y-2"}`}
+                className={`w-[90%] max-w-xl divide-y-2 divide-accent-200 rounded-lg bg-white text-sm font-normal duration-200 ${open ? "" : "translate-y-2"}`}
             >
                 <div className="flex items-center justify-between p-2 px-4 pr-2">
                     <h5 className="font-semibold">
@@ -137,7 +137,7 @@ export default function VitalsModal({
                                                 id={inputField.id}
                                                 className="w-0 flex-1 rounded border border-[#B4BBC2] p-1 text-center text-[13px]"
                                                 value={
-                                                    data?.[inputField.id] || ""
+                                                    data[inputField.id] || ""
                                                 }
                                                 onChange={(e) =>
                                                     handleChange(
@@ -153,7 +153,7 @@ export default function VitalsModal({
                                             name={field.id}
                                             id={field.id}
                                             className="w-0 flex-1 rounded border border-[#B4BBC2] p-1 text-center text-[13px]"
-                                            value={data?.[field.id] || ""}
+                                            value={data[field.id] || ""}
                                             onChange={(e) =>
                                                 handleChange(
                                                     field.id,
@@ -189,7 +189,7 @@ export default function VitalsModal({
                                                 id={inputField.id}
                                                 className="w-0 flex-1 rounded border border-[#B4BBC2] p-1 text-center text-[13px]"
                                                 value={
-                                                    data?.[inputField.id] || ""
+                                                    data[inputField.id] || ""
                                                 }
                                                 onChange={(e) =>
                                                     handleChange(
@@ -205,7 +205,7 @@ export default function VitalsModal({
                                             name={field.id}
                                             id={field.id}
                                             className="w-0 flex-1 rounded border border-[#B4BBC2] p-1 text-center text-[13px]"
-                                            value={data?.[field.id] || ""}
+                                            value={data[field.id] || ""}
                                             onChange={(e) =>
                                                 handleChange(
                                                     field.id,

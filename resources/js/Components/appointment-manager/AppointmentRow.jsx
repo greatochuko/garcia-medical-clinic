@@ -11,27 +11,13 @@ import LoadingIndicator from "../layout/LoadingIndicator";
 import BillingModal from "../modals/BillingModal";
 import useAppointments from "@/hooks/useAppointmets";
 import useVitals from "@/hooks/useVitals";
+import { generateVitalsData } from "@/utils/generateVitalsData";
 
 function formatStatus(status) {
     return status
         .split("_")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
-}
-
-function generateVitalsData(patient) {
-    return {
-        patient_id: patient.patient_id,
-        blood_diastolic_pressure:
-            patient.vitals?.blood_diastolic_pressure || "",
-        blood_systolic_pressure: patient.vitals?.blood_systolic_pressure || "",
-        heart_rate: patient.vitals?.heart_rate || "",
-        o2saturation: patient.vitals?.o2saturation || "",
-        temperature: parseInt(patient.vitals?.temperature) || "",
-        height_ft: patient.vitals?.height_ft || "",
-        height_in: patient.vitals?.height_in || "",
-        weight: parseInt(patient.vitals?.weight) || "",
-    };
 }
 
 export function AppointmentRow({
@@ -50,9 +36,19 @@ export function AppointmentRow({
     const [billingModalOpen, setBillingModalOpen] = useState(false);
     const [prescriptions, setPrescriptions] = useState([]);
 
-    const { post, put, processing, data, setData } = useForm(
-        generateVitalsData(appointment.patient),
-    );
+    const { post, put, processing, data, setData } = useForm({
+        patient_id: appointment.patient.patient_id,
+        blood_diastolic_pressure:
+            appointment.patient.vitals?.blood_diastolic_pressure || "",
+        blood_systolic_pressure:
+            appointment.patient.vitals?.blood_systolic_pressure || "",
+        heart_rate: appointment.patient.vitals?.heart_rate || "",
+        o2saturation: appointment.patient.vitals?.o2saturation || "",
+        temperature: parseInt(appointment.patient.vitals?.temperature) || "",
+        height_ft: appointment.patient.vitals?.height_ft || "",
+        height_in: appointment.patient.vitals?.height_in || "",
+        weight: parseInt(appointment.patient.vitals?.weight) || "",
+    });
 
     useVitals(({ vitals: updatedVitals }) => {
         if (
@@ -260,7 +256,11 @@ export function AppointmentRow({
                                     <button
                                         onClick={() => {
                                             setVitalSignsModalOpen(true);
-                                            setData(appointment.patient.vitals);
+                                            setData(
+                                                generateVitalsData(
+                                                    appointment.patient,
+                                                ),
+                                            );
                                         }}
                                         disabled={
                                             !["waiting", "checked_in"].includes(

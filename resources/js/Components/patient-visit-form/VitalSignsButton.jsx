@@ -2,21 +2,7 @@ import React, { useState } from "react";
 import VitalsModal from "../modals/VitalsModal";
 import { useForm } from "@inertiajs/react";
 import { route } from "ziggy-js";
-
-function generateVitalsData(patient) {
-    return {
-        patient_id: patient.patient_id,
-        blood_diastolic_pressure:
-            patient.vitals?.blood_diastolic_pressure || "",
-        blood_systolic_pressure: patient.vitals?.blood_systolic_pressure || "",
-        heart_rate: patient.vitals?.heart_rate || "",
-        o2saturation: patient.vitals?.o2saturation || "",
-        temperature: parseInt(patient.vitals?.temperature) || "",
-        height_ft: patient.vitals?.height_ft || "",
-        height_in: patient.vitals?.height_in || "",
-        weight: parseInt(patient.vitals?.weight) || "",
-    };
-}
+import { generateVitalsData } from "@/utils/generateVitalsData";
 
 export default function VitalSignsButton({ patient, setPatient }) {
     const { post, put, processing, data, setData } = useForm(
@@ -60,10 +46,15 @@ export default function VitalSignsButton({ patient, setPatient }) {
         }
     }
 
+    function openVitalsModal() {
+        setVitalSignsModalOpen(true);
+        setData(generateVitalsData(patient));
+    }
+
     return (
         <>
             <button
-                onClick={() => setVitalSignsModalOpen(true)}
+                onClick={openVitalsModal}
                 className="p-1 duration-100 active:scale-90"
             >
                 <img
