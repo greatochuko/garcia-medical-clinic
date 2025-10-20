@@ -11,7 +11,7 @@ export default function useVitals(cb) {
 
         return () => {
             channel.unbind_all();
-            pusherClient.unsubscribe("appointments");
+            pusherClient.unsubscribe("vitals");
         };
     }, [cb]);
 }
