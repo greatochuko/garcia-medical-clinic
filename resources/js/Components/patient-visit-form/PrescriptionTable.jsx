@@ -66,16 +66,10 @@ export default function PrescriptionTable({
             {
                 patient_id: prescriptionToEdit.patient_id,
                 appointment_id: prescriptionToEdit.appointment_id,
-                medication_id:
-                    prescriptionToEdit.medication_id ??
-                    prescriptionToEdit.medication?.id ??
-                    null,
+                medication_id: prescriptionToEdit.medication_id ?? null,
                 medication: prescriptionToEdit.medication?.name ?? "",
                 dosage: prescriptionToEdit.dosage,
-                frequency_id:
-                    prescriptionToEdit.frequency_id ??
-                    prescriptionToEdit.frequency?.id ??
-                    null,
+                frequency_id: prescriptionToEdit.frequency_id ?? null,
                 frequency: prescriptionToEdit.frequency?.name ?? "",
                 amount: prescriptionToEdit.amount,
                 duration: prescriptionToEdit.duration,
@@ -141,7 +135,6 @@ export default function PrescriptionTable({
                                     frequencies={frequencies}
                                     loading={prescriptionLoading}
                                     medications={medications}
-                                    pres={pres}
                                     prescriptionToEdit={prescriptionToEdit}
                                     setPrescriptionToEdit={
                                         setPrescriptionToEdit
@@ -262,16 +255,23 @@ export default function PrescriptionTable({
                 <div className="w-3/10 min-w-48 px-2 py-4 pl-4">
                     <div className="group relative">
                         <SearchInput
-                            onChange={(value) =>
+                            onChange={(value) => {
+                                const med = medications.find(
+                                    (m) =>
+                                        m.name.toLowerCase() ===
+                                        value.toLowerCase(),
+                                );
                                 setData((prev) => ({
                                     ...prev,
-                                    medication_id: null, // clear id if user types
-                                    medication: value, // keep name for display
-                                }))
-                            }
+                                    medication_id: med?.id || null, // clear id if user types
+                                    medication: med?.name || value, // keep name for display
+                                }));
+                            }}
                             onSelect={(value) => {
                                 const med = medications.find(
-                                    (m) => m.name === value,
+                                    (m) =>
+                                        m.name.toLowerCase() ===
+                                        value.toLowerCase(),
                                 );
                                 setData((prev) => ({
                                     ...prev,
@@ -307,16 +307,23 @@ export default function PrescriptionTable({
                 <div className="w-3/10 min-w-[177.5px] px-2 py-4">
                     <SearchInput
                         value={data.frequency}
-                        onChange={(value) =>
+                        onChange={(value) => {
+                            const freq = frequencies.find(
+                                (f) =>
+                                    f.name.toLowerCase() ===
+                                    value.toLowerCase(),
+                            );
                             setData((prev) => ({
                                 ...prev,
-                                frequency_id: null, // clear id if user types
-                                frequency: value, // keep name for display
-                            }))
-                        }
+                                frequency_id: freq?.id || null, // clear id if user types
+                                frequency: freq?.name || value, // keep name for display
+                            }));
+                        }}
                         onSelect={(value) => {
                             const freq = frequencies.find(
-                                (f) => f.name === value,
+                                (f) =>
+                                    f.name.toLowerCase() ===
+                                    value.toLowerCase(),
                             );
                             setData((prev) => ({
                                 ...prev,
@@ -389,7 +396,6 @@ function PrescriptionEditingRow({
     prescriptionToEdit,
     setPrescriptionToEdit,
     medications,
-    pres,
     frequencies,
     loading,
 }) {
@@ -400,19 +406,26 @@ function PrescriptionEditingRow({
                 <div className="flex w-full">
                     <SearchInput
                         value={prescriptionToEdit.medication?.name || ""}
-                        onChange={(value) =>
+                        onChange={(value) => {
+                            const med = medications.find(
+                                (m) =>
+                                    m.name.toLowerCase() ===
+                                    value.toLowerCase(),
+                            );
                             setPrescriptionToEdit((prev) => ({
                                 ...prev,
-                                medication_id: null, // clear id if user types
+                                medication_id: med?.id || null, // clear id if user types
                                 medication: {
                                     ...prev.medication,
-                                    name: value,
+                                    name: med?.name || value,
                                 },
-                            }))
-                        }
+                            }));
+                        }}
                         onSelect={(value) => {
                             const med = medications.find(
-                                (m) => m.name === value,
+                                (m) =>
+                                    m.name.toLowerCase() ===
+                                    value.toLowerCase(),
                             );
                             setPrescriptionToEdit((prev) => ({
                                 ...prev,
@@ -460,19 +473,26 @@ function PrescriptionEditingRow({
                         className="p-2 py-1.5"
                         containerClassName="w-0 flex-1"
                         value={prescriptionToEdit.frequency?.name || ""}
-                        onChange={(value) =>
+                        onChange={(value) => {
+                            const freq = frequencies.find(
+                                (f) =>
+                                    f.name.toLowerCase() ===
+                                    value.toLowerCase(),
+                            );
                             setPrescriptionToEdit((prev) => ({
                                 ...prev,
-                                frequency_id: null, // clear id if user types
+                                frequency_id: freq?.id || null, // clear id if user types
                                 frequency: {
                                     ...prev.frequency,
-                                    name: value,
+                                    name: freq?.name || value,
                                 },
-                            }))
-                        }
+                            }));
+                        }}
                         onSelect={(value) => {
                             const freq = frequencies.find(
-                                (f) => f.name === value,
+                                (f) =>
+                                    f.name.toLowerCase() ===
+                                    value.toLowerCase(),
                             );
                             setPrescriptionToEdit((prev) => ({
                                 ...prev,
