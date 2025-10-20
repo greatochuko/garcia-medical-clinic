@@ -1,9 +1,6 @@
 import React from "react";
 import ModalContainer from "../layout/ModalContainer";
 import XIcon from "../icons/XIcon";
-import { useForm } from "@inertiajs/react";
-import { route } from "ziggy-js";
-import { toast } from "react-hot-toast";
 import LoadingIndicator from "../layout/LoadingIndicator";
 
 const viatlSignsFields = [
@@ -64,55 +61,15 @@ export default function VitalsModal({
     open,
     closeModal,
     patient,
-    updateVitals,
+    setData,
+    processing,
+    handleSaveVitalSigns,
+    data,
 }) {
-    const { post, put, processing, data, setData } = useForm({
-        patient_id: patient.patient_id,
-        blood_diastolic_pressure:
-            patient.vitals?.blood_diastolic_pressure || "",
-        blood_systolic_pressure: patient.vitals?.blood_systolic_pressure || "",
-        heart_rate: patient.vitals?.heart_rate || "",
-        o2saturation: patient.vitals?.o2saturation || "",
-        temperature: parseInt(patient.vitals?.temperature) || "",
-        height_ft: patient.vitals?.height_ft || "",
-        height_in: patient.vitals?.height_in || "",
-        weight: parseInt(patient.vitals?.weight) || "",
-    });
-
-    function handleSaveVitalSigns(e) {
-        e.preventDefault();
-
-        if (patient.vitals) {
-            put(route("vitalsignsmodal.update", { id: patient.vitals.id }), {
-                onSuccess: () => {
-                    updateVitals?.(data);
-                    closeModal();
-                },
-                onError: (err) => {
-                    console.error(err);
-                    toast.error("An unexpected error occurred");
-                },
-                preserveScroll: true,
-            });
-        } else {
-            post(route("vitalsignsmodal.add"), {
-                onSuccess: () => {
-                    updateVitals?.(data);
-                    closeModal();
-                },
-                onError: (err) => {
-                    console.error(err);
-                    toast.error("An unexpected error occurred");
-                },
-                preserveScroll: true,
-            });
-        }
-    }
-
     function handleChange(field, value) {
-        if (isNaN(parseFloat(value))) return;
-
-        setData((prev) => ({ ...prev, [field]: value }));
+        if (value === "" || !isNaN(parseFloat(value))) {
+            setData((prev) => ({ ...prev, [field]: value }));
+        }
     }
 
     function closeVitalsModal() {
@@ -179,7 +136,9 @@ export default function VitalsModal({
                                                 name={inputField.id}
                                                 id={inputField.id}
                                                 className="w-0 flex-1 rounded border border-[#B4BBC2] p-1 text-center text-[13px]"
-                                                value={data[inputField.id]}
+                                                value={
+                                                    data[inputField.id] || ""
+                                                }
                                                 onChange={(e) =>
                                                     handleChange(
                                                         inputField.id,
@@ -194,7 +153,7 @@ export default function VitalsModal({
                                             name={field.id}
                                             id={field.id}
                                             className="w-0 flex-1 rounded border border-[#B4BBC2] p-1 text-center text-[13px]"
-                                            value={data[field.id]}
+                                            value={data[field.id] || ""}
                                             onChange={(e) =>
                                                 handleChange(
                                                     field.id,
@@ -229,7 +188,9 @@ export default function VitalsModal({
                                                 name={inputField.id}
                                                 id={inputField.id}
                                                 className="w-0 flex-1 rounded border border-[#B4BBC2] p-1 text-center text-[13px]"
-                                                value={data[inputField.id]}
+                                                value={
+                                                    data[inputField.id] || ""
+                                                }
                                                 onChange={(e) =>
                                                     handleChange(
                                                         inputField.id,
@@ -244,7 +205,7 @@ export default function VitalsModal({
                                             name={field.id}
                                             id={field.id}
                                             className="w-0 flex-1 rounded border border-[#B4BBC2] p-1 text-center text-[13px]"
-                                            value={data[field.id]}
+                                            value={data[field.id] || ""}
                                             onChange={(e) =>
                                                 handleChange(
                                                     field.id,

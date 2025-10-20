@@ -1,8 +1,29 @@
 import React, { useState } from "react";
 import VitalsModal from "../modals/VitalsModal";
+import { useForm } from "@inertiajs/react";
+import { route } from "ziggy-js";
+
+function generateVitalsData(patient) {
+    return {
+        patient_id: patient.patient_id,
+        blood_diastolic_pressure:
+            patient.vitals?.blood_diastolic_pressure || "",
+        blood_systolic_pressure: patient.vitals?.blood_systolic_pressure || "",
+        heart_rate: patient.vitals?.heart_rate || "",
+        o2saturation: patient.vitals?.o2saturation || "",
+        temperature: parseInt(patient.vitals?.temperature) || "",
+        height_ft: patient.vitals?.height_ft || "",
+        height_in: patient.vitals?.height_in || "",
+        weight: parseInt(patient.vitals?.weight) || "",
+    };
+}
 
 export default function VitalSignsButton({ patient, setPatient }) {
-    const [modalOpen, setModalOpen] = useState(false);
+    const { post, put, processing, data, setData } = useForm(
+        generateVitalsData(patient),
+    );
+
+    const [vitalSignsModalOpen, setVitalSignsModalOpen] = useState(false);
 
     function updateVitals(newVitals) {
         setPatient((prev) => ({
@@ -11,10 +32,38 @@ export default function VitalSignsButton({ patient, setPatient }) {
         }));
     }
 
+    function handleSaveVitalSigns(e) {
+        e.preventDefault();
+
+        if (patient.vitals) {
+            put(
+                route("vitalsignsmodal.update", {
+                    id: patient.vitals.id,
+                }),
+                {
+                    onSuccess: () => {
+                        updateVitals(data);
+                        setVitalSignsModalOpen(false);
+                    },
+                    preserveScroll: true,
+                },
+            );
+        } else {
+            post(route("vitalsignsmodal.add"), {
+                onSuccess: () => {
+                    updateVitals(data);
+                    setVitalSignsModalOpen(false);
+                },
+
+                preserveScroll: true,
+            });
+        }
+    }
+
     return (
         <>
             <button
-                onClick={() => setModalOpen(true)}
+                onClick={() => setVitalSignsModalOpen(true)}
                 className="p-1 duration-100 active:scale-90"
             >
                 <img
@@ -26,10 +75,13 @@ export default function VitalSignsButton({ patient, setPatient }) {
             </button>
 
             <VitalsModal
-                open={modalOpen}
-                closeModal={() => setModalOpen(false)}
+                open={vitalSignsModalOpen}
+                closeModal={() => setVitalSignsModalOpen(false)}
                 patient={patient}
-                updateVitals={updateVitals}
+                data={data}
+                handleSaveVitalSigns={handleSaveVitalSigns}
+                processing={processing}
+                setData={setData}
             />
         </>
     );

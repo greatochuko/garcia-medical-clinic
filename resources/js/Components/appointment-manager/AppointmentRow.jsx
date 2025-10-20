@@ -6,16 +6,32 @@ import VitalsModal from "../modals/VitalsModal";
 import useClickOutside from "@/hooks/useClickOutside";
 import { route } from "ziggy-js";
 import { toast } from "react-hot-toast";
-import { Link, router } from "@inertiajs/react";
+import { Link, router, useForm } from "@inertiajs/react";
 import LoadingIndicator from "../layout/LoadingIndicator";
 import BillingModal from "../modals/BillingModal";
 import useAppointments from "@/hooks/useAppointmets";
+import useVitals from "@/hooks/useVitals";
 
 function formatStatus(status) {
     return status
         .split("_")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
+}
+
+function generateVitalsData(patient) {
+    return {
+        patient_id: patient.patient_id,
+        blood_diastolic_pressure:
+            patient.vitals?.blood_diastolic_pressure || "",
+        blood_systolic_pressure: patient.vitals?.blood_systolic_pressure || "",
+        heart_rate: patient.vitals?.heart_rate || "",
+        o2saturation: patient.vitals?.o2saturation || "",
+        temperature: parseInt(patient.vitals?.temperature) || "",
+        height_ft: patient.vitals?.height_ft || "",
+        height_in: patient.vitals?.height_in || "",
+        weight: parseInt(patient.vitals?.weight) || "",
+    };
 }
 
 export function AppointmentRow({
@@ -34,11 +50,62 @@ export function AppointmentRow({
     const [billingModalOpen, setBillingModalOpen] = useState(false);
     const [prescriptions, setPrescriptions] = useState([]);
 
+    const { post, put, processing, data, setData } = useForm(
+        generateVitalsData(appointment.patient),
+    );
+
+    useVitals(({ vitals: updatedVitals }) => {
+        if (
+            String(updatedVitals.patient_id) ===
+            String(appointment?.patient?.patient_id)
+        ) {
+            setAppointment((prev) => ({
+                ...prev,
+                patient: { ...prev.patient, vitals: updatedVitals },
+            }));
+        }
+    });
+
     useAppointments(({ type, appointment: updatedAppointment }) => {
         if (type === "updated" && appointment.id === updatedAppointment.id) {
             setAppointment(updatedAppointment);
         }
     });
+
+    function handleSaveVitalSigns(e) {
+        e.preventDefault();
+
+        if (appointment.patient.vitals) {
+            put(
+                route("vitalsignsmodal.update", {
+                    id: appointment.patient.vitals.id,
+                }),
+                {
+                    onSuccess: () => {
+                        // updateVitals?.(data);
+                        setVitalSignsModalOpen(false);
+                    },
+                    onError: (err) => {
+                        console.error(err);
+                        toast.error("An unexpected error occurred");
+                    },
+                    preserveScroll: true,
+                },
+            );
+        } else {
+            post(route("vitalsignsmodal.add"), {
+                onSuccess: () => {
+                    // updateVitals?.(data);
+                    setVitalSignsModalOpen(false);
+                },
+                onError: (err) => {
+                    console.error(err);
+                    toast.error("An unexpected error occurred");
+                },
+                preserveScroll: true,
+            });
+        }
+    }
 
     const patientFullName = `${appointment.patient.first_name}, ${appointment.patient.middle_initial || ""} ${appointment.patient.last_name}`;
 
@@ -191,9 +258,10 @@ export function AppointmentRow({
                                 </button>
                                 {userRole === "secretary" ? (
                                     <button
-                                        onClick={() =>
-                                            setVitalSignsModalOpen(true)
-                                        }
+                                        onClick={() => {
+                                            setVitalSignsModalOpen(true);
+                                            setData(appointment.patient.vitals);
+                                        }}
                                         disabled={
                                             !["waiting", "checked_in"].includes(
                                                 appointment.status,
@@ -261,8 +329,11 @@ export function AppointmentRow({
                         closeModal={() => {
                             setVitalSignsModalOpen(false);
                         }}
-                        appointmentId={appointment.id}
+                        data={data}
+                        handleSaveVitalSigns={handleSaveVitalSigns}
                         patient={appointment.patient}
+                        processing={processing}
+                        setData={setData}
                     />
 
                     <BillingModal

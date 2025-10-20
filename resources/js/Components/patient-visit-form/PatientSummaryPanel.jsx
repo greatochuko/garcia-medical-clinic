@@ -3,6 +3,7 @@ import MedicalHistoryButton from "./MedicalHistoryButton";
 import VitalSignsButton from "./VitalSignsButton";
 import SignPatientVisitFormModal from "../modals/SignPatientVisitFormModal";
 import { route } from "ziggy-js";
+import useVitals from "@/hooks/useVitals";
 
 export default function PatientSummaryPanel({
     appointmentId,
@@ -16,6 +17,16 @@ export default function PatientSummaryPanel({
 }) {
     const [currentTab, setCurrentTab] = useState("medicalHistory");
     const [signFormModalOpen, setSignFormModalOpen] = useState(false);
+    const [patientVitals, setPatientVitals] = useState(patient.vitals);
+
+    useVitals(({ vitals: updatedVitals }) => {
+        if (String(updatedVitals.patient_id) === String(patient?.patient_id)) {
+            setPatientVitals((prev) => ({
+                ...prev,
+                ...updatedVitals,
+            }));
+        }
+    });
 
     const patientFullName = `${patient.first_name} ${patient.middle_initial || ""} ${patient.last_name}`;
 
@@ -24,44 +35,44 @@ export default function PatientSummaryPanel({
             id: "blood-pressure",
             label: "Blood Pressure",
             value:
-                patient.vitals?.blood_systolic_pressure &&
-                patient.vitals?.blood_diastolic_pressure
-                    ? `${patient.vitals.blood_systolic_pressure}/${patient.vitals.blood_diastolic_pressure} mmHg`
+                patientVitals?.blood_systolic_pressure &&
+                patientVitals?.blood_diastolic_pressure
+                    ? `${patientVitals.blood_systolic_pressure}/${patientVitals.blood_diastolic_pressure} mmHg`
                     : "",
         },
         {
             id: "temperature",
             label: "Temperature",
-            value: patient.vitals?.temperature
-                ? parseFloat(patient.vitals.temperature) + " °C"
+            value: patientVitals?.temperature
+                ? parseFloat(patientVitals.temperature) + " °C"
                 : "",
         },
         {
             id: "heart-rate",
             label: "Heart Rate",
-            value: patient.vitals?.heart_rate
-                ? parseInt(patient.vitals.heart_rate) + " bpm"
+            value: patientVitals?.heart_rate
+                ? parseInt(patientVitals.heart_rate) + " bpm"
                 : "",
         },
         {
             id: "height",
             label: "Height",
             value:
-                patient.vitals?.height_ft && patient.vitals?.height_in
-                    ? `${patient.vitals.height_ft} ft ${patient.vitals.height_in} in`
+                patientVitals?.height_ft && patientVitals?.height_in
+                    ? `${patientVitals.height_ft} ft ${patientVitals.height_in} in`
                     : "",
         },
         {
             id: "o2-saturation",
             label: "O2 Saturation",
-            value: patient.vitals?.o2saturation
-                ? patient.vitals?.o2saturation + " %"
+            value: patientVitals?.o2saturation
+                ? patientVitals?.o2saturation + " %"
                 : "",
         },
         {
             id: "weight",
             label: "Weight",
-            value: patient.vitals?.weight ? patient.vitals?.weight + " kg" : "",
+            value: patientVitals?.weight ? patientVitals?.weight + " kg" : "",
         },
     ];
 

@@ -1,9 +1,9 @@
-import pusher from "@/lib/pusherClient";
+import pusherClient from "@/lib/pusherClient";
 import { useEffect } from "react";
 
 export default function useAppointments(cb) {
     useEffect(() => {
-        const channel = pusher.subscribe("appointments");
+        const channel = pusherClient.subscribe("appointments");
 
         channel.bind("appointment.created", (data) =>
             cb?.({ type: "created", appointment: data.appointment }),
@@ -14,7 +14,7 @@ export default function useAppointments(cb) {
 
         return () => {
             channel.unbind_all();
-            pusher.unsubscribe("appointments");
+            pusherClient.unsubscribe("appointments");
         };
     }, [cb]);
 }
