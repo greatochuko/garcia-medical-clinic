@@ -414,6 +414,7 @@ class PatientVisitController extends Controller
                 'dosage'         => $validated['dosage'],
                 'frequency_id'   => $frequency->id,
                 'amount'         => $validated['amount'],
+                'quantity'         => $validated['amount'],
                 'duration'       => $validated['duration'],
                 'appointment_id' => $validated['appointment_id'],
             ]);
@@ -472,6 +473,7 @@ class PatientVisitController extends Controller
                 'dosage'         => $validated['dosage'],
                 'frequency_id'   => $frequency->id,
                 'amount'         => $validated['amount'],
+                'quantity'         => $validated['amount'],
                 'duration'       => $validated['duration'],
                 'appointment_id' => $validated['appointment_id'],
             ]);

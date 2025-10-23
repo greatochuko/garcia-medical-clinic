@@ -33,7 +33,7 @@ export default function BillingModal({
         setPrescriptions(
             initialPrescriptions.map((p) => ({
                 ...p,
-                amount: Number(p.amount),
+                quantity: Number(p.quantity),
             })),
         );
     }, [initialPrescriptions]);
@@ -76,13 +76,13 @@ export default function BillingModal({
     function handleQuantityChange(id, value) {
         setPrescriptions((prev) =>
             prev.map((p) =>
-                p.id === id ? { ...p, amount: Number(value) || 0 } : p,
+                p.id === id ? { ...p, quantity: Number(value) || 0 } : p,
             ),
         );
     }
 
     function calculateTotal(prescription) {
-        return prescription.medication.price * prescription.amount;
+        return prescription.medication.price * prescription.quantity;
     }
 
     function calculateSubtotal() {
@@ -308,12 +308,12 @@ export default function BillingModal({
                                                 </td>
                                                 <td className="p-2 text-center">
                                                     {readOnly ? (
-                                                        prescription.amount
+                                                        prescription.quantity
                                                     ) : (
                                                         <input
                                                             type="number"
                                                             value={
-                                                                prescription.amount
+                                                                prescription.quantity
                                                             }
                                                             min={1}
                                                             className="w-full rounded-md border border-accent-400 bg-white p-2 text-center text-xs outline-none focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50"
@@ -337,7 +337,7 @@ export default function BillingModal({
                                                     {formatPHP(
                                                         prescription.medication
                                                             .price *
-                                                            prescription.amount,
+                                                            prescription.quantity,
                                                     )}
                                                 </td>
                                             </tr>

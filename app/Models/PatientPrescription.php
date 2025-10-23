@@ -16,11 +16,13 @@ class PatientPrescription extends Model
         "medication_id",
         "dosage",
         "amount",
+        "quantity",
         "frequency_id",  // changed from 'frequency' to 'frequency_id'
         "duration",
     ];
 
     protected $casts = [
+        'quantity' => 'integer',
         'amount' => 'integer',
         'duration' => 'integer',
     ];
