@@ -427,12 +427,12 @@ class AppointmentManagerController extends Controller
             // Validate request data
             $validated = $request->validate(
                 [
-                    'diagnosis'                  => 'required|string|max:1000',
+                    'diagnosis'                  => 'nullable|string|max:1000',
                     'prescribed_medications'     => 'required|array',
                     'prescribed_medications.*'   => 'string|max:255',
                 ],
                 [
-                    'diagnosis.required'         => 'A medical certificate is required before closing the form.',
+                    // 'diagnosis.required'         => 'A medical certificate is required before closing the form.',
                     'diagnosis.string'           => 'The diagnosis must be a valid text.',
                     'diagnosis.max'              => 'The diagnosis cannot exceed 1000 characters.',
 
@@ -450,13 +450,17 @@ class AppointmentManagerController extends Controller
             // Create medical record
             MedicalRecord::create([
                 'appointment_id'         => $appointment->id,
-                'diagnosis'              => $validated['diagnosis'],
+                'diagnosis'              => $validated['diagnosis'] ?? "N/A",
                 'prescribed_medications' => $validated['prescribed_medications'] ?? [],
                 'doctor_id'              => $user->id,
                 'patient_id'             => $appointment->patient_id,
             ]);
 
             $appointment->save();
+
+            $appointment->load(['patient.vitals', 'serviceCharge']);
+
+            broadcast(new AppointmentUpdated($appointment))->toOthers();
 
             return redirect()->route('appointments.index')
                 ->with('success', 'Form closed and medical record created successfully!');

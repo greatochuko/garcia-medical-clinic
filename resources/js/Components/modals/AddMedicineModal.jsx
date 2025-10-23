@@ -191,16 +191,11 @@ export default function AddMedicineModal({
                             <span className="text-[#EF3616]"> *</span>
                         </label>
                         <Input
-                            value={data.quantity}
-                            onChange={(e) =>
-                                setData((prev) => ({
-                                    ...prev,
-                                    quantity: e.target.value,
-                                }))
-                            }
+                            defaultValue={data.quantity}
                             type="number"
                             id="quantity"
                             name="quantity"
+                            disabled
                             min={0}
                             className="w-20"
                         />
