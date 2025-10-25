@@ -39,7 +39,7 @@ class InventoryController extends Controller
         } catch (\Exception $e) {
             return redirect()
                 ->back()
-                ->withErrors(['error'=> 'An unexpected error occurred: ' . $e->getMessage()])
+                ->withErrors(['error' => 'An unexpected error occurred: ' . $e->getMessage()])
                 ->withInput();
         }
     }

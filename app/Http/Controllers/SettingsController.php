@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FrequencyList;
+use App\Models\MedicationList;
 use App\Models\Plan;
 use App\Models\ServiceCharge;
 use App\Models\User;
@@ -12,7 +13,14 @@ use Inertia\Inertia;
 
 class SettingsController extends Controller
 {
-    public function index()
+    public function medication()
+    {
+        $medications = MedicationList::all();
+
+        return Inertia::render('Settings/Medication', ['medications' => $medications]);
+    }
+
+    public function services()
     {
         $services = ServiceCharge::orderBy('created_at', 'desc')->get()->map(function ($service) {
             return [

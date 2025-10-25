@@ -1,10 +1,10 @@
 import Input from "@/Components/layout/Input";
-import AddMedicineModal from "@/Components/modals/AddMedicineModal";
-import DeleteMedicineModal from "@/Components/modals/DeleteMedicineModal";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import React, { useMemo, useState } from "react";
 import { FaSort } from "react-icons/fa6";
+import { LuChevronDown } from "react-icons/lu";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
+import EditInventoryForm from "./EditInventoryForm";
 
 const allCategories = [
     "Pain Relief",
@@ -35,15 +35,14 @@ const allCategories = [
 ];
 
 export default function Inventory({ medications: medicationList }) {
-    const [medicineModalOpen, setMedicineModalOpen] = useState(false);
-    const [deleteMedicineModalOpen, setDeleteMedicineModalOpen] =
-        useState(false);
-    const [medicineToEdit, setMedicineToEdit] = useState(null);
-    const [medicineToDelete, setMedicineToDelete] = useState(null);
+    const [expandedRowId, setExpandedRowId] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
-    const [sortBy, setSortBy] = useState({ field: "date", type: "desc" });
+    const [sortBy, setSortBy] = useState({
+        field: "lastRunDate",
+        type: "desc",
+    });
 
     const medications = useMemo(() => {
         let filtered = searchQuery
@@ -77,9 +76,9 @@ export default function Inventory({ medications: medicationList }) {
             let valA, valB;
 
             switch (field) {
-                case "date":
-                    valA = new Date(a.created_at);
-                    valB = new Date(b.created_at);
+                case "lastRunDate":
+                    valA = new Date(a.lastRunDate);
+                    valB = new Date(b.lastRunDate);
                     break;
                 case "medication":
                     valA = a.name.toLowerCase();
@@ -100,9 +99,9 @@ export default function Inventory({ medications: medicationList }) {
                     valB = getStatusValue(b);
                     break;
                 }
-                case "price":
-                    valA = a.price;
-                    valB = b.price;
+                case "expiration":
+                    valA = new Date(a.expirationDate);
+                    valB = new Date(b.expirationDate);
                     break;
                 default:
                     return 0;
@@ -172,10 +171,7 @@ export default function Inventory({ medications: medicationList }) {
                             <h1 className="text-center text-sm font-bold">
                                 INVENTORY OVERVIEW
                             </h1>
-                            <button
-                                onClick={() => setMedicineModalOpen(true)}
-                                className="absolute bottom-0 left-1/2 flex w-fit -translate-x-1/2 translate-y-1/2 items-center gap-2 rounded-md border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300 sm:left-auto sm:right-4 sm:translate-x-0 md:rounded-lg"
-                            >
+                            <button className="absolute bottom-0 left-1/2 flex w-fit -translate-x-1/2 translate-y-1/2 items-center gap-2 rounded-md border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300 sm:left-auto sm:right-4 sm:translate-x-0 md:rounded-lg">
                                 <img
                                     src="/assets/icons/plus-icon.svg"
                                     alt="plus icon"
@@ -183,7 +179,7 @@ export default function Inventory({ medications: medicationList }) {
                                     height={14}
                                     className="h-3 w-3 sm:h-3.5 sm:w-3.5"
                                 />
-                                Add Medicine
+                                Inventory Run Check
                             </button>
                         </div>
                         <div className="grid grid-cols-2 gap-4 border-b-8 border-accent-200 p-4 sm:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] sm:gap-6 lg:gap-8">
@@ -277,15 +273,18 @@ export default function Inventory({ medications: medicationList }) {
                                 <table className="w-full text-xs sm:text-sm">
                                     <thead>
                                         <tr className="whitespace-nowrap text-sm">
-                                            <th className="w-[10%] min-w-32 p-4 sm:min-w-36">
+                                            <th className="w-[10%] min-w-40 p-4 sm:min-w-36">
                                                 <span
                                                     onClick={() =>
-                                                        handleSortBy("date")
+                                                        handleSortBy(
+                                                            "lastRunDate",
+                                                        )
                                                     }
                                                     className="flex w-fit cursor-pointer items-center gap-2"
                                                 >
-                                                    Date
-                                                    {sortBy.field === "date" ? (
+                                                    Last Run
+                                                    {sortBy.field ===
+                                                    "lastRunDate" ? (
                                                         sortBy.type ===
                                                         "asc" ? (
                                                             <TiArrowSortedUp
@@ -406,13 +405,15 @@ export default function Inventory({ medications: medicationList }) {
                                             <th className="w-[10%] p-4">
                                                 <span
                                                     onClick={() =>
-                                                        handleSortBy("price")
+                                                        handleSortBy(
+                                                            "expiration",
+                                                        )
                                                     }
                                                     className="mx-auto flex w-fit cursor-pointer items-center gap-2"
                                                 >
-                                                    Price (PHP)
+                                                    Expiration Date
                                                     {sortBy.field ===
-                                                    "price" ? (
+                                                    "expiration" ? (
                                                         sortBy.type ===
                                                         "asc" ? (
                                                             <TiArrowSortedUp
@@ -428,92 +429,99 @@ export default function Inventory({ medications: medicationList }) {
                                                     )}
                                                 </span>
                                             </th>
-                                            <th className="w-[10%] p-4">
-                                                Actions
-                                            </th>
+                                            <th className="w-[10%] p-4"></th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-black/10">
                                         {medications.map((med) => (
-                                            <tr key={med.id}>
-                                                <td className="p-4">
-                                                    {new Date(
-                                                        med.created_at,
-                                                    ).toLocaleDateString(
-                                                        "us-en",
-                                                        {
-                                                            day: "numeric",
-                                                            month: "long",
-                                                            year: "numeric",
-                                                        },
-                                                    )}
-                                                </td>
-                                                <td className="p-4">
-                                                    {med.name}
-                                                </td>
-                                                <td className="p-4">
-                                                    {med.category}
-                                                </td>
-                                                <td className="p-4 text-center">
-                                                    {med.quantity}
-                                                </td>
-                                                <td className="flex items-center justify-center p-4 text-center text-xs">
-                                                    {med.quantity > 10 ? (
-                                                        <span className="block w-24 rounded-md bg-accent p-1 text-white">
-                                                            In Stock
-                                                        </span>
-                                                    ) : med.quantity > 0 ? (
-                                                        <span className="block w-24 rounded-md border border-dashed border-accent bg-white p-1 text-accent">
-                                                            Low Supply
-                                                        </span>
-                                                    ) : (
-                                                        <span className="block w-24 rounded-md bg-[#8D2310] p-1 text-white">
-                                                            Out of Stock
-                                                        </span>
-                                                    )}
-                                                </td>
-                                                <td className="p-4 text-center">
-                                                    {med.price}
-                                                </td>
-                                                <td className="p-4 text-center">
-                                                    <div className="flex items-center justify-center gap-2">
+                                            <React.Fragment key={med.id}>
+                                                <tr
+                                                    className={`hover:bg-gray-100 ${expandedRowId === med.id ? "bg-gray-100" : ""}`}
+                                                >
+                                                    <td className="p-4">
+                                                        {new Date(
+                                                            med.lastRunDate,
+                                                        ).toLocaleDateString(
+                                                            "us-en",
+                                                            {
+                                                                day: "numeric",
+                                                                month: "long",
+                                                                year: "numeric",
+                                                            },
+                                                        )}
+                                                    </td>
+                                                    <td className="p-4">
+                                                        {med.name}
+                                                    </td>
+                                                    <td className="p-4">
+                                                        {med.category}
+                                                    </td>
+                                                    <td className="p-4 text-center">
+                                                        {med.quantity}
+                                                    </td>
+                                                    <td className="flex items-center justify-center p-4 text-center text-xs">
+                                                        {med.quantity > 10 ? (
+                                                            <span className="block w-24 rounded-md bg-accent p-1 text-white">
+                                                                In Stock
+                                                            </span>
+                                                        ) : med.quantity > 0 ? (
+                                                            <span className="block w-24 rounded-md border border-dashed border-accent bg-white p-1 text-accent">
+                                                                Low Supply
+                                                            </span>
+                                                        ) : (
+                                                            <span className="block w-24 rounded-md bg-[#8D2310] p-1 text-white">
+                                                                Out of Stock
+                                                            </span>
+                                                        )}
+                                                    </td>
+                                                    <td className="p-4 text-center">
+                                                        {new Date(
+                                                            med.expirationDate,
+                                                        ).toLocaleDateString(
+                                                            "us-en",
+                                                            {
+                                                                day: "numeric",
+                                                                month: "long",
+                                                                year: "numeric",
+                                                            },
+                                                        )}
+                                                    </td>
+                                                    <td className="p-4 text-center">
                                                         <button
                                                             onClick={() => {
-                                                                setMedicineToEdit(
-                                                                    med,
-                                                                );
-                                                                setMedicineModalOpen(
-                                                                    true,
-                                                                );
+                                                                if (
+                                                                    expandedRowId ===
+                                                                    med.id
+                                                                ) {
+                                                                    setExpandedRowId(
+                                                                        "",
+                                                                    );
+                                                                } else {
+                                                                    setExpandedRowId(
+                                                                        med.id,
+                                                                    );
+                                                                }
                                                             }}
-                                                            className="rounded-md border border-transparent p-1.5 duration-100 hover:border-accent-400 hover:bg-accent-300"
+                                                            className={`rounded-md border border-transparent p-1 duration-200 hover:border-accent-300 hover:bg-accent-200`}
                                                         >
-                                                            <img
-                                                                src="/assets/icons/edit-icon.svg"
-                                                                alt="Edit Icon"
-                                                                className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4"
+                                                            <LuChevronDown
+                                                                size={18}
+                                                                strokeWidth={3}
+                                                                className={`duration-200 ${expandedRowId === med.id ? "rotate-180" : ""}`}
                                                             />
                                                         </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                setDeleteMedicineModalOpen(
-                                                                    true,
-                                                                );
-                                                                setMedicineToDelete(
-                                                                    med,
-                                                                );
-                                                            }}
-                                                            className="rounded-md border border-transparent p-1.5 duration-100 hover:border-accent-400 hover:bg-accent-300"
-                                                        >
-                                                            <img
-                                                                src="/assets/icons/delete-icon.svg"
-                                                                alt="Edit Icon"
-                                                                className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4"
-                                                            />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                </tr>
+
+                                                {expandedRowId === med.id && (
+                                                    <EditInventoryForm
+                                                        closeEditingForm={() =>
+                                                            setExpandedRowId("")
+                                                        }
+                                                        medication={med}
+                                                    />
+                                                )}
+                                            </React.Fragment>
                                         ))}
                                     </tbody>
                                 </table>
@@ -522,24 +530,6 @@ export default function Inventory({ medications: medicationList }) {
                     </div>
                 </div>
             </AuthenticatedLayout>
-
-            <AddMedicineModal
-                closeModal={() => {
-                    setMedicineModalOpen(false);
-                    setMedicineToEdit(null);
-                }}
-                open={medicineModalOpen}
-                medicineToEdit={medicineToEdit}
-            />
-
-            <DeleteMedicineModal
-                closeModal={() => {
-                    setDeleteMedicineModalOpen(false);
-                    setMedicineToDelete(null);
-                }}
-                open={deleteMedicineModalOpen}
-                medicineToDelete={medicineToDelete}
-            />
         </>
     );
 }

@@ -3,6 +3,12 @@ import { Link } from "@inertiajs/react";
 
 const sideNav = [
     {
+        label: "Medication",
+        href: "medication",
+        icon: "pill-icon.svg",
+        activeIcon: "pill-icon-active.svg",
+    },
+    {
         label: "Services",
         href: "services",
         icon: "medical-services-icon.svg",
@@ -34,7 +40,7 @@ export default function SettingsSidebar({ userRole }) {
     function linkIsActive(href) {
         return (
             pathname.includes(href) ||
-            (pathname === "/settings" && href === "services")
+            (pathname === "/settings" && href === "medication")
         );
     }
 

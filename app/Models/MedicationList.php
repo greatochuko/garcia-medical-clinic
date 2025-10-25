@@ -15,6 +15,13 @@ class MedicationList extends Model
         'price',
         'quantity',
         'controlled',
+        'lastRunDate',
+        'expirationDate',
+    ];
+
+    protected $casts = [
+        'lastRunDate' => 'date',
+        'expirationDate' => 'date',
     ];
 
     public function prescriptions()
