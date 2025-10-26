@@ -4,7 +4,8 @@ import React, { useMemo, useState } from "react";
 import { FaSort } from "react-icons/fa6";
 import { LuChevronDown } from "react-icons/lu";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
-import EditInventoryForm from "./EditInventoryForm";
+import EditInventoryForm from "../EditInventoryForm";
+import { Link } from "@inertiajs/react";
 
 const allCategories = [
     "Pain Relief",
@@ -40,7 +41,7 @@ export default function Inventory({ medications: medicationList }) {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
     const [sortBy, setSortBy] = useState({
-        field: "lastRunDate",
+        field: "date",
         type: "desc",
     });
 
@@ -76,6 +77,10 @@ export default function Inventory({ medications: medicationList }) {
             let valA, valB;
 
             switch (field) {
+                case "date":
+                    valA = new Date(a.created_at);
+                    valB = new Date(b.created_at);
+                    break;
                 case "lastRunDate":
                     valA = new Date(a.lastRunDate);
                     valB = new Date(b.lastRunDate);
@@ -273,7 +278,7 @@ export default function Inventory({ medications: medicationList }) {
                                 <table className="w-full text-xs sm:text-sm">
                                     <thead>
                                         <tr className="whitespace-nowrap text-sm">
-                                            <th className="w-[10%] min-w-40 p-4 sm:min-w-36">
+                                            <th className="w-[10%] min-w-40 p-4">
                                                 <span
                                                     onClick={() =>
                                                         handleSortBy(
@@ -451,7 +456,12 @@ export default function Inventory({ medications: medicationList }) {
                                                         )}
                                                     </td>
                                                     <td className="p-4">
-                                                        {med.name}
+                                                        <Link
+                                                            href={`/inventory/${med.id}`}
+                                                            className="py-1 hover:underline"
+                                                        >
+                                                            {med.name}
+                                                        </Link>
                                                     </td>
                                                     <td className="p-4">
                                                         {med.category}

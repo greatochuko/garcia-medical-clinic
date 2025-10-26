@@ -244,8 +244,10 @@ Route::middleware('auth')->group(function () {
 
     // Inventory routes
     Route::get("inventory", [InventoryController::class, 'index'])->name('inventory.index');
+    Route::get("inventory/{id}", [InventoryController::class, 'inventory_medication_index'])->name('inventory.medication.index');
     Route::post("inventory", [InventoryController::class, 'add'])->name('inventory.add');
     Route::put("inventory/{id}", [InventoryController::class, 'update'])->name('inventory.update');
+    Route::post("inventory-change/{id}", [InventoryController::class, 'inventory_change'])->name('inventory.change.update');
     Route::delete("inventory/{id}", [InventoryController::class, 'delete'])->name('inventory.delete');
 
 

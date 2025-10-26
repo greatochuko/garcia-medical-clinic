@@ -30,6 +30,11 @@ class User extends Authenticatable
         'avatar_url',
     ];
 
+    public function inventoryChanges()
+    {
+        return $this->hasMany(InventoryChange::class, 'user_id');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

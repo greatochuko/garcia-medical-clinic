@@ -1,19 +1,22 @@
 import Input from "@/Components/layout/Input";
-import React, { useState } from "react";
+import { useForm } from "@inertiajs/react";
+import { Loader2Icon } from "lucide-react";
+import React from "react";
+import toast from "react-hot-toast";
 import { FaMinus, FaPlus } from "react-icons/fa6";
+import { route } from "ziggy-js";
 
 export default function EditInventoryForm({ closeEditingForm, medication }) {
-    console.log(medication);
-    const [processing, setProcessing] = useState(false);
-    const [data, setData] = useState({
-        datePerformed: new Date(),
-        entryDetails: "restock-meditation",
+    const { data, post, processing, setData } = useForm({
+        lastRunDate: new Date(),
+        entryDetails: "Restock",
         quantity: 0,
+        previousTotal: medication.quantity,
         expiryDate: new Date(medication.expirationDate),
     });
 
     function handleChangeQuantity() {
-        if (data.entryDetails === "restock-medication") {
+        if (data.entryDetails === "Restock") {
             setData((prev) => ({
                 ...prev,
                 quantity: Number(prev.quantity) + 1,
@@ -27,8 +30,17 @@ export default function EditInventoryForm({ closeEditingForm, medication }) {
     }
 
     function handleSave() {
-        setProcessing(true);
-        setProcessing(false);
+        post(route("inventory.change.update", medication.id), {
+            onSuccess: () => {
+                closeEditingForm();
+            },
+            onError: (errors) => {
+                Object.values(errors).forEach((error) => {
+                    toast.error(error);
+                });
+            },
+            preserveScroll: true,
+        });
     }
 
     return (
@@ -43,11 +55,11 @@ export default function EditInventoryForm({ closeEditingForm, medication }) {
                         </label>
                         <div className="relative flex max-w-40">
                             <Input
-                                type="day"
+                                type="date"
                                 name={"datePerformed"}
                                 id={"datePerformed"}
                                 value={
-                                    new Date(data.datePerformed)
+                                    new Date(data.lastRunDate)
                                         .toISOString()
                                         .split("T")[0]
                                 }
@@ -80,19 +92,21 @@ export default function EditInventoryForm({ closeEditingForm, medication }) {
                             <select
                                 name="entry-details"
                                 id="entry-details"
+                                disabled={processing}
                                 value={data.entryDetails}
                                 onChange={(e) =>
                                     setData((prev) => ({
                                         ...prev,
                                         entryDetails: e.target.value,
+                                        quantity: 0,
                                     }))
                                 }
                                 className="cursor-pointer rounded-lg border-accent p-2 text-sm outline-none focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50 disabled:cursor-not-allowed disabled:bg-[#E4E4E4] disabled:text-gray-500"
                             >
-                                <option value="restock-medication">
+                                <option value="Restock">
                                     Restock Medication
                                 </option>
-                                <option value="pull-out">Pull Out</option>
+                                <option value="Pull Out">Pull Out</option>
                             </select>
                         </div>
                     </div>
@@ -108,8 +122,7 @@ export default function EditInventoryForm({ closeEditingForm, medication }) {
                                     onClick={handleChangeQuantity}
                                     className="flex w-10 items-center justify-center rounded-l-md bg-[#EAEAEA] outline-none duration-200 hover:bg-gray-300 focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-[#089bab]/50"
                                 >
-                                    {data.entryDetails ===
-                                    "restock-medication" ? (
+                                    {data.entryDetails === "Restock" ? (
                                         <FaPlus />
                                     ) : (
                                         <FaMinus />
@@ -120,6 +133,10 @@ export default function EditInventoryForm({ closeEditingForm, medication }) {
                                     name="quantity"
                                     id="quantity"
                                     value={data.quantity}
+                                    disabled={processing}
+                                    min={
+                                        data.entryDetails === "Restock" ? 0 : 1
+                                    }
                                     onChange={(e) =>
                                         setData((prev) => ({
                                             ...prev,
@@ -170,6 +187,7 @@ export default function EditInventoryForm({ closeEditingForm, medication }) {
                     </div>
                     <div className="mb-1 flex items-end justify-center gap-3 text-xs">
                         <button
+                            disabled={processing}
                             onClick={closeEditingForm}
                             className="rounded-md border border-accent bg-white px-3 py-2 text-accent duration-200 hover:bg-accent-200"
                         >
@@ -177,9 +195,19 @@ export default function EditInventoryForm({ closeEditingForm, medication }) {
                         </button>
                         <button
                             onClick={handleSave}
-                            className="rounded-md border border-accent bg-accent px-3 py-2 text-white duration-200 hover:bg-accent/90"
+                            className="flex items-center gap-1 rounded-md border border-accent bg-accent px-3 py-2 text-white duration-200 hover:bg-accent/90"
                         >
-                            Confirm
+                            {processing ? (
+                                <>
+                                    <Loader2Icon
+                                        size={14}
+                                        className="animate-spin"
+                                    />
+                                    Saving...
+                                </>
+                            ) : (
+                                "Confirm"
+                            )}
                         </button>
                     </div>
                 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\InventoryChange;
 use App\Models\MedicationList;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,7 +13,13 @@ class InventoryController extends Controller
     public function index()
     {
         $medications = MedicationList::all();
-        return Inertia::render('Inventory', ['medications' => $medications]);
+        return Inertia::render('Inventory/Inventory', ['medications' => $medications]);
+    }
+
+    public function inventory_medication_index($id)
+    {
+        $medication = MedicationList::with(['inventoryChanges'])->where('id', $id)->first();
+        return Inertia::render('Inventory/InventoryMedicationDetails', ['medication' => $medication]);
     }
 
     public function add(Request $request)
@@ -78,6 +85,59 @@ class InventoryController extends Controller
                 ->withInput();
         }
     }
+
+    public function inventory_change(Request $request, $id)
+    {
+        try {
+            // dd($request->all());
+            $rules = [
+                'entryDetails' => 'required|in:Restock,Pull Out,Inventory Run Check',
+                'expiryDate' => 'nullable|date|after:today',
+                'previousTotal' => 'required|integer|min:0',
+                'lastRunDate' => 'required|date',
+            ];
+
+            if ($request->input('entryDetails') === 'Restock') {
+                $rules['quantity'] = 'required|integer|min:1';
+            } else {
+                $rules['quantity'] = 'required|integer|max:0';
+            }
+
+            $validated = $request->validate($rules);
+
+
+            $validated['lastRunDate'] = \Carbon\Carbon::parse($validated['lastRunDate'])->format('Y-m-d');
+            $validated['expiryDate'] = \Carbon\Carbon::parse($validated['expiryDate'])->format('Y-m-d');
+
+            // Compute and attach additional fields
+            $validated['newTotal'] = $validated['entryDetails'] === 'Pull Out'
+                ? $validated['previousTotal'] - $validated['quantity']
+                : $validated['previousTotal'] + $validated['quantity'];
+
+            $validated['medication_id'] = $id;
+            $validated['user_id'] = auth()->id();
+
+            MedicationList::update([
+                'quantity' => $validated['newTotal'],
+                'lastRunDate' => $validated['lastRunDate'],
+                'expirationDate' => $validated['expiryDate'] ?? null,
+            ]);;
+
+            InventoryChange::create($validated);
+
+            return back()->with('success', 'Inventory updated successfully.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Return validation errors without resetting form data
+            return back()
+                ->withErrors($e->validator)
+                ->withInput();
+        } catch (\Exception $e) {
+            return back()
+                ->with('error', 'An unexpected error occurred: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+
 
     public function delete($id)
     {

@@ -24,6 +24,11 @@ class MedicationList extends Model
         'expirationDate' => 'date',
     ];
 
+    public function inventoryChanges()
+    {
+        return $this->hasMany(InventoryChange::class, 'medication_id');
+    }
+
     public function prescriptions()
     {
         return $this->hasMany(PatientPrescription::class, 'medication_id');
