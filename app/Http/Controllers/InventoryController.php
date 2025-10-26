@@ -18,7 +18,7 @@ class InventoryController extends Controller
 
     public function inventory_medication_index($id)
     {
-        $medication = MedicationList::with(['inventoryChanges'])->where('id', $id)->first();
+        $medication = MedicationList::with(['inventoryChanges.user'])->where('id', $id)->first();
         return Inertia::render('Inventory/InventoryMedicationDetails', ['medication' => $medication]);
     }
 
@@ -117,11 +117,11 @@ class InventoryController extends Controller
             $validated['medication_id'] = $id;
             $validated['user_id'] = auth()->id();
 
-            MedicationList::update([
+            MedicationList::where('id', $id)->update([
                 'quantity' => $validated['newTotal'],
                 'lastRunDate' => $validated['lastRunDate'],
                 'expirationDate' => $validated['expiryDate'] ?? null,
-            ]);;
+            ]);
 
             InventoryChange::create($validated);
 

@@ -15,7 +15,6 @@ export default function AppointmentManager({ appointments }) {
 
     useAppointments(({ type, appointment }) => {
         if (type === "created") {
-            console.log("New appointment:", appointment);
             setAppointmentList((prev) => [appointment, ...prev]);
         }
     });
