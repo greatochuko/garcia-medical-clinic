@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Billing;
 use App\Models\InventoryChange;
 use App\Models\MedicationList;
 use Illuminate\Http\Request;
@@ -18,8 +19,28 @@ class InventoryController extends Controller
 
     public function inventory_medication_index($id)
     {
-        $medication = MedicationList::with(['inventoryChanges.user'])->where('id', $id)->first();
-        return Inertia::render('Inventory/InventoryMedicationDetails', ['medication' => $medication]);
+        $billings = Billing::all();
+        $totalSales = 0;
+
+        foreach ($billings as $billing) {
+            if (!empty($billing->prescriptions)) {
+                foreach ($billing->prescriptions as $prescription) {
+                    if (isset($prescription['medication']['id']) && $prescription['medication']['id'] == $id) {
+                        $totalSales += (float) $billing->final_total;
+                        break;
+                    }
+                }
+            }
+        }
+
+        $medication = MedicationList::with(['inventoryChanges.user'])
+            ->where('id', $id)
+            ->first();
+
+        return Inertia::render('Inventory/InventoryMedicationDetails', [
+            'medication' => $medication,
+            'totalSales' => $totalSales,
+        ]);
     }
 
     public function add(Request $request)
@@ -138,6 +159,37 @@ class InventoryController extends Controller
         }
     }
 
+    public function inventory_run_check()
+    {
+        try {
+            $medications = MedicationList::all();
+
+            foreach ($medications as $medication) {
+                InventoryChange::create([
+                    'entryDetails' => 'Inventory Run Check',
+                    'quantity' => 0,
+                    // 'expiryDate' => $medication->expirationDate,
+                    'previousTotal' => $medication->quantity,
+                    'newTotal' => $medication->quantity,
+                    'lastRunDate' => now()->format('Y-m-d'),
+                    'medication_id' => $medication->id,
+                    'user_id' => auth()->id(),
+                ]);
+
+                $medication->update([
+                    'lastRunDate' => now()->format('Y-m-d'),
+                ]);
+            }
+
+            return redirect()
+                ->back()
+                ->with('success', 'Inventory run check completed successfully.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'An error occurred during the inventory run check: ' . $e->getMessage());
+        }
+    }
 
     public function delete($id)
     {

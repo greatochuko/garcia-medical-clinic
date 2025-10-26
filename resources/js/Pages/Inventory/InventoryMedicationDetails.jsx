@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import { FaSort } from "react-icons/fa6";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
-export default function InventoryMedicationDetails({ medication }) {
+export default function InventoryMedicationDetails({ medication, totalSales }) {
     const [sortBy, setSortBy] = useState({
         field: "date",
         type: "desc",
@@ -60,8 +60,8 @@ export default function InventoryMedicationDetails({ medication }) {
                     break;
                 }
                 case "expiration":
-                    valA = new Date(a.expirationDate);
-                    valB = new Date(b.expirationDate);
+                    valA = new Date(a.expiryDate);
+                    valB = new Date(b.expiryDate);
                     break;
                 case "user":
                     valA = userNameA;
@@ -114,7 +114,7 @@ export default function InventoryMedicationDetails({ medication }) {
                         </div>
                         <div className="flex max-w-60 flex-col gap-1 text-sm sm:flex-1">
                             <p className="font-semibold text-[#47778B]">
-                                Total Sales: {medication.price} PHP
+                                Total Sales: {totalSales} PHP
                             </p>
                             <p className="font-semibold text-[#47778B]">
                                 Total Stocked: {totalStocked}
@@ -127,7 +127,7 @@ export default function InventoryMedicationDetails({ medication }) {
                     <table className="w-full text-xs sm:text-sm">
                         <thead>
                             <tr className="whitespace-nowrap text-sm">
-                                <th className="min-w-40 p-4">
+                                <th className="p-4">
                                     <span
                                         onClick={() =>
                                             handleSortBy("lastRunDate")
@@ -146,13 +146,11 @@ export default function InventoryMedicationDetails({ medication }) {
                                         )}
                                     </span>
                                 </th>
-                                <th className="min-w-48 p-4 text-left">
-                                    Medication
-                                </th>
-                                <th className="min-w-36 p-4 text-left">
+                                <th className="p-4 text-left">Medication</th>
+                                <th className="p-4 text-left">
                                     <span
                                         onClick={() => handleSortBy("quantity")}
-                                        className="flex w-fit cursor-pointer items-center gap-2"
+                                        className="mx-auto flex w-fit cursor-pointer items-center gap-2"
                                     >
                                         Quantity
                                         {sortBy.field === "quantity" ? (
@@ -166,15 +164,15 @@ export default function InventoryMedicationDetails({ medication }) {
                                         )}
                                     </span>
                                 </th>
-                                <th className="min-w-36 p-4 text-left">
+                                <th className="p-4 text-left">
                                     <span
                                         onClick={() =>
-                                            handleSortBy("entry-details")
+                                            handleSortBy("entryDetails")
                                         }
                                         className="flex w-fit cursor-pointer items-center gap-2"
                                     >
                                         Entry Details
-                                        {sortBy.field === "entry-details" ? (
+                                        {sortBy.field === "entryDetails" ? (
                                             sortBy.type === "asc" ? (
                                                 <TiArrowSortedUp size={16} />
                                             ) : (
@@ -207,7 +205,7 @@ export default function InventoryMedicationDetails({ medication }) {
                                 <th className="p-4">
                                     <span
                                         onClick={() => handleSortBy("user")}
-                                        className="mx-auto flex w-fit cursor-pointer items-center gap-2"
+                                        className="flex w-fit cursor-pointer items-center gap-2"
                                     >
                                         User
                                         {sortBy.field === "user" ? (
@@ -256,7 +254,7 @@ export default function InventoryMedicationDetails({ medication }) {
                                     <td className="p-4 text-left">
                                         {medication.name}
                                     </td>
-                                    <td className="p-4 text-left">
+                                    <td className="p-4 text-center">
                                         {change.quantity}
                                     </td>
                                     <td className="p-4 text-left">
@@ -267,10 +265,10 @@ export default function InventoryMedicationDetails({ medication }) {
                                             ? new Date(
                                                   change.expiryDate,
                                               ).toLocaleDateString()
-                                            : "N/A"}
+                                            : "-"}
                                     </td>
-                                    <td className="p-4 text-center">
-                                        {change.user.first_name}
+                                    <td className="p-4">
+                                        {change.user.first_name}{" "}
                                         {change.user.last_name}
                                     </td>
                                     <td className="p-4 text-center">

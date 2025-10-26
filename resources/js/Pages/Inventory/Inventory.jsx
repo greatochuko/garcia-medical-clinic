@@ -5,7 +5,9 @@ import { FaSort } from "react-icons/fa6";
 import { LuChevronDown } from "react-icons/lu";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import EditInventoryForm from "../EditInventoryForm";
-import { Link } from "@inertiajs/react";
+import { Link, useForm } from "@inertiajs/react";
+import { Loader2Icon } from "lucide-react";
+import { route } from "ziggy-js";
 
 const allCategories = [
     "Pain Relief",
@@ -44,6 +46,7 @@ export default function Inventory({ medications: medicationList }) {
         field: "date",
         type: "desc",
     });
+    const { processing, post } = useForm();
 
     const medications = useMemo(() => {
         let filtered = searchQuery
@@ -167,6 +170,10 @@ export default function Inventory({ medications: medicationList }) {
         });
     }
 
+    function handleInventoryRunCheck() {
+        post(route("inventory.run_check"));
+    }
+
     return (
         <>
             <AuthenticatedLayout pageTitle="Inventory">
@@ -176,7 +183,11 @@ export default function Inventory({ medications: medicationList }) {
                             <h1 className="text-center text-sm font-bold">
                                 INVENTORY OVERVIEW
                             </h1>
-                            <button className="absolute bottom-0 left-1/2 flex w-fit -translate-x-1/2 translate-y-1/2 items-center gap-2 rounded-md border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300 sm:left-auto sm:right-4 sm:translate-x-0 md:rounded-lg">
+                            <button
+                                onClick={handleInventoryRunCheck}
+                                disabled={processing}
+                                className="absolute bottom-0 left-1/2 flex w-fit -translate-x-1/2 translate-y-1/2 items-center gap-2 rounded-md border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300 sm:left-auto sm:right-4 sm:translate-x-0 md:rounded-lg"
+                            >
                                 <img
                                     src="/assets/icons/plus-icon.svg"
                                     alt="plus icon"
@@ -184,7 +195,17 @@ export default function Inventory({ medications: medicationList }) {
                                     height={14}
                                     className="h-3 w-3 sm:h-3.5 sm:w-3.5"
                                 />
-                                Inventory Run Check
+                                {processing ? (
+                                    <>
+                                        <Loader2Icon
+                                            size={14}
+                                            className="animate-spin"
+                                        />{" "}
+                                        Running...
+                                    </>
+                                ) : (
+                                    "Inventory Run Check"
+                                )}
                             </button>
                         </div>
                         <div className="grid grid-cols-2 gap-4 border-b-8 border-accent-200 p-4 sm:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] sm:gap-6 lg:gap-8">

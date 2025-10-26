@@ -51,12 +51,18 @@ class SettingsController extends Controller
 
     public function accounts_index()
     {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized access.');
+        }
+
         $users = User::with('doctor')
             ->select('users.*')
-            ->orderBy('created_at', 'desc')->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return Inertia::render('Settings/Accounts', ['accounts' => $users]);
     }
+
 
     public function create_account()
     {
