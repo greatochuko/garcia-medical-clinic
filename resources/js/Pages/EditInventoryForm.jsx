@@ -22,6 +22,7 @@ export default function EditInventoryForm({ closeEditingForm, medication }) {
                 quantity: Number(prev.quantity) + 1,
             }));
         } else {
+            if (data.quantity > medication.quantity) return;
             setData((prev) => ({
                 ...prev,
                 quantity: Number(prev.quantity) - 1,
@@ -140,7 +141,7 @@ export default function EditInventoryForm({ closeEditingForm, medication }) {
                                     onChange={(e) =>
                                         setData((prev) => ({
                                             ...prev,
-                                            quantity: e.target.value,
+                                            quantity: Number(e.target.value),
                                         }))
                                     }
                                     className="w-20 rounded-l-none border-0 bg-white"

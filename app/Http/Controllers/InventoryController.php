@@ -131,9 +131,7 @@ class InventoryController extends Controller
             $validated['expiryDate'] = \Carbon\Carbon::parse($validated['expiryDate'])->format('Y-m-d');
 
             // Compute and attach additional fields
-            $validated['newTotal'] = $validated['entryDetails'] === 'Pull Out'
-                ? $validated['previousTotal'] - $validated['quantity']
-                : $validated['previousTotal'] + $validated['quantity'];
+            $validated['newTotal'] =  $validated['previousTotal'] + $validated['quantity'];
 
             $validated['medication_id'] = $id;
             $validated['user_id'] = auth()->id();
