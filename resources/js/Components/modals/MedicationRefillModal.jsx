@@ -102,6 +102,22 @@ export default function MedicationRefillModal({
     const discount = 0;
     const total = subtotal - discount;
 
+    async function handleNext() {
+        for (const prescription of prescriptions) {
+            const { name, quantity: availableStock } = prescription.medication;
+            const requested = prescription.amount;
+
+            if (requested > availableStock) {
+                toast.error(
+                    `Insufficient stock for ${name}. Requested: ${requested}, Available: ${availableStock}.`,
+                );
+                return;
+            }
+        }
+
+        setPaymentModalOpen(true);
+    }
+
     async function handleSubmit() {
         setLoading(true);
         const patientData = patient
@@ -147,7 +163,10 @@ export default function MedicationRefillModal({
                 toast.error("Failed to bill client");
             }
         } catch (error) {
-            toast.error("An error occurred while billing client");
+            toast.error(
+                error?.response?.data?.message ||
+                    "An error occurred while billing client",
+            );
             console.error(error?.response?.data?.error || error.message);
         }
         setLoading(false);
@@ -314,6 +333,9 @@ export default function MedicationRefillModal({
                                                                 prescription.amount
                                                             }
                                                             min={1}
+                                                            max={
+                                                                prescription.quantity
+                                                            }
                                                             className="w-full rounded-md border border-accent-400 bg-white p-2 text-center text-xs outline-none focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50"
                                                             onChange={(e) =>
                                                                 handleQuantityChange(
@@ -413,7 +435,7 @@ export default function MedicationRefillModal({
                                                 SUBTOTAL
                                             </div>
                                             <div className="w-[8vw] min-w-16 max-w-20" />
-                                            <div className="w-[8vw] min-w-[78px] max-w-28 text-center">
+                                            <div className="w-[10vw] min-w-[78px] max-w-28 text-center">
                                                 {formatPHP(subtotal)}
                                             </div>
                                         </div>
@@ -425,7 +447,7 @@ export default function MedicationRefillModal({
                                                 TOTAL
                                             </div>
                                             <div className="w-[8vw] min-w-16 max-w-20" />
-                                            <div className="w-[8vw] min-w-[78px] max-w-28 p-2 text-center text-sm font-bold">
+                                            <div className="w-[10vw] min-w-[78px] max-w-28 p-2 text-center text-sm font-bold">
                                                 {formatPHP(total)}
                                             </div>
                                         </div>
@@ -442,9 +464,7 @@ export default function MedicationRefillModal({
                                         Cancel
                                     </button>
                                     <button
-                                        onClick={() =>
-                                            setPaymentModalOpen(true)
-                                        }
+                                        onClick={handleNext}
                                         disabled={prescriptions.length < 1}
                                         className="rounded-md border border-accent bg-accent px-4 py-2 text-xs text-white duration-200 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
                                     >

@@ -9,9 +9,10 @@ use App\Models\Billing;
 use App\Models\ServiceCharge;
 use App\Models\MedicalRecord;
 use App\Models\Appointment;
+use App\Models\InventoryChange;
+use App\Models\MedicationList;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
 
 class BillingController extends Controller
 {
@@ -52,15 +53,54 @@ class BillingController extends Controller
             'discount' => 'nullable|numeric',
             'final_total' => 'required|numeric',
             'paid' => 'boolean',
-            'appointment_id' => 'nullable|integer', // ✅ new
+            'appointment_id' => 'nullable|integer',
         ]);
 
         DB::beginTransaction();
 
         try {
+            // Create billing record
             $billing = Billing::create($validated);
 
-            // ✅ If appointment_id is present, mark it as checked_out
+            if (!empty($validated['prescriptions'])) {
+                foreach ($validated['prescriptions'] as $prescription) {
+                    $medication = MedicationList::find($prescription['medication']['id']);
+
+                    // Fail if medication not found
+                    if (!$medication) {
+                        throw new \Exception("Medication not found (ID: {$prescription['medication']['id']}).");
+                    }
+
+                    $quantity = $prescription['amount'];
+                    $available = $medication->quantity;
+
+                    // Fail if requested amount exceeds available stock
+                    if ($quantity > $available) {
+                        throw new \Exception("Quantity for {$medication->name} exceeds available stock. Requested: {$quantity}, Available: {$available}.");
+                    }
+
+                    $newTotal = $available - $quantity;
+
+                    // Update medication stock
+                    $medication->update([
+                        'quantity' => $newTotal,
+                        'lastRunDate' => now(),
+                    ]);
+
+                    // Log inventory change
+                    InventoryChange::create([
+                        'medication_id' => $medication->id,
+                        'user_id' => auth()->id(),
+                        'lastRunDate' => now(),
+                        'entryDetails' => 'Pull Out',
+                        'quantity' => $quantity,
+                        'expiryDate' => $prescription['expiryDate'] ?? null,
+                        'newTotal' => $newTotal,
+                    ]);
+                }
+            }
+
+            // Mark appointment as checked out if applicable
             if (!empty($validated['appointment_id'])) {
                 $appointment = Appointment::find($validated['appointment_id']);
                 if ($appointment) {
@@ -79,11 +119,12 @@ class BillingController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong',
-                'error' => $e->getMessage()
-            ], 500);
+                'message' => $e->getMessage(),
+            ], 400);
         }
     }
+
+
 
     public function edit($id)
     {
