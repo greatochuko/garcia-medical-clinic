@@ -16,18 +16,10 @@ export default function EditInventoryForm({ closeEditingForm, medication }) {
     });
 
     function handleChangeQuantity() {
-        if (data.entryDetails === "Restock") {
-            setData((prev) => ({
-                ...prev,
-                quantity: Number(prev.quantity) + 1,
-            }));
-        } else {
-            if (data.quantity > medication.quantity) return;
-            setData((prev) => ({
-                ...prev,
-                quantity: Number(prev.quantity) - 1,
-            }));
-        }
+        setData((prev) => ({
+            ...prev,
+            quantity: Number(prev.quantity) + 1,
+        }));
     }
 
     function handleSave() {

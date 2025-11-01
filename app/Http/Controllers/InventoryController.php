@@ -116,13 +116,8 @@ class InventoryController extends Controller
                 'expiryDate' => 'nullable|date|after:today',
                 'previousTotal' => 'required|integer|min:0',
                 'lastRunDate' => 'required|date',
+                'quantity' => 'required|integer|min:1',
             ];
-
-            if ($request->input('entryDetails') === 'Restock') {
-                $rules['quantity'] = 'required|integer|min:1';
-            } else {
-                $rules['quantity'] = 'required|integer|max:0';
-            }
 
             $validated = $request->validate($rules);
 
@@ -130,8 +125,11 @@ class InventoryController extends Controller
             $validated['lastRunDate'] = \Carbon\Carbon::parse($validated['lastRunDate'])->format('Y-m-d');
             $validated['expiryDate'] = \Carbon\Carbon::parse($validated['expiryDate'])->format('Y-m-d');
 
-            // Compute and attach additional fields
-            $validated['newTotal'] =  $validated['previousTotal'] + $validated['quantity'];
+            if ($validated['entryDetails'] === 'Pull Out') {
+                $validated['newTotal'] = $validated['previousTotal'] - $validated['quantity'];
+            } else {
+                $validated['newTotal'] = $validated['previousTotal'] + $validated['quantity'];
+            }
 
             $validated['medication_id'] = $id;
             $validated['user_id'] = auth()->id();

@@ -11,13 +11,13 @@ export default function InventoryMedicationDetails({ medication, totalSales }) {
 
     const totalStocked = useMemo(() => {
         return medication.inventory_changes
-            .filter((change) => change.quantity > 0)
+            .filter((change) => change.entryDetails === "Restock")
             .reduce((sum, change) => sum + change.quantity, 0);
     }, [medication.inventory_changes]);
 
     const totalReleased = useMemo(() => {
         return medication.inventory_changes
-            .filter((change) => change.quantity < 0)
+            .filter((change) => change.entryDetails === "Pull Out")
             .reduce((sum, change) => sum + change.quantity, 0);
     }, [medication.inventory_changes]);
 
