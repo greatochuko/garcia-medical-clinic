@@ -34,7 +34,7 @@ export function PatientQuickView({ userRole }) {
     const patientFullName = nextPatient
         ? nextPatient.first_name +
           (nextPatient.middle_initial
-              ? ` ${nextPatient.middle_initial}, `
+              ? ` ${nextPatient.middle_initial}. `
               : " ") +
           nextPatient.last_name
         : "N/A";

@@ -3,6 +3,7 @@ import Footer from "@/Components/layout/Footer";
 import Header from "@/Components/layout/Header";
 import FlashMessage from "@/Components/FlashMessage";
 import { Head, usePage } from "@inertiajs/react";
+import Chatbox from "@/Components/chatbox/Chatbox";
 
 export default function AuthenticatedLayout({ children, pageTitle }) {
     const { auth } = usePage().props;
@@ -13,6 +14,7 @@ export default function AuthenticatedLayout({ children, pageTitle }) {
             <FlashMessage />
             <main className="flex flex-1 text-accent">{children}</main>
             <Footer />
+            <Chatbox />
         </div>
     );
 }

@@ -11,7 +11,7 @@ import { route } from "ziggy-js";
 import DeleteAccountModal from "@/Components/modals/DeleteAccountModal";
 
 function getUserFullName(account) {
-    return `${account.first_name} ${account.middle_initial ? `${account.middle_initial},` : ""} ${account.last_name}`;
+    return `${account.first_name} ${account.middle_initial ? `${account.middle_initial}.` : ""} ${account.last_name}`;
 }
 
 export default function Accounts({ auth, accounts: accountList }) {

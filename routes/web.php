@@ -12,6 +12,7 @@ use App\Http\Controllers\FrequencyListController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\LaboratoryTestController;
 use App\Http\Controllers\AppointmentManagerController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\UnfinishedDocsController;
 use App\Http\Controllers\MedicalRecordController;
@@ -264,6 +265,11 @@ Route::middleware('auth')->group(function () {
     Route::get("settings/accounts/new/admin", [SettingsController::class, 'create_account'])->name('settings.accounts.create.admin');
     Route::get("settings/accounts/edit/{id}", [SettingsController::class, 'update_account'])->name('settings.accounts.update');
     Route::patch("settings/accounts/toggle_status/{id}", [SettingsController::class, 'toggle_user_status'])->name('settings.accounts.toggle_status');
+
+
+    // Chat routes
+    Route::get("chat", [ChatController::class, 'getOtherUsers'])->name('chat.index');
+    Route::post("chat", [ChatController::class, 'sendMessage'])->name('chat.create');
 });
 
 

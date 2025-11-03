@@ -33,7 +33,7 @@ export function AppointmentsView() {
                 <hr className="absolute bottom-0 left-0 w-full -translate-y-5 border-2 border-accent-200" />
             </div>
 
-            <div className="flex flex-col gap-2 p-4">
+            <div className="flex max-h-48 flex-col gap-2 overflow-y-auto p-4">
                 {(currentTab === "check-up"
                     ? upcomingPatients
                     : pendingProcedures
@@ -52,7 +52,7 @@ export function AppointmentsView() {
                             <h5 className="line-clamp-1 text-sm font-bold">
                                 {patient.first_name}
                                 {patient.middle_initial
-                                    ? ` ${patient.middle_initial}, `
+                                    ? ` ${patient.middle_initial}. `
                                     : " "}
                                 {patient.last_name}
                             </h5>

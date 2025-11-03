@@ -17,7 +17,7 @@ export default function UserDropdown({ user }) {
 
     const [dropdownRef] = useClickOutside(() => setDropdownOpen(false));
 
-    const userFullName = `${user?.first_name}${user?.middle_initial ? ` ${user.middle_initial},` : ""} ${user?.last_name}`;
+    const userFullName = `${user?.first_name}${user?.middle_initial ? ` ${user.middle_initial}.` : ""} ${user?.last_name}`;
 
     function handleLogout() {
         router.post(route("logout"), {
