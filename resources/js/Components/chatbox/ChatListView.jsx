@@ -61,7 +61,7 @@ export default function ChatListView({
 
 function ChatListItem({ chatUser, setActiveChatId, chatMessages, authUser }) {
     const unreadMessages = chatMessages.filter(
-        (msg) => msg.sender_id !== authUser.id && !msg.is_read,
+        (msg) => msg.receiver_id === authUser.id && !msg.is_read,
     );
 
     return (

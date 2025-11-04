@@ -1,39 +1,66 @@
 import { CircleXIcon } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Input from "../layout/Input";
 import { v4 as uuidv4 } from "uuid";
 import TextMessage from "./TextMessage";
 import ReceiptMessage from "./ReceiptMessage";
+import axios from "axios";
+import { route } from "ziggy-js";
 
 export default function MessageView({
-    user,
+    chatUser,
     setActiveChatId,
     messages,
     sendMessage,
     setMessages,
     authUser,
 }) {
-    const userFullName = `${user.first_name} ${user.middle_initial ? `${user.middle_initial.toUpperCase()}.` : ""} ${user.last_name}`;
+    const userFullName = `${chatUser.first_name} ${chatUser.middle_initial ? `${chatUser.middle_initial.toUpperCase()}.` : ""} ${chatUser.last_name}`;
     const [firstLoading, setFirstLoading] = useState(true);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({
         content: "",
-        receiver_id: user.id,
+        receiver_id: chatUser.id,
         type: "text",
     });
     const messageAreaRef = useRef(null);
+
+    const markMessagesRead = useCallback(
+        async (senderId) => {
+            try {
+                setMessages((prev) =>
+                    prev.map((msg) =>
+                        msg.sender_id === senderId &&
+                        msg.receiver_id === authUser.id
+                            ? { ...msg, is_read: true }
+                            : msg,
+                    ),
+                );
+                await axios.post(route("chat.mark_as_read"), {
+                    sender_id: senderId,
+                });
+            } catch (error) {
+                console.error(error?.response?.data || error.message);
+            }
+        },
+        [authUser.id, setMessages],
+    );
 
     useEffect(() => {
         if (messageAreaRef.current) {
             messageAreaRef.current.scrollTo({
                 top: messageAreaRef.current.scrollHeight,
-                behavior: firstLoading ? undefined : "smooth",
+                behavior: "auto",
             });
         }
-        if (firstLoading) {
-            setFirstLoading(false);
-        }
-    }, [firstLoading, messages]);
+
+        if (!firstLoading) return;
+
+        const unreadMessages = messages.filter((msg) => !msg.is_read);
+        if (unreadMessages.length) markMessagesRead(chatUser.id);
+
+        setFirstLoading(false);
+    }, [firstLoading, chatUser.id, markMessagesRead, messages]);
 
     async function handleSendMessage(e) {
         e.preventDefault();
@@ -64,19 +91,20 @@ export default function MessageView({
                 <div className="relative flex items-center gap-4">
                     <img
                         src={
-                            user.avatar_url || "/images/placeholder-avatar.jpg"
+                            chatUser.avatar_url ||
+                            "/images/placeholder-avatar.jpg"
                         }
                         alt="patient profile picture"
-                        className={`h-10 w-10 rounded-full border-2 shadow-md sm:h-[58px] sm:w-[58px] ${user.role === "admin" ? "border-accent-orange" : user.role === "doctor" ? "border-[#429ABF]" : "border-[#D5B013]"}`}
+                        className={`h-10 w-10 rounded-full border-2 shadow-md sm:h-[58px] sm:w-[58px] ${chatUser.role === "admin" ? "border-accent-orange" : chatUser.role === "doctor" ? "border-[#429ABF]" : "border-[#D5B013]"}`}
                         width={58}
                         height={58}
                     />
                     <div className="flex flex-1 flex-col gap-0.5">
                         <h3 className="text-sm font-bold capitalize">
                             Clinic{" "}
-                            {user.role === "doctor"
+                            {chatUser.role === "doctor"
                                 ? "MD"
-                                : user.role === "admin"
+                                : chatUser.role === "admin"
                                   ? "Admin"
                                   : "Secretary"}
                         </h3>

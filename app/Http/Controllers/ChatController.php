@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageReadEvent;
 use App\Events\MessageSent;
 use App\Models\Message;
 use App\Models\User;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Redirect;
 
 class ChatController extends Controller
 {
-    public function getOtherUsers()
+    public function getChatUsers()
     {
         $userId = Auth::id();
 
@@ -117,6 +118,8 @@ class ChatController extends Controller
             ->where('receiver_id', Auth::id())
             ->where('is_read', false)
             ->update(['is_read' => true]);
+
+        broadcast(new MessageReadEvent($validated['sender_id'], Auth::id()))->toOthers();
 
         return;
     }
