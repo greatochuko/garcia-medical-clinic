@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AppointmentUpdated;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\UnfinishedDoc;
@@ -134,6 +135,10 @@ class BillingController extends Controller
                         'New billing record created for your visit.',
                         $transactionData
                     );
+
+                    $appointment->load(['patient.vitals', 'serviceCharge']);
+
+                    broadcast(new AppointmentUpdated($appointment))->toOthers();
                 }
             }
 
@@ -153,8 +158,6 @@ class BillingController extends Controller
             ], 400);
         }
     }
-
-
 
     public function edit($id)
     {

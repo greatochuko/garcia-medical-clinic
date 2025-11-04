@@ -144,7 +144,7 @@ export default function PaymentModal({
                         Cancel
                     </button>
                     <button
-                        disabled={loading}
+                        disabled={loading || cashTendered < total}
                         onClick={onSubmit}
                         className="flex items-center gap-2 rounded-md border border-accent bg-accent px-4 py-2 text-xs text-white duration-200 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
                     >

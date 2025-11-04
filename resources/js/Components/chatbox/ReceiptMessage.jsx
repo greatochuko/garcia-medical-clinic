@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Loader2Icon } from "lucide-react";
+import { CheckCheckIcon, CheckIcon, Loader2Icon } from "lucide-react";
 import { route } from "ziggy-js";
 import axios from "axios";
 
@@ -71,9 +71,15 @@ export default function ReceiptMessage({ message, isSender }) {
                 </button>
             </div>
             <p
-                className={`p-2.5 py-1.5 text-[10px] italic ${isSender ? "" : "text-[#666666]"}`}
+                className={`flex items-center justify-between p-2.5 py-1.5 text-[10px] italic ${isSender ? "" : "text-[#666666]"}`}
             >
-                This message is automated.
+                This message is automated.{" "}
+                {isSender &&
+                    (message.is_read ? (
+                        <CheckCheckIcon size={12} />
+                    ) : (
+                        <CheckIcon size={12} />
+                    ))}
             </p>
         </div>
     );
