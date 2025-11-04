@@ -270,6 +270,8 @@ Route::middleware('auth')->group(function () {
     // Chat routes
     Route::get("chat", [ChatController::class, 'getOtherUsers'])->name('chat.index');
     Route::post("chat", [ChatController::class, 'sendMessage'])->name('chat.create');
+    Route::patch("chat/{id}/acknowledge", [ChatController::class, 'acknowledgeReceipt'])->name('chat.acknowledge_receipt');
+    Route::post('/chat/mark-read', [ChatController::class, 'markAsRead'])->name('chat.mark_as_read');
 });
 
 

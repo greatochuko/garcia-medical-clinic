@@ -16,6 +16,7 @@ class Billing extends Model
         'total',
         'discount',
         'final_total',
+        'amount_paid',
         'paid',
     ];
 

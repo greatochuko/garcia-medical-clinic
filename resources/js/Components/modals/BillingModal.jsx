@@ -28,6 +28,7 @@ export default function BillingModal({
     const [paymentModalOpen, setPaymentModalOpen] = useState(false);
     const [paid, setPaid] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [cashTendered, setCashTendered] = useState("");
 
     useEffect(() => {
         setPrescriptions(
@@ -120,6 +121,7 @@ export default function BillingModal({
                 final_total: total,
                 paid: true,
                 appointment_id: appointment.id,
+                amount_paid: cashTendered,
             };
             const res = await axios.post(route("billingrecord.add"), data);
 
@@ -425,6 +427,8 @@ export default function BillingModal({
                 formatPHP={formatPHP}
                 onSubmit={handleSubmit}
                 loading={loading}
+                cashTendered={cashTendered}
+                setCashTendered={setCashTendered}
             />
         </>
     );

@@ -13,6 +13,7 @@ use App\Models\InventoryChange;
 use App\Models\MedicationList;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BillingController extends Controller
 {
@@ -52,6 +53,7 @@ class BillingController extends Controller
             'total' => 'required|numeric',
             'discount' => 'nullable|numeric',
             'final_total' => 'required|numeric',
+            'amount_paid' => 'required|numeric',
             'paid' => 'boolean',
             'appointment_id' => 'nullable|integer',
         ]);
@@ -62,6 +64,7 @@ class BillingController extends Controller
             // Create billing record
             $billing = Billing::create($validated);
 
+            // Update prescriptions/inventory logic
             if (!empty($validated['prescriptions'])) {
                 foreach ($validated['prescriptions'] as $prescription) {
                     $medication = MedicationList::find($prescription['medication']['id']);
@@ -102,11 +105,38 @@ class BillingController extends Controller
 
             // Mark appointment as checked out if applicable
             if (!empty($validated['appointment_id'])) {
-                $appointment = Appointment::find($validated['appointment_id']);
+                $appointment = Appointment::with('patient')->find($validated['appointment_id']);
                 if ($appointment) {
                     $appointment->update(['status' => 'checked_out']);
+
+                    $medicalRecord = MedicalRecord::where('appointment_id', $appointment->id)->first();
+                    $receiverId = $medicalRecord?->doctor_id;
+
+                    $transactionData = [
+                        'billing_id' => $billing->id,
+                        'appointment_id' => $appointment->id,
+                        'patient_name' => trim(
+                            $appointment->patient->first_name . ' ' .
+                                ($appointment->patient->middle_initial ? $appointment->patient->middle_initial . '. ' : '') .
+                                $appointment->patient->last_name
+                        ),
+                        'queue_type' => $appointment->queue_type,
+                        'queue_number' => $appointment->queue_number,
+                        'total' => $billing->final_total,
+                        'amount_paid' => $billing->amount_paid,
+                    ];
+
+                    Log::info($transactionData);
+
+                    ChatController::sendChatMessage(
+                        $receiverId,
+                        'transaction',
+                        'New billing record created for your visit.',
+                        $transactionData
+                    );
                 }
             }
+
 
             DB::commit();
 

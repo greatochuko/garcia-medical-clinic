@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ModalContainer from "../layout/ModalContainer";
 import { XIcon } from "lucide-react";
 import { Loader2Icon } from "lucide-react";
@@ -11,11 +11,12 @@ export default function PaymentModal({
     total,
     onSubmit,
     loading,
+    cashTendered,
+    setCashTendered,
 }) {
     const patientFullName = patient
         ? `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`
         : "WALK IN PATIENT";
-    const [cashTendered, setCashTendered] = useState("");
 
     const handleNumberClick = (val) => {
         if (val === ".") {

@@ -29,6 +29,7 @@ export default function MedicationRefillModal({
     const [loading, setLoading] = useState(false);
     const [medicationInput, setMedicationInput] = useState("");
     const [medication, setMedication] = useState(null);
+    const [cashTendered, setCashTendered] = useState("");
 
     const patientFullName = patient
         ? `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`
@@ -153,6 +154,7 @@ export default function MedicationRefillModal({
                 discount,
                 final_total: total,
                 paid: true,
+                amount_paid: cashTendered,
             };
             const res = await axios.post(route("billingrecord.add"), data);
 
@@ -487,6 +489,8 @@ export default function MedicationRefillModal({
                 formatPHP={formatPHP}
                 onSubmit={handleSubmit}
                 loading={loading}
+                cashTendered={cashTendered}
+                setCashTendered={setCashTendered}
             />
         </>
     );

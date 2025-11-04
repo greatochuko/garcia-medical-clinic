@@ -15,8 +15,15 @@ class Message extends Model
         'type',
         'content',
         'isAcknowledged',
+        'temp_id',
+        'is_read',
         'transaction',
     ];
+
+    protected $casts = [
+        'transaction' => 'array',
+    ];
+
 
     public function sender()
     {

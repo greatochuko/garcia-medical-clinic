@@ -58,6 +58,9 @@ class MessageSent implements ShouldBroadcast
             'content' => $this->message->content,
             'transaction' => $this->message->transaction,
             'created_at' => $this->message->created_at,
+            'temp_id' => $this->message->temp_id,
+            'is_read' => $this->message->is_read,
+            'isAcknowledged' => $this->message->isAcknowledged,
         ];
     }
 }

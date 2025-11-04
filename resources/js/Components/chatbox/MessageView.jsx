@@ -1,8 +1,9 @@
 import { CircleXIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import Input from "../layout/Input";
-import { CheckCheckIcon } from "lucide-react";
-import { ClockIcon } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
+import TextMessage from "./TextMessage";
+import ReceiptMessage from "./ReceiptMessage";
 
 export default function MessageView({
     user,
@@ -14,7 +15,7 @@ export default function MessageView({
 }) {
     const userFullName = `${user.first_name} ${user.middle_initial ? `${user.middle_initial.toUpperCase()}.` : ""} ${user.last_name}`;
     const [firstLoading, setFirstLoading] = useState(true);
-    const [processing, setProcessing] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState({
         content: "",
         receiver_id: user.id,
@@ -37,9 +38,11 @@ export default function MessageView({
     async function handleSendMessage(e) {
         e.preventDefault();
 
-        setProcessing(true);
-        const dummyMessage = {
+        setLoading(true);
+        const messageTempId = uuidv4();
+        const tempMessage = {
             id: new Date().getTime(),
+            temp_id: messageTempId,
             sender_id: authUser.id,
             receiver_id: data.receiver_id,
             type: "text",
@@ -48,11 +51,11 @@ export default function MessageView({
             created_at: new Date().toISOString(),
             notDelivered: true,
         };
-        setMessages((prev) => [...prev, dummyMessage]);
+        setMessages((prev) => [...prev, tempMessage]);
         setData((prev) => ({ ...prev, content: "" }));
-        setProcessing(false);
+        setLoading(false);
 
-        await sendMessage(data, dummyMessage);
+        await sendMessage({ ...data, temp_id: messageTempId }, tempMessage.id);
     }
 
     return (
@@ -68,7 +71,7 @@ export default function MessageView({
                         width={58}
                         height={58}
                     />
-                    <div className="flex flex-1 flex-col gap-1">
+                    <div className="flex flex-1 flex-col gap-0.5">
                         <h3 className="text-sm font-bold capitalize">
                             Clinic{" "}
                             {user.role === "doctor"
@@ -77,7 +80,7 @@ export default function MessageView({
                                   ? "Admin"
                                   : "Secretary"}
                         </h3>
-                        <p className="flex items-center gap-1.5 text-[10px] text-[#E9F9FF]">
+                        <p className="flex items-center gap-1.5 text-[12px] text-[#E9F9FF]">
                             <span className="h-2.5 w-2.5 rounded-full bg-[#27D01E]" />
                             <span className="flex-1">{userFullName}</span>
                         </p>
@@ -109,33 +112,24 @@ export default function MessageView({
                 >
                     {messages.map((msg) =>
                         msg.type === "text" ? (
-                            <div
+                            <TextMessage
                                 key={msg.id}
-                                className={`flex w-fit max-w-[70%] items-end gap-2 divide-accent-200 rounded-lg p-2 ${msg.sender_id === user.id ? "self-start bg-white text-accent" : "self-end bg-gradient-to-br from-accent-500 to-accent text-white"}`}
-                            >
-                                <p className="text-sm">{msg.content}</p>
-                                <span className="text-white/50">
-                                    {msg.notDelivered ? (
-                                        <ClockIcon size={12} />
-                                    ) : (
-                                        <CheckCheckIcon size={12} />
-                                    )}
-                                </span>
-                            </div>
+                                message={msg}
+                                isSender={msg.sender_id === authUser.id}
+                            />
                         ) : (
-                            <div
+                            <ReceiptMessage
+                                isSender={msg.sender_id === authUser.id}
+                                message={msg}
                                 key={msg.id}
-                                className={`max-w-[60%] divide-y divide-accent-200 rounded-xl bg-gradient-to-br from-accent-500 to-accent p-2 text-white ${msg.sender_id === user.id ? "self-start" : "self-end"}`}
-                            >
-                                <p className="text-sm">{msg.content}</p>
-                            </div>
+                            />
                         ),
                     )}
                 </div>
                 <form onSubmit={handleSendMessage} className="flex gap-3 p-1">
                     <div className="relative flex flex-1">
                         <Input
-                            disabled={processing}
+                            disabled={loading}
                             type="text"
                             value={data.content}
                             onChange={(e) =>
@@ -155,7 +149,7 @@ export default function MessageView({
                     </div>
                     <button
                         type="submit"
-                        disabled={processing}
+                        disabled={loading}
                         className="flex aspect-square h-[50px] w-[50px] items-center justify-center rounded-full bg-[#429ABF] outline-none ring-[#089bab]/50 ring-offset-1 duration-200 hover:opacity-90 focus-visible:ring disabled:opacity-50"
                     >
                         <img
