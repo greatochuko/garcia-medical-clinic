@@ -50,17 +50,23 @@ export default function MessageView({
         if (messageAreaRef.current) {
             messageAreaRef.current.scrollTo({
                 top: messageAreaRef.current.scrollHeight,
-                behavior: "auto",
+                behavior: firstLoading ? "instant" : "smooth",
             });
         }
 
-        if (!firstLoading) return;
+        // Only mark as read once per unread batch
+        const unreadMessages = messages.filter(
+            (msg) => !msg.is_read && msg.sender_id === chatUser.id,
+        );
 
-        const unreadMessages = messages.filter((msg) => !msg.is_read);
-        if (unreadMessages.length) markMessagesRead(chatUser.id);
+        if (unreadMessages.length > 0) {
+            // Prevent re-triggering while marking as read
+            markMessagesRead(chatUser.id);
+        }
 
-        setFirstLoading(false);
-    }, [firstLoading, chatUser.id, markMessagesRead, messages]);
+        if (firstLoading) setFirstLoading(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [messages.length, chatUser.id]);
 
     async function handleSendMessage(e) {
         e.preventDefault();
