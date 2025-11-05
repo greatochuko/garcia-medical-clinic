@@ -145,8 +145,11 @@ export default function BillingModal({
                 toast.error("Failed to bill client");
             }
         } catch (error) {
-            toast.error("An error occurred while billing client");
-            console.error(error);
+            toast.error(
+                error?.response?.data?.message ||
+                    "An error occurred while billing client",
+            );
+            console.error(error?.response?.data?.error || error.message);
         }
         setLoading(false);
     }
