@@ -23,12 +23,24 @@ export default function BillingModal({
     invoiceNumber,
     service,
 }) {
-    const { auth } = usePage().props;
+    const { auth, serviceTypes } = usePage().props;
     const [prescriptions, setPrescriptions] = useState(initialPrescriptions);
     const [paymentModalOpen, setPaymentModalOpen] = useState(false);
     const [paid, setPaid] = useState(false);
     const [loading, setLoading] = useState(false);
     const [cashTendered, setCashTendered] = useState("");
+
+    const validServiceTypes = (serviceTypes || []).filter(
+        (t) => t.patient_type == appointment.patient.patient_type,
+    );
+
+    const [selectedServiceChargeId, setSelectedServiceChargeId] = useState(
+        service.id,
+    );
+
+    const selectedServiceCharge = serviceTypes.find(
+        (st) => st.id === selectedServiceChargeId,
+    );
 
     useEffect(() => {
         setPrescriptions(
@@ -111,9 +123,9 @@ export default function BillingModal({
                     gender: patient.gender,
                 },
                 service: {
-                    id: service.id,
-                    name: service.name,
-                    charge: service.charge,
+                    id: selectedServiceCharge.id,
+                    name: selectedServiceCharge.name,
+                    charge: selectedServiceCharge.charge,
                 },
                 prescriptions,
                 total: subtotal,
@@ -261,17 +273,32 @@ export default function BillingModal({
                                                     service.name
                                                 ) : (
                                                     <select
+                                                        value={
+                                                            selectedServiceChargeId
+                                                        }
+                                                        onChange={(e) =>
+                                                            setSelectedServiceChargeId(
+                                                                e.target.value,
+                                                            )
+                                                        }
                                                         name="serviceType"
                                                         id="serviceType"
                                                         className="w-44 cursor-pointer rounded-md border-accent-400 p-2 text-xs outline-none focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50 disabled:cursor-not-allowed disabled:bg-[#E4E4E4] disabled:text-gray-500"
                                                     >
-                                                        <option
-                                                            value={
-                                                                appointment.service
-                                                            }
-                                                        >
-                                                            {service.name}
-                                                        </option>
+                                                        {validServiceTypes.map(
+                                                            (type) => (
+                                                                <option
+                                                                    key={
+                                                                        type.id
+                                                                    }
+                                                                    value={
+                                                                        type.id
+                                                                    }
+                                                                >
+                                                                    {type.name}
+                                                                </option>
+                                                            ),
+                                                        )}
                                                     </select>
                                                 )}
                                             </td>

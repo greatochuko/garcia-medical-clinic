@@ -14,7 +14,7 @@ use App\Models\MedicationList;
 use App\Models\ServiceCharge;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Log;
 
 class AppointmentManagerController extends Controller
 {
@@ -52,9 +52,13 @@ class AppointmentManagerController extends Controller
             ->paginate($perPage)
             ->withQueryString();
 
+        $serviceTypes = ServiceCharge::select('id', 'name', 'charge', 'patient_type')
+            ->get();
+
         return Inertia::render('AppointmentManager', [
             'appointments' => $appointments,
-            'medications' => $medications
+            'medications' => $medications,
+            'serviceTypes' => $serviceTypes
         ]);
     }
 
@@ -233,12 +237,9 @@ class AppointmentManagerController extends Controller
             return redirect()->back()->withErrors(['id' => 'Invalid patient ID']);
         }
 
-        $patientType = $patientData->age < 60 ? 'regular' : 'senior';
-
         $serviceTypes = ServiceCharge::select('id', 'name', 'charge')
-            ->where('patient_type', $patientType)
+            ->where('patient_type', $patientData['patient_type'])
             ->get();
-
 
         return Inertia::render('Appointments/CreateAppointment', [
             'serviceTypes' => $serviceTypes,
@@ -428,7 +429,7 @@ class AppointmentManagerController extends Controller
             $validated = $request->validate(
                 [
                     'diagnosis'                  => 'nullable|string|max:1000',
-                    'prescribed_medications'     => 'required|array',
+                    'prescribed_medications'     => 'nullable|array',
                     'prescribed_medications.*'   => 'string|max:255',
                 ],
                 [
@@ -436,7 +437,7 @@ class AppointmentManagerController extends Controller
                     'diagnosis.string'           => 'The diagnosis must be a valid text.',
                     'diagnosis.max'              => 'The diagnosis cannot exceed 1000 characters.',
 
-                    'prescribed_medications.required'   => 'Prescribed medications are required before closing the form.',
+                    // 'prescribed_medications.required'   => 'Prescribed medications are required before closing the form.',
                     'prescribed_medications.array'   => 'Prescribed medications must be a valid list.',
                     'prescribed_medications.*.string' => 'Each medication must be a valid text.',
                     'prescribed_medications.*.max'    => 'Each medication cannot exceed 255 characters.',
