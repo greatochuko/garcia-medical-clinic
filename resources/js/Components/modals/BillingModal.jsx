@@ -31,7 +31,7 @@ export default function BillingModal({
     const [cashTendered, setCashTendered] = useState("");
 
     const validServiceTypes = (serviceTypes || []).filter(
-        (t) => t.patient_type == appointment.patient.patient_type,
+        (t) => t.patient_type == appointment?.patient?.patient_type,
     );
 
     const [selectedServiceChargeId, setSelectedServiceChargeId] = useState(

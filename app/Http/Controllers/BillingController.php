@@ -40,8 +40,13 @@ class BillingController extends Controller
             ->paginate($perPage)
             ->appends(['search' => $search]);
 
+        $serviceTypes = ServiceCharge::select('id', 'name', 'charge', 'patient_type')
+            ->get();
+
         return Inertia::render('BillingRecord', [
-            'billingData' => $billings
+            'billingData' => $billings,
+            'serviceTypes' => $serviceTypes
+
         ]);
     }
 
