@@ -239,7 +239,8 @@ export function AppointmentRow({
                                     onClick={handleCheckOut}
                                     disabled={
                                         appointment.status !== "for_billing" ||
-                                        checkOutLoading
+                                        checkOutLoading ||
+                                        userRole === "doctor"
                                     }
                                     className={`flex items-center gap-1.5 rounded-md border border-dashed border-[#8D2310] bg-white px-2 py-1.5 text-[#8D2310] duration-200 hover:bg-[#8D2310]/5 ${checkOutLoading ? "pointer-events-none" : "disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"}`}
                                 >
