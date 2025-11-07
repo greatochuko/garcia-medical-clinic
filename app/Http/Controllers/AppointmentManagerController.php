@@ -237,8 +237,8 @@ class AppointmentManagerController extends Controller
             return redirect()->back()->withErrors(['id' => 'Invalid patient ID']);
         }
 
-        $serviceTypes = ServiceCharge::select('id', 'name', 'charge')
-            ->where('patient_type', $patientData['patient_type'])
+        $serviceTypes = ServiceCharge::select('id', 'name', 'charge', 'patient_type')
+            ->where('patient_type', $patientData['age'] >= 65 ? 1 : 0)
             ->get();
 
         return Inertia::render('Appointments/CreateAppointment', [
