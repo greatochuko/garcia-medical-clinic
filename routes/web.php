@@ -22,6 +22,7 @@ use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\PatientLaboratoryTestController;
 use App\Http\Controllers\LaboratoryRequestController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\StatController;
 use App\Http\Controllers\UserAccountController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -272,6 +273,9 @@ Route::middleware('auth')->group(function () {
     Route::post("chat", [ChatController::class, 'sendMessage'])->name('chat.create');
     Route::patch("chat/{id}/acknowledge", [ChatController::class, 'acknowledgeReceipt'])->name('chat.acknowledge_receipt');
     Route::post('/chat/mark-read', [ChatController::class, 'markAsRead'])->name('chat.mark_as_read');
+
+    //Stat routes
+    Route::get("stats", [StatController::class, 'index'])->name('stats.index');
 });
 
 

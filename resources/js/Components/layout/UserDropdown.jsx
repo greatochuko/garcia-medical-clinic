@@ -6,9 +6,11 @@ import { route } from "ziggy-js";
 import { router } from "@inertiajs/react";
 import { MdLogout, MdSettings } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
+import { LuChartColumn } from "react-icons/lu";
 
 const dropdownLinks = [
     { text: "Profile", href: "/profile", Icon: FaUser },
+    { text: "Stats", href: "/stats", Icon: LuChartColumn },
     { text: "Settings", href: "/settings", Icon: MdSettings },
 ];
 

@@ -12,9 +12,11 @@
 }
 
 @layer base {
-    /* button {
-    @apply active:shadow-inner active:shadow-[inset_0_6px_10px_rgba(0,0,0,0.5)] transition-shadow duration-150;
-  } */
+    button,
+    select,
+    a {
+        @apply cursor-pointer outline-none ring-[#089bab]/50 ring-offset-1 duration-200 focus-visible:border-inherit focus-visible:ring !important;
+    }
 }
 
 html {

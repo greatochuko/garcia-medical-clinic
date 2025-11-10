@@ -75,7 +75,7 @@ export default function Medication({ auth, medications: medicationList }) {
 
     return (
         <>
-            <AuthenticatedLayout pageTitle="Settings: Services">
+            <AuthenticatedLayout pageTitle="Settings: Medication">
                 <div className="flex max-w-full flex-1">
                     <SettingsSidebar userRole={auth.user.role} />
                     <div className="mx-[2.5%] mt-6 flex flex-1 flex-col overflow-hidden rounded-lg bg-white text-accent">
