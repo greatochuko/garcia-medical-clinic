@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 
 const serviceSales = [
     { serviceId: 1, value: 5 },
@@ -29,8 +29,69 @@ export const totalSales = serviceSales.reduce(
     0,
 );
 
-export default function TypeOfServices({ services, medicationList }) {
+export default function TypeOfServices({
+    services,
+    medicationList,
+    filteredRecords,
+}) {
     const [currentTab, setCurrentTab] = useState("professional-fee");
+
+    const { allServiceTotals, serviceTotal } = useMemo(() => {
+        const allServiceTotals = services
+            .map((service) => ({
+                name: service.name,
+                amount: filteredRecords.reduce(
+                    (acc, curr) =>
+                        acc + (curr.service.id === service.id ? 1 : 0),
+                    0,
+                ),
+            }))
+            .sort(
+                (a, b) => getServiseSaleValue(b.id) - getServiseSaleValue(a.id),
+            );
+
+        const serviceTotal = allServiceTotals.reduce(
+            (acc, curr) => acc + curr.amount,
+            0,
+        );
+
+        return { allServiceTotals, serviceTotal };
+    }, [filteredRecords, services]);
+
+    const { allMedicationTotals, medicationTotal } = useMemo(() => {
+        const allMedicationTotals = medicationList
+            .map((medication) => {
+                const total = filteredRecords.reduce((sum, record) => {
+                    const recordQty = record.prescriptions?.reduce(
+                        (innerSum, p) => {
+                            if (p.medication?.id === medication.id) {
+                                return (
+                                    innerSum +
+                                    Number(p.quantity || p.amount || 0)
+                                );
+                            }
+                            return innerSum;
+                        },
+                        0,
+                    );
+
+                    return sum + recordQty;
+                }, 0);
+
+                return {
+                    name: medication.name,
+                    amount: total,
+                };
+            })
+            .sort((a, b) => b.amount - a.amount);
+
+        const medicationTotal = allMedicationTotals.reduce(
+            (acc, curr) => acc + curr.amount,
+            0,
+        );
+
+        return { allMedicationTotals, medicationTotal };
+    }, [filteredRecords, medicationList]);
 
     return (
         <div className="flex flex-1 flex-col divide-y divide-accent-200 rounded-md bg-white shadow-md">
@@ -56,90 +117,76 @@ export default function TypeOfServices({ services, medicationList }) {
             <div className="flex flex-1 flex-col gap-4 p-4 pt-6">
                 <p className="flex items-center gap-2 text-xs">
                     <img src="/assets/icons/info-icon.svg" alt="info icon" />{" "}
-                    All types of services according to patient visit.
+                    All types of{" "}
+                    {currentTab === "professional-fee"
+                        ? "services"
+                        : "medicine"}{" "}
+                    according to patient visit.
                 </p>
 
                 {currentTab === "professional-fee" ? (
                     <ul className="flex max-h-[617px] flex-1 flex-col gap-4 overflow-y-auto px-4">
-                        {[...services]
-                            .sort(
-                                (a, b) =>
-                                    getServiseSaleValue(b.id) -
-                                    getServiseSaleValue(a.id),
-                            )
-                            .map((service) => {
-                                const salePercentage = (
-                                    (getServiseSaleValue(service.id) /
-                                        totalSales) *
-                                    100
-                                ).toFixed();
-                                return (
-                                    <li
-                                        key={service.id}
-                                        className="flex flex-col gap-1 text-xs"
-                                    >
-                                        <div className="flex justify-between">
-                                            <p>{service.name}</p>
-                                            <p>{salePercentage}%</p>
-                                        </div>
-                                        <div className="relative h-4 overflow-hidden rounded-md bg-accent/25">
-                                            <div
-                                                className="h-full bg-[#59889C]"
-                                                style={{
-                                                    width: `${salePercentage}%`,
-                                                }}
-                                            ></div>
+                        {allServiceTotals.map((service) => {
+                            const salePercentage = (
+                                (service.amount / serviceTotal) *
+                                100
+                            ).toFixed();
+                            return (
+                                <li
+                                    key={service.id}
+                                    className="flex flex-col gap-1 text-xs"
+                                >
+                                    <div className="flex justify-between">
+                                        <p>{service.name}</p>
+                                        <p>{salePercentage}%</p>
+                                    </div>
+                                    <div className="relative h-4 overflow-hidden rounded-md bg-accent/25">
+                                        <div
+                                            className="h-full bg-[#59889C]"
+                                            style={{
+                                                width: `${salePercentage}%`,
+                                            }}
+                                        ></div>
 
-                                            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
-                                                {getServiseSaleValue(
-                                                    service.id,
-                                                )}
-                                            </span>
-                                        </div>
-                                    </li>
-                                );
-                            })}
+                                        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
+                                            {service.amount}
+                                        </span>
+                                    </div>
+                                </li>
+                            );
+                        })}
                     </ul>
                 ) : (
                     <ul className="flex max-h-[617px] flex-1 flex-col gap-4 overflow-y-auto px-4">
-                        {[...medicationList]
-                            .sort(
-                                (a, b) =>
-                                    getServiseSaleValue(b.id) -
-                                    getServiseSaleValue(a.id),
-                            )
-                            .map((service) => {
-                                const salePercentage = (
-                                    (getServiseSaleValue(service.id) /
-                                        totalSales) *
-                                    100
-                                ).toFixed();
-                                return (
-                                    <li
-                                        key={service.id}
-                                        className="flex flex-col gap-1 text-xs"
-                                    >
-                                        <div className="flex justify-between">
-                                            <p>{service.name}</p>
-                                            <p>{salePercentage}%</p>
-                                        </div>
-                                        <div className="relative h-4 overflow-hidden rounded-md bg-accent/25">
-                                            <div
-                                                className="h-full bg-[#59889C]"
-                                                style={{
-                                                    width: `${salePercentage}%`,
-                                                }}
-                                            ></div>
+                        {allMedicationTotals.map((medication) => {
+                            const salePercentage = (
+                                (medication.amount / medicationTotal) *
+                                100
+                            ).toFixed();
+                            return (
+                                <li
+                                    key={medication.id}
+                                    className="flex flex-col gap-1 text-xs"
+                                >
+                                    <div className="flex justify-between">
+                                        <p>{medication.name}</p>
+                                        <p>{salePercentage}%</p>
+                                    </div>
+                                    <div className="relative h-4 overflow-hidden rounded-md bg-accent/25">
+                                        <div
+                                            className="h-full bg-[#59889C]"
+                                            style={{
+                                                width: `${salePercentage}%`,
+                                            }}
+                                        ></div>
 
-                                            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
-                                                {getServiseSaleValue(
-                                                    service.id,
-                                                )}
-                                            </span>
-                                        </div>
-                                    </li>
-                                );
-                            })}
+                                        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
+                                            {medication.amount}
+                                        </span>
+                                    </div>
+                                </li>
+                            );
+                        })}
                     </ul>
                 )}
             </div>

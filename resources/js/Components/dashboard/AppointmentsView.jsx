@@ -33,7 +33,7 @@ export function AppointmentsView() {
                 <hr className="absolute bottom-0 left-0 w-full -translate-y-5 border-2 border-accent-200" />
             </div>
 
-            <div className="flex max-h-48 flex-col gap-2 overflow-y-auto p-4">
+            <div className="flex h-48 flex-col gap-2 overflow-y-auto p-4">
                 {(currentTab === "check-up"
                     ? upcomingPatients
                     : pendingProcedures

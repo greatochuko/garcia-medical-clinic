@@ -1,38 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import DailyRevenueChart from "./DailyRevenueChart";
-
-function getRandomNumber(min = 1, max = 50) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 function getDatesBetween(startDate, endDate) {
     if (!startDate || !endDate) return [];
-
     const dates = [];
-
     let current = new Date(startDate);
-
     const end = new Date(endDate);
     while (current <= end) {
-        dates.push(new Date(current)); // store a copy
-        current.setDate(current.getDate() + 1); // move to next day
+        dates.push(new Date(current));
+        current.setDate(current.getDate() + 1);
     }
-
     return dates;
 }
 
-export default function DailyRevenue({ startDate, endDate }) {
+export default function DailyRevenue({ startDate, endDate, filteredRecords }) {
     const [currentTab, setCurrentTab] = useState("all");
 
-    const dates = getDatesBetween(startDate, endDate);
+    const dates = useMemo(
+        () => getDatesBetween(startDate, endDate),
+        [startDate, endDate],
+    );
 
-    const data = dates.map((date) => ({
-        label: new Date(date).toLocaleDateString("us-en", {
-            month: "short",
-            day: "numeric",
-        }),
-        value: getRandomNumber(1, 50),
-    }));
+    const dailyData = useMemo(() => {
+        return dates.map((date) => {
+            const day = date.toDateString(); // unique identifier for the day
+
+            // Filter records for this date
+            const recordsForDay = filteredRecords.filter(
+                (r) => new Date(r.created_at).toDateString() === day,
+            );
+
+            let professionalFee = 0;
+            let medicineRevenue = 0;
+
+            recordsForDay.forEach((r) => {
+                professionalFee += Number(r.service?.charge || 0);
+                r.prescriptions?.forEach((p) => {
+                    medicineRevenue +=
+                        Number(p.amount || 0) *
+                        Number(p.medication?.price || 0);
+                });
+            });
+
+            // Decide what to show based on currentTab
+            let value;
+            if (currentTab === "all") value = professionalFee + medicineRevenue;
+            else if (currentTab === "professional-fee") value = professionalFee;
+            else if (currentTab === "medicine") value = medicineRevenue;
+
+            return {
+                label: date.toLocaleDateString("en-us", {
+                    month: "short",
+                    day: "numeric",
+                }),
+                professionalFee,
+                medicineRevenue,
+                value,
+            };
+        });
+    }, [dates, filteredRecords, currentTab]);
 
     return (
         <div className="divide-y-2 divide-accent-200 rounded-md bg-white shadow shadow-black/25">
@@ -70,7 +96,7 @@ export default function DailyRevenue({ startDate, endDate }) {
                     Daily view of professional fee, medicine, or both revenues.
                 </p>
                 <DailyRevenueChart
-                    data={data}
+                    data={dailyData}
                     width={300}
                     height={120}
                     color="#00C2D1"

@@ -7,7 +7,14 @@ import StaffList from "@/Components/Stats/StaffList";
 import TypeOfServices from "@/Components/Stats/TypeOfServices";
 import DailyRevenue from "@/Components/Stats/DailyRevenue";
 
-export default function Stats({ auth, services, users, medicationList }) {
+export default function Stats({
+    auth,
+    services,
+    users,
+    medicationList,
+    expenses,
+    billingRecords,
+}) {
     const user = auth.user;
 
     const [startDate, setStartDate] = useState(() => {
@@ -18,6 +25,24 @@ export default function Stats({ auth, services, users, medicationList }) {
         return sevenDaysAgo;
     });
     const [endDate, setEndDate] = useState(new Date());
+    const [selectedDoctorId, setSelectedDoctorId] = useState("");
+    const [selectedServiceId, setSelectedServiceId] = useState("");
+
+    const filteredRecords = billingRecords.filter((r) => {
+        const d = new Date(r.created_at);
+
+        const matchesDate = d >= startDate && d <= endDate;
+
+        const matchesDoctor =
+            selectedDoctorId === "" ||
+            String(r.doctor_id) === String(selectedDoctorId);
+
+        const matchesService =
+            selectedServiceId === "" ||
+            String(r.service?.id) === String(selectedServiceId);
+
+        return matchesDate && matchesDoctor && matchesService;
+    });
 
     return (
         <AuthenticatedLayout pageTitle="Stats">
@@ -58,17 +83,24 @@ export default function Stats({ auth, services, users, medicationList }) {
                                     setEndDate={setEndDate}
                                     setStartDate={setStartDate}
                                     startDate={startDate}
+                                    selectedDoctorId={selectedDoctorId}
+                                    selectedServiceId={selectedServiceId}
+                                    setSelectedDoctorId={setSelectedDoctorId}
+                                    setSelectedServiceId={setSelectedServiceId}
                                 />
 
-                                <RevenueCards />
+                                <RevenueCards
+                                    filteredRecords={filteredRecords}
+                                />
 
                                 <DailyRevenue
                                     endDate={endDate}
                                     startDate={startDate}
+                                    filteredRecords={filteredRecords}
                                 />
 
                                 <div className="flex flex-col gap-4 md:flex-row">
-                                    <MonthlyExpenses />
+                                    <MonthlyExpenses expenses={expenses} />
                                     <StaffList users={users} />
                                 </div>
                             </div>
@@ -95,6 +127,7 @@ export default function Stats({ auth, services, users, medicationList }) {
                                 <TypeOfServices
                                     services={services}
                                     medicationList={medicationList}
+                                    filteredRecords={filteredRecords}
                                 />
                             </div>
                         </div>

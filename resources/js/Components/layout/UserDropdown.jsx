@@ -9,9 +9,24 @@ import { FaUser } from "react-icons/fa";
 import { LuChartColumn } from "react-icons/lu";
 
 const dropdownLinks = [
-    { text: "Profile", href: "/profile", Icon: FaUser },
-    { text: "Stats", href: "/stats", Icon: LuChartColumn },
-    { text: "Settings", href: "/settings", Icon: MdSettings },
+    {
+        text: "Profile",
+        href: "/profile",
+        Icon: FaUser,
+        allowedRoles: ["admin", "secretary", "doctor"],
+    },
+    {
+        text: "Stats",
+        href: "/stats",
+        Icon: LuChartColumn,
+        allowedRoles: ["admin"],
+    },
+    {
+        text: "Settings",
+        href: "/settings",
+        Icon: MdSettings,
+        allowedRoles: ["admin", "secretary", "doctor"],
+    },
 ];
 
 export default function UserDropdown({ user }) {
@@ -56,16 +71,18 @@ export default function UserDropdown({ user }) {
             <div
                 className={`absolute bottom-0 right-0 z-10 flex w-40 flex-col divide-y divide-accent-200 overflow-hidden rounded-md bg-white text-xs shadow-md duration-200 ${dropdownOpen ? "translate-y-[calc(100%+.5rem)]" : "invisible translate-y-[calc(100%+.8rem)] opacity-0"} `}
             >
-                {dropdownLinks.map((link, i) => (
-                    <Link
-                        key={i}
-                        href={link.href}
-                        className="flex items-center gap-2 p-3 duration-200 hover:bg-accent-300"
-                    >
-                        <link.Icon size={14} />
-                        {link.text}
-                    </Link>
-                ))}
+                {dropdownLinks.map((link, i) =>
+                    link.allowedRoles.includes(user.role) ? (
+                        <Link
+                            key={i}
+                            href={link.href}
+                            className="flex items-center gap-2 p-3 duration-200 hover:bg-accent-300"
+                        >
+                            <link.Icon size={14} />
+                            {link.text}
+                        </Link>
+                    ) : null,
+                )}
                 <button
                     type="button"
                     onClick={handleLogout}

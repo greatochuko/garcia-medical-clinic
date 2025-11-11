@@ -21,6 +21,8 @@ const colors = [
 export default function RightDashboard({ className, userRole }) {
     const { billingItems } = usePage().props;
 
+    const [currentTab, setCurrentTab] = useState("professional-fee");
+
     const dailyProfessionalIncomeReport = Object.values(
         billingItems.reduce((acc, appt) => {
             const serviceName = appt.service?.name || "Unknown";
@@ -75,7 +77,6 @@ export default function RightDashboard({ className, userRole }) {
         (acc, curr) => acc + curr.price,
         0,
     );
-    const [currentTab, setCurrentTab] = useState("professional-fee");
 
     return (
         <div className={`flex-1 rounded-lg bg-white shadow-md ${className}`}>

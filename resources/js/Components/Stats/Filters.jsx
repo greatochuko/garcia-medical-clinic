@@ -8,6 +8,10 @@ export default function Filters({
     setStartDate,
     endDate,
     setEndDate,
+    selectedDoctorId,
+    setSelectedDoctorId,
+    selectedServiceId,
+    setSelectedServiceId,
 }) {
     return (
         <div className="flex flex-col gap-4 md:flex-row">
@@ -34,6 +38,8 @@ export default function Filters({
                     name="doctor"
                     id="doctor"
                     className="w-0 flex-1 rounded-md border border-[#DFDFDF] bg-white px-4 py-1.5 text-[13px]"
+                    value={selectedDoctorId}
+                    onChange={(e) => setSelectedDoctorId(e.target.value)}
                 >
                     <option value="">All Doctors</option>
                     {doctors.map((doctor) => (
@@ -47,11 +53,13 @@ export default function Filters({
                 <select
                     name="service"
                     id="service"
+                    value={selectedServiceId}
+                    onChange={(e) => setSelectedServiceId(e.target.value)}
                     className="w-0 flex-1 rounded-md border border-[#DFDFDF] bg-white px-4 py-1.5 text-[13px]"
                 >
                     <option value="">All Services</option>
                     {services.map((service) => (
-                        <option key={service.id} value={doctors.id}>
+                        <option key={service.id} value={service.id}>
                             {service.name}
                         </option>
                     ))}

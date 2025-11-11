@@ -1,13 +1,31 @@
+import formatPHP from "@/utils/formatPHP";
 import React from "react";
 
-export default function RevenueCards() {
+export default function RevenueCards({ filteredRecords }) {
+    const serviceRevenue = filteredRecords.reduce((sum, r) => {
+        const fee = Number(r.service?.charge || 0);
+        return sum + fee;
+    }, 0);
+
+    // Revenue from medications
+    const medicationRevenue = filteredRecords.reduce((sum, r) => {
+        const medsTotal = r.prescriptions?.reduce((mSum, p) => {
+            const price = Number(p.medication?.price || 0);
+            const amount = Number(p.amount || 0);
+            return mSum + price * amount;
+        }, 0);
+        return sum + medsTotal;
+    }, 0);
+
     return (
         <div className="flex flex-col gap-4 md:flex-row">
             <div className="flex-1 rounded-xl border-4 border-white bg-accent p-4 pb-0 shadow shadow-black/25">
                 <div className="flex items-start justify-between text-white">
                     <div className="flex flex-col gap-1">
                         <p className="text-xs">Revenue for professional fee</p>
-                        <h4 className="text-2xl font-bold">PHP 882,500.00</h4>
+                        <h4 className="text-2xl font-bold">
+                            {formatPHP(serviceRevenue)}
+                        </h4>
                     </div>
                     <p className="text-xs text-white/30">KLINICARE</p>
                 </div>
@@ -23,7 +41,9 @@ export default function RevenueCards() {
                 <div className="flex items-start justify-between">
                     <div className="flex flex-col gap-1">
                         <p className="text-xs">Revenue for medicine</p>
-                        <h4 className="text-2xl font-bold">PHP 882,500.00</h4>
+                        <h4 className="text-2xl font-bold">
+                            {formatPHP(medicationRevenue)}
+                        </h4>
                     </div>
                     <p className="text-xs text-accent/30">KLINICARE</p>
                 </div>

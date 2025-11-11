@@ -30,8 +30,10 @@ export default function BillingModal({
     const [loading, setLoading] = useState(false);
     const [cashTendered, setCashTendered] = useState("");
 
-    const validServiceTypes = (serviceTypes || []).filter(
-        (t) => t.patient_type == appointment?.patient?.patient_type,
+    const validServiceTypes = (serviceTypes || []).filter((t) =>
+        appointment?.patient?.age >= 60
+            ? t.patient_type === 1
+            : t.patient_type === 0,
     );
 
     const [selectedServiceChargeId, setSelectedServiceChargeId] = useState(
@@ -39,7 +41,7 @@ export default function BillingModal({
     );
 
     const selectedServiceCharge = serviceTypes.find(
-        (st) => st.id === selectedServiceChargeId,
+        (st) => st.id == selectedServiceChargeId,
     );
 
     useEffect(() => {
@@ -95,7 +97,10 @@ export default function BillingModal({
     }
 
     function calculateTotal(prescription) {
-        return prescription.medication.price * prescription.quantity;
+        return (
+            Number(prescription.medication.price) *
+            Number(prescription.quantity || prescription.amount)
+        );
     }
 
     function calculateSubtotal() {
@@ -111,6 +116,7 @@ export default function BillingModal({
 
     async function handleSubmit() {
         setLoading(true);
+        console.log({ selectedServiceCharge, patient });
         try {
             const data = {
                 patient: {
@@ -340,7 +346,8 @@ export default function BillingModal({
                                                 </td>
                                                 <td className="p-2 text-center">
                                                     {readOnly ? (
-                                                        prescription.quantity
+                                                        prescription.quantity ||
+                                                        prescription.amount
                                                     ) : (
                                                         <input
                                                             type="number"
@@ -367,9 +374,13 @@ export default function BillingModal({
                                                 </td>
                                                 <td className="p-2 text-center">
                                                     {formatPHP(
-                                                        prescription.medication
-                                                            .price *
-                                                            prescription.quantity,
+                                                        Number(
+                                                            prescription
+                                                                .medication
+                                                                .price,
+                                                        ) *
+                                                            (prescription.quantity ||
+                                                                prescription.amount),
                                                     )}
                                                 </td>
                                             </tr>

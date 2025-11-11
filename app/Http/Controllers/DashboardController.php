@@ -151,7 +151,7 @@ class DashboardController extends Controller
 
     public function getBillingItems()
     {
-        $billingRecords = Billing::where('created_at', Carbon::today())->get();
+        $billingRecords = Billing::whereDate('created_at', now())->get();
 
         return $billingRecords;
     }

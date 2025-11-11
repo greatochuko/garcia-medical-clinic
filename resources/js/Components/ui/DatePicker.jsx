@@ -2,6 +2,21 @@ import React, { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import useClickOutside from "@/hooks/useClickOutside";
 
+const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+];
+
 export default function DatePicker({
     selectedDate,
     setSelectedDate,
@@ -13,21 +28,6 @@ export default function DatePicker({
     const [calendarRef] = useClickOutside(() => setIsOpen(false));
 
     const toggleOpen = () => setIsOpen(!isOpen);
-
-    const monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ];
 
     const getMonth = () =>
         selectedDate ? selectedDate.getMonth() : new Date().getMonth();
