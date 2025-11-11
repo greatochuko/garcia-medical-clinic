@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MedicationList;
 use App\Models\ServiceCharge;
 use App\Models\User;
 use Inertia\Inertia;
@@ -17,6 +18,9 @@ class StatController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return Inertia::render('Stats/Stats', ['services' => $serviceTypes, 'users' => $users]);
+        $medicationList = MedicationList::select('id', 'name')
+            ->get();
+
+        return Inertia::render('Stats', ['services' => $serviceTypes, 'users' => $users, 'medicationList' => $medicationList]);
     }
 }

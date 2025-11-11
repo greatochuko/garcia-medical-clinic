@@ -15,7 +15,7 @@
     button,
     select,
     a {
-        @apply cursor-pointer outline-none ring-[#089bab]/50 ring-offset-1 duration-200 focus-visible:border-inherit focus-visible:ring !important;
+        @apply cursor-pointer outline-none ring-[#089bab]/50 ring-offset-1 focus-visible:border-inherit focus-visible:ring !important;
     }
 }
 

@@ -1,11 +1,26 @@
-import React from "react";
-import {
-    PieChart,
-    expenses,
-    expenseNames,
-    getExpenseAmount,
-    totalExpenses,
-} from "./Stats";
+import React, { useLayoutEffect } from "react";
+import * as am4core from "@amcharts/amcharts4/core";
+import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import * as am4charts from "@amcharts/amcharts4/charts";
+
+const expenses = [
+    { id: "electricity", amount: 500 },
+    { id: "water", amount: 250 },
+];
+
+const expenseNames = [
+    { id: "electricity", name: "Electricity Bill" },
+    { id: "water", name: "Water Bill" },
+    { id: "internet", name: "Internet Bill" },
+    { id: "salary", name: "Salary" },
+    { id: "rent", name: "Rent" },
+];
+
+function getExpenseAmount(id) {
+    return expenses.find((ex) => ex.id === id)?.amount;
+}
+
+const totalExpenses = expenses.reduce((acc, curr) => acc + curr.amount, 0);
 
 export default function MonthlyExpenses() {
     return (
@@ -28,7 +43,7 @@ export default function MonthlyExpenses() {
                     Monthly expenses monitor are calculated on a monthly basis.
                 </p>
 
-                <div className="flex gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row">
                     <div className="flex flex-1 flex-col items-center gap-2">
                         <PieChart expenses={expenses} />
                         <button className="flex items-center gap-2 rounded-md border border-dashed border-[#9C3725] p-2 text-xs text-[#9C3725] duration-200 hover:bg-[#9C3725]/10">
@@ -75,4 +90,47 @@ export default function MonthlyExpenses() {
             </div>
         </div>
     );
+}
+
+am4core.useTheme(am4themes_animated);
+
+function PieChart({ expenses }) {
+    useLayoutEffect(() => {
+        let chart = am4core.create("chartdiv", am4charts.PieChart);
+        chart.padding(0, 0, 0, 0);
+
+        // Only include expenses with amount > 0
+        chart.data = expenses
+            .filter((ex) => ex.amount > 0)
+            .map((ex) => ({
+                category: ex.name || ex.id, // fallback to id if name missing
+                value: ex.amount,
+            }));
+
+        let pieSeries = chart.series.push(new am4charts.PieSeries());
+        pieSeries.dataFields.value = "value";
+        pieSeries.dataFields.category = "category";
+
+        // Assign static colors or generate dynamically
+        const grayColors = [
+            "#51504F",
+            "#51504FCC",
+            "#51504F99",
+            "#51504F66",
+            "#51504F33",
+        ];
+
+        pieSeries.colors.list = chart.data.map((_, i) =>
+            am4core.color(grayColors[i % grayColors.length]),
+        );
+
+        pieSeries.innerRadius = am4core.percent(50);
+        pieSeries.labels.template.disabled = true;
+        pieSeries.ticks.template.disabled = true;
+        pieSeries.tooltip.label.fontSize = 12;
+
+        return () => chart.dispose();
+    }, [expenses]);
+
+    return <div id="chartdiv" style={{ width: "100%", height: "160px" }}></div>;
 }
