@@ -1,19 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import ModalContainer from "../layout/ModalContainer";
 import { XIcon } from "lucide-react";
 import Input from "../layout/Input";
-import { route } from "ziggy-js";
-import toast from "react-hot-toast";
 import { Loader2Icon } from "lucide-react";
-import axios from "axios";
-
-const initialData = {
-    electricity: 0,
-    water: 0,
-    internet: 0,
-    salary: 0,
-    rent: 0,
-};
 
 const formFields = [
     { label: "Electricity Bill", id: "electricity" },
@@ -26,46 +15,21 @@ const formFields = [
 export default function InputExpensesModal({
     open,
     closeModal,
-    month,
-    year,
-    prevExpenses,
+    data,
+    setData,
+    processing,
+    handleSave,
 }) {
-    const [data, setData] = useState(initialData);
-    const [processing, setProcessing] = useState(false);
-
-    useEffect(() => {
-        if (!prevExpenses?.length) return;
-
-        const mapped = prevExpenses.reduce((acc, item) => {
-            acc[item.id] = Number(item.amount) || 0;
-            return acc;
-        }, {});
-
-        setData(mapped);
-    }, [prevExpenses]);
-
-    async function handleSave(e) {
+    function handleSubmit(e) {
         e.preventDefault();
-        setProcessing(true);
 
-        try {
-            await axios.post(route("expenses.store"), { ...data, month, year });
-            toast.success("Expenses saved successfully");
-            closeModal();
-        } catch (error) {
-            console.error("Error saving expense:", error);
-        } finally {
-            setProcessing(false);
-        }
+        handleSave();
     }
-
-    const cannotSubmit = processing;
-
     return (
         <ModalContainer open={open} closeModal={closeModal}>
             <form
                 onClick={(e) => e.stopPropagation()}
-                onSubmit={handleSave}
+                onSubmit={handleSubmit}
                 className={`mx-auto w-[90%] max-w-lg divide-y-2 divide-accent-200 rounded-lg bg-white text-sm text-accent duration-200 ${open ? "" : "translate-y-2"}`}
             >
                 <div className="flex items-center justify-between py-3 pl-4 pr-2">
@@ -137,7 +101,7 @@ export default function InputExpensesModal({
                         Cancel
                     </button>
                     <button
-                        disabled={cannotSubmit}
+                        disabled={processing}
                         type="submit"
                         className="flex items-center gap-2 rounded-md border border-accent bg-accent px-4 py-2 text-xs text-white duration-200 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
                     >

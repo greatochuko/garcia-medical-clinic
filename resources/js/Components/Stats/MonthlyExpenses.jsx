@@ -3,6 +3,9 @@ import * as am4core from "@amcharts/amcharts4/core";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import InputExpensesModal from "../modals/InputExpensesModal";
+import { useForm } from "@inertiajs/react";
+import { route } from "ziggy-js";
+import toast from "react-hot-toast";
 
 const dummyExpenses = [
     { id: "electricity", amount: 500 },
@@ -35,11 +38,25 @@ for (let i = 0; i < 12; i++) {
     });
 }
 
+const initialData = {
+    electricity: 0,
+    water: 0,
+    internet: 0,
+    salary: 0,
+    rent: 0,
+};
+
 export default function MonthlyExpenses({ expenses }) {
     const [expensesModalOpen, setExpensesModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState(() => {
         const today = new Date();
         return { year: today.getFullYear(), month: today.getMonth() };
+    });
+
+    const { data, setData, post, processing } = useForm({
+        ...initialData,
+        month: selectedDate.month,
+        year: selectedDate.year,
     });
 
     const { currentMonthExpenses, totalExpenses } = useMemo(() => {
@@ -80,6 +97,29 @@ export default function MonthlyExpenses({ expenses }) {
 
         return { totalExpenses, currentMonthExpenses };
     }, [expenses, selectedDate.month, selectedDate.year]);
+
+    function handleSave() {
+        post(route("expenses.store"), {
+            onError: (errors) => {
+                console.error(errors);
+                toast.error("An error occurred saving expenses");
+            },
+            preserveScroll: true,
+        });
+    }
+
+    function openExpenseModal() {
+        setExpensesModalOpen(true);
+        const mapped = currentMonthExpenses.reduce((acc, item) => {
+            acc[item.id] = Number(item.amount) || 0;
+            return acc;
+        }, {});
+        setData({
+            ...mapped,
+            year: selectedDate.year,
+            month: selectedDate.month,
+        });
+    }
 
     return (
         <>
@@ -128,7 +168,7 @@ export default function MonthlyExpenses({ expenses }) {
                         <div className="flex flex-1 flex-col items-center gap-2">
                             <PieChart expenses={dummyExpenses} />
                             <button
-                                onClick={() => setExpensesModalOpen(true)}
+                                onClick={openExpenseModal}
                                 className="flex items-center gap-2 rounded-md border border-dashed border-[#9C3725] p-2 text-xs text-[#9C3725] duration-200 hover:bg-[#9C3725]/10"
                             >
                                 <img
@@ -181,7 +221,10 @@ export default function MonthlyExpenses({ expenses }) {
                 closeModal={() => setExpensesModalOpen(false)}
                 year={selectedDate.year}
                 month={selectedDate.month}
-                prevExpenses={currentMonthExpenses}
+                data={data}
+                setData={setData}
+                processing={processing}
+                handleSave={handleSave}
             />
         </>
     );

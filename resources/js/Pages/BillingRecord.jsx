@@ -109,7 +109,7 @@ export default function Billingrecord({ billingData }) {
 function BillingRow({ record, onShowBilling }) {
     const patient = record.patient;
     const patientFullName = patient?.id
-        ? `${patient.first_name}, ${patient.middle_initial} ${patient.last_name}`
+        ? `${patient.first_name} ${patient.middle_initial ? `${patient.middle_initial}.` : ""} ${patient.last_name}`
         : "Walk-In Patient";
 
     return (

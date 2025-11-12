@@ -1,34 +1,5 @@
 import React, { useMemo, useState } from "react";
 
-const serviceSales = [
-    { serviceId: 1, value: 5 },
-    { serviceId: 2, value: 3 },
-    { serviceId: 3, value: 2 },
-    { serviceId: 4, value: 4 },
-    { serviceId: 5, value: 6 },
-];
-
-const medicationSales = [
-    { serviceId: 1, value: 5 },
-    { serviceId: 2, value: 3 },
-    { serviceId: 3, value: 2 },
-    { serviceId: 4, value: 4 },
-    { serviceId: 5, value: 6 },
-];
-
-export const getServiseSaleValue = (id) => {
-    return serviceSales.find((sale) => sale.serviceId === id)?.value || 0;
-};
-
-export const getMedicationSaleValue = (id) => {
-    return medicationSales.find((sale) => sale.serviceId === id)?.value || 0;
-};
-
-export const totalSales = serviceSales.reduce(
-    (acc, curr) => acc + curr.value,
-    0,
-);
-
 export default function TypeOfServices({
     services,
     medicationList,
@@ -46,9 +17,7 @@ export default function TypeOfServices({
                     0,
                 ),
             }))
-            .sort(
-                (a, b) => getServiseSaleValue(b.id) - getServiseSaleValue(a.id),
-            );
+            .sort((a, b) => b.amount - a.amount);
 
         const serviceTotal = allServiceTotals.reduce(
             (acc, curr) => acc + curr.amount,
@@ -126,14 +95,16 @@ export default function TypeOfServices({
 
                 {currentTab === "professional-fee" ? (
                     <ul className="flex max-h-[617px] flex-1 flex-col gap-4 overflow-y-auto px-4">
-                        {allServiceTotals.map((service) => {
-                            const salePercentage = (
-                                (service.amount / serviceTotal) *
-                                100
-                            ).toFixed();
+                        {allServiceTotals.map((service, i) => {
+                            const salePercentage = serviceTotal
+                                ? (
+                                      (service.amount / serviceTotal) *
+                                      100
+                                  ).toFixed()
+                                : 0;
                             return (
                                 <li
-                                    key={service.id}
+                                    key={i}
                                     className="flex flex-col gap-1 text-xs"
                                 >
                                     <div className="flex justify-between">
@@ -158,14 +129,16 @@ export default function TypeOfServices({
                     </ul>
                 ) : (
                     <ul className="flex max-h-[617px] flex-1 flex-col gap-4 overflow-y-auto px-4">
-                        {allMedicationTotals.map((medication) => {
-                            const salePercentage = (
-                                (medication.amount / medicationTotal) *
-                                100
-                            ).toFixed();
+                        {allMedicationTotals.map((medication, i) => {
+                            const salePercentage = medicationTotal
+                                ? (
+                                      (medication.amount / medicationTotal) *
+                                      100
+                                  ).toFixed()
+                                : 0;
                             return (
                                 <li
-                                    key={medication.id}
+                                    key={i}
                                     className="flex flex-col gap-1 text-xs"
                                 >
                                     <div className="flex justify-between">

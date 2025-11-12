@@ -28,7 +28,7 @@ class StatController extends Controller
         $medicationList = MedicationList::select('id', 'name')
             ->get();
 
-        $billingRecords = Billing::whereDate('created_at', now())->get();
+        $billingRecords = Billing::get();
 
         $months = [];
         for ($i = 0; $i < 12; $i++) {

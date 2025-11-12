@@ -44,6 +44,8 @@ export default function Stats({
         return matchesDate && matchesDoctor && matchesService;
     });
 
+    console.log(billingRecords);
+
     return (
         <AuthenticatedLayout pageTitle="Stats">
             <div className="max-w-full flex-1 pt-6">

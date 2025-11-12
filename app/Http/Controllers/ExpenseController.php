@@ -35,9 +35,6 @@ class ExpenseController extends Controller
             $data
         );
 
-        return response()->json([
-            'message' => 'Expense saved successfully',
-            'data' => $expense
-        ]);
+        return back()->with('success', 'Expenses saved successfully.');
     }
 }
