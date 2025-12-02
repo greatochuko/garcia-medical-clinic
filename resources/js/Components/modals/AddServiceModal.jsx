@@ -72,7 +72,9 @@ export default function AddServiceModal({
                 className={`mx-auto w-[90%] max-w-lg divide-y-2 divide-accent-200 rounded-lg bg-white text-sm text-accent duration-200 ${open ? "" : "translate-y-2"}`}
             >
                 <div className="flex items-center justify-between py-3 pl-4 pr-2">
-                    <h4 className="font-semibold">Add Service</h4>
+                    <h4 className="font-semibold">
+                        {serviceToEdit ? "Update" : "Add"} Service
+                    </h4>
                     <button className="rounded-md border border-transparent p-1 duration-200 hover:border-accent-300 hover:bg-accent-200">
                         <XIcon size={14} strokeWidth={5} />
                     </button>

@@ -21,6 +21,7 @@ use App\Models\PatientNotes;
 use App\Models\PatientPlans;
 use App\Models\Plan;
 use App\Models\PatientDiagnosis;
+use App\Models\PhysicalExam;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -38,6 +39,7 @@ class PatientVisitController extends Controller
         $patient['plan'] = $this->get_patient_plans($id, $appointment_id);
         $patient['diagnosis'] = $this->get_patient_diagnosis($id, $appointment_id);
         $inputOptions["plan"] = Plan::all();
+        $inputOptions["physical_exam"] = PhysicalExam::all();
         $inputOptions["medications"] = MedicationList::all();
         $inputOptions["frequencies"] = FrequencyList::all();
         $medicalCertificate = MedicalCertificate::where('patient_id', $id)
@@ -173,6 +175,12 @@ class PatientVisitController extends Controller
                 'appointment_id' => 'required',
             ]);
 
+            $existingPhysicalExam = PhysicalExam::whereRaw('LOWER(name) = ?', [strtolower($request->physical_exam)])->first();
+
+            if (!$existingPhysicalExam) {
+                $existingPhysicalExam = PhysicalExam::create(['name' => $request->physical_exam]);
+            }
+
             PatientPhysicalExam::updateOrCreate(
                 [
                     'patient_id'    => $request->patient_id,
@@ -182,7 +190,7 @@ class PatientVisitController extends Controller
                 ['updated_at' => now()]
             );
 
-            return back()->with('success', 'Physical exam added or updated successfully.');
+            return back()->with('success', 'Physical exam added successfully.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => $e->getMessage()]);
         }

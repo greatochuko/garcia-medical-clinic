@@ -11,10 +11,10 @@ const initialData = {
     name: "",
 };
 
-export default function AddPlanModal({
+export default function AddPhysicalExamModal({
     open,
-    closeModal: closePlanModal,
-    planToEdit,
+    closeModal: closePhysicalExamModal,
+    examToEdit,
 }) {
     const { data, setData, post, put, processing } = useForm(initialData);
 
@@ -22,20 +22,20 @@ export default function AddPlanModal({
         setTimeout(() => {
             setData(initialData);
         }, 200);
-        closePlanModal();
+        closePhysicalExamModal();
     }
 
     useEffect(() => {
-        if (planToEdit) {
+        if (examToEdit) {
             setData({
-                name: planToEdit.name,
+                name: examToEdit.name,
             });
         }
-    }, [planToEdit, setData]);
+    }, [examToEdit, setData]);
 
     function handleSave(e) {
         e.preventDefault();
-        post(route("plan-list.store"), {
+        post(route("physical-exam.store"), {
             onSuccess: () => {
                 closeModal();
             },
@@ -48,7 +48,7 @@ export default function AddPlanModal({
 
     function handleUpdate(e) {
         e.preventDefault();
-        put(route("plan-list.update", planToEdit?.id), {
+        put(route("physical-exam.update", examToEdit?.id), {
             onSuccess: () => {
                 closeModal();
             },
@@ -65,12 +65,12 @@ export default function AddPlanModal({
         <ModalContainer open={open} closeModal={closeModal}>
             <form
                 onClick={(e) => e.stopPropagation()}
-                onSubmit={planToEdit ? handleUpdate : handleSave}
+                onSubmit={examToEdit ? handleUpdate : handleSave}
                 className={`mx-auto w-[90%] max-w-lg divide-y-2 divide-accent-200 rounded-lg bg-white text-sm text-accent duration-200 ${open ? "" : "translate-y-2"}`}
             >
                 <div className="flex items-center justify-between py-3 pl-4 pr-2">
                     <h4 className="font-semibold">
-                        {planToEdit ? "Update" : "Add"} Plan
+                        {examToEdit ? "Update" : "Add"} Physical Exam
                     </h4>
                     <button className="rounded-md border border-transparent p-1 duration-200 hover:border-accent-300 hover:bg-accent-200">
                         <XIcon size={14} strokeWidth={5} />
@@ -79,8 +79,11 @@ export default function AddPlanModal({
 
                 <div className="flex flex-col gap-4 p-4">
                     <div className="flex flex-col gap-1.5">
-                        <label htmlFor="plan-name" className="text-[13px]">
-                            Plan Name
+                        <label
+                            htmlFor="physical-exam-name"
+                            className="text-[13px]"
+                        >
+                            Physical Exam Name
                             <span className="text-[#EF3616]"> *</span>
                         </label>
                         <Input
@@ -91,8 +94,8 @@ export default function AddPlanModal({
                                     name: e.target.value,
                                 }))
                             }
-                            id="plan-name"
-                            name="plan-name"
+                            id="physical-exam-name"
+                            name="physical-exam-name"
                         />
                     </div>
                 </div>
@@ -116,9 +119,9 @@ export default function AddPlanModal({
                                     size={14}
                                     className="animate-spin"
                                 />
-                                {planToEdit ? "Updating" : "Saving"}...
+                                {examToEdit ? "Updating" : "Saving"}...
                             </>
-                        ) : planToEdit ? (
+                        ) : examToEdit ? (
                             "Update"
                         ) : (
                             "Save"

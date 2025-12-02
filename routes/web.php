@@ -10,6 +10,7 @@ use App\Http\Controllers\ServiceChargesController;
 use App\Http\Controllers\MedicationListController;
 use App\Http\Controllers\FrequencyListController;
 use App\Http\Controllers\PlanController;
+use App\Http\Controllers\PhysicalExamController;
 use App\Http\Controllers\LaboratoryTestController;
 use App\Http\Controllers\AppointmentManagerController;
 use App\Http\Controllers\ChatController;
@@ -181,6 +182,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/plan-list/{id}', [PlanController::class, 'destroy'])->name('plan-list.destroy');
     // Route::resource('plans', PlanController::class);
 
+    // Physical Exam List Routes
+    Route::get('/physical-exam', [PhysicalExamController::class, 'index'])->name('physical-exam.list');
+    Route::post('/physical-exam', [PhysicalExamController::class, 'store'])->name('physical-exam.store');
+    Route::put('/physical-exam/{id}', [PhysicalExamController::class, 'update'])->name('physical-exam.update');
+    Route::delete('/physical-exam/{id}', [PhysicalExamController::class, 'destroy'])->name('physical-exam.destroy');
 
     Route::post('/patient/planlist', [PatientVisitController::class, 'add_patient_plans'])->name('addpatientplanlist');
     Route::get('/patient/planlist/{id}/{app_id}', [PatientVisitController::class, 'get_patient_plans'])->name('getpatientplanlist');
@@ -261,6 +267,7 @@ Route::middleware('auth')->group(function () {
     Route::get("settings/services", [SettingsController::class, 'services'])->name('settings.services');
     Route::get("settings/frequency", [SettingsController::class, 'frequency_index'])->name('settings.frequency');
     Route::get("settings/plan", [SettingsController::class, 'plan_index'])->name('settings.plan');
+    Route::get("settings/physical-exam", [SettingsController::class, 'physical_exam_index'])->name('settings.physical_exam');
     Route::get("settings/accounts", [SettingsController::class, 'accounts_index'])->name('settings.accounts');
     Route::get("settings/accounts/new/doctor", [SettingsController::class, 'create_account'])->name('settings.accounts.create.doctor');
     Route::get("settings/accounts/new/secretary", [SettingsController::class, 'create_account'])->name('settings.accounts.create.secretary');

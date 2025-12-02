@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FrequencyList;
 use App\Models\MedicationList;
+use App\Models\PhysicalExam;
 use App\Models\Plan;
 use App\Models\ServiceCharge;
 use App\Models\User;
@@ -47,6 +48,13 @@ class SettingsController extends Controller
         $plans = Plan::orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Settings/Plan', ['plans' => $plans]);
+    }
+
+    public function physical_exam_index()
+    {
+        $physicalExams = PhysicalExam::orderBy('created_at', 'desc')->get();
+
+        return Inertia::render('Settings/PhysicalExam', ['physicalExams' => $physicalExams]);
     }
 
     public function accounts_index()

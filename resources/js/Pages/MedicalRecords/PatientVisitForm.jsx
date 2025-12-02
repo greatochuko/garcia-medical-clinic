@@ -98,6 +98,11 @@ export default function PatientVisitForm({
                                 patientEntryData={patientEntryData}
                                 setPatientEntryData={setPatientEntryData}
                                 appointmentIsClosed={appointmentIsClosed}
+                                inputOptions={
+                                    inputOptions[entry.id]?.map(
+                                        (pl) => pl.name,
+                                    ) || []
+                                }
                             />
                         ))}
 

@@ -27,6 +27,12 @@ const sideNav = [
         activeIcon: "todo-list-icon-active.svg",
     },
     {
+        label: "Physical Exam",
+        href: "physical-exam",
+        icon: "physical-exam-icon.png",
+        activeIcon: "physical-exam-icon-active.png",
+    },
+    {
         label: "Users",
         href: "accounts",
         icon: "folder-admin-icon.svg",
