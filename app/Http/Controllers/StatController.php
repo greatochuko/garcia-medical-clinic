@@ -14,8 +14,8 @@ class StatController extends Controller
 {
     function index()
     {
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'Unauthorized');
+        if (!in_array(auth()->user()->role, ['admin', 'doctor'])) {
+            return redirect('/')->with('error', 'Unauthorized access.');
         }
 
         $serviceTypes = ServiceCharge::select('id', 'name', 'charge', 'patient_type')

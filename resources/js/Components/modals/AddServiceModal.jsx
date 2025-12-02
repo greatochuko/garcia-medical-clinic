@@ -63,7 +63,7 @@ export default function AddServiceModal({
         });
     }
 
-    const cannotSubmit = !data.name || !data.patient_type || data.charge <= 0;
+    const cannotSubmit = !data.name || !data.patient_type || data.charge < 0;
 
     return (
         <ModalContainer open={open} closeModal={closeModal}>

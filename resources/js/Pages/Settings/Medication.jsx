@@ -81,7 +81,7 @@ export default function Medication({ auth, medications: medicationList }) {
                     <div className="mx-[2.5%] mt-6 flex flex-1 flex-col overflow-hidden rounded-lg bg-white text-accent">
                         <div className="relative mb-2 flex flex-col items-center gap-1 border-b-2 border-accent-200 p-4 px-4 pb-6">
                             <h1 className="text-center text-sm font-bold sm:text-base">
-                                SERVICES
+                                MEDICATION
                             </h1>
                             <button
                                 onClick={() => setMedicineModalOpen(true)}

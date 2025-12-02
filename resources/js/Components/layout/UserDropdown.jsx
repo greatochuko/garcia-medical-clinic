@@ -19,7 +19,7 @@ const dropdownLinks = [
         text: "Stats",
         href: "/stats",
         Icon: LuChartColumn,
-        allowedRoles: ["admin"],
+        allowedRoles: ["admin", "doctor"],
     },
     {
         text: "Settings",

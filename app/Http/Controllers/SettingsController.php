@@ -52,7 +52,7 @@ class SettingsController extends Controller
     public function accounts_index()
     {
         if (auth()->user()->role !== 'admin') {
-            abort(403, 'Unauthorized access.');
+            return redirect('/settings')->with('error', 'Unauthorized access.');
         }
 
         $users = User::with('doctor')
