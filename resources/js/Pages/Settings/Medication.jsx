@@ -109,225 +109,247 @@ export default function Medication({ auth, medications: medicationList }) {
                                 to a patient, including active, discontinued,
                                 and historical prescriptions.
                             </p>
-                        </div>
 
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-xs sm:text-sm">
-                                <thead>
-                                    <tr className="whitespace-nowrap text-sm">
-                                        <th className="w-[10%] min-w-40 p-4">
-                                            <span
-                                                onClick={() =>
-                                                    handleSortBy("date")
-                                                }
-                                                className="flex w-fit cursor-pointer items-center gap-2"
-                                            >
-                                                Date
-                                                {sortBy.field === "date" ? (
-                                                    sortBy.type === "asc" ? (
-                                                        <TiArrowSortedUp
-                                                            size={16}
-                                                        />
+                            <div className="flex-1 overflow-x-auto">
+                                <table className="w-full text-xs sm:text-sm">
+                                    <thead>
+                                        <tr className="whitespace-nowrap text-sm">
+                                            <th className="w-[10%] min-w-40 p-4">
+                                                <span
+                                                    onClick={() =>
+                                                        handleSortBy("date")
+                                                    }
+                                                    className="flex w-fit cursor-pointer items-center gap-2"
+                                                >
+                                                    Date
+                                                    {sortBy.field === "date" ? (
+                                                        sortBy.type ===
+                                                        "asc" ? (
+                                                            <TiArrowSortedUp
+                                                                size={16}
+                                                            />
+                                                        ) : (
+                                                            <TiArrowSortedDown
+                                                                size={16}
+                                                            />
+                                                        )
                                                     ) : (
-                                                        <TiArrowSortedDown
-                                                            size={16}
-                                                        />
-                                                    )
-                                                ) : (
-                                                    <FaSort size={14} />
-                                                )}
-                                            </span>
-                                        </th>
-                                        <th className="w-[20%] min-w-48 p-4 text-left">
-                                            <span
-                                                onClick={() =>
-                                                    handleSortBy("medication")
-                                                }
-                                                className="flex w-fit cursor-pointer items-center gap-2"
-                                            >
-                                                Medication
-                                                {sortBy.field ===
-                                                "medication" ? (
-                                                    sortBy.type === "asc" ? (
-                                                        <TiArrowSortedUp
-                                                            size={16}
-                                                        />
+                                                        <FaSort size={14} />
+                                                    )}
+                                                </span>
+                                            </th>
+                                            <th className="w-[20%] min-w-48 p-4 text-left">
+                                                <span
+                                                    onClick={() =>
+                                                        handleSortBy(
+                                                            "medication",
+                                                        )
+                                                    }
+                                                    className="flex w-fit cursor-pointer items-center gap-2"
+                                                >
+                                                    Medication
+                                                    {sortBy.field ===
+                                                    "medication" ? (
+                                                        sortBy.type ===
+                                                        "asc" ? (
+                                                            <TiArrowSortedUp
+                                                                size={16}
+                                                            />
+                                                        ) : (
+                                                            <TiArrowSortedDown
+                                                                size={16}
+                                                            />
+                                                        )
                                                     ) : (
-                                                        <TiArrowSortedDown
-                                                            size={16}
-                                                        />
-                                                    )
-                                                ) : (
-                                                    <FaSort size={14} />
-                                                )}
-                                            </span>
-                                        </th>
-                                        <th className="w-[15%] min-w-36 p-4 text-left">
-                                            <span
-                                                onClick={() =>
-                                                    handleSortBy("category")
-                                                }
-                                                className="flex w-fit cursor-pointer items-center gap-2"
-                                            >
-                                                Category
-                                                {sortBy.field === "category" ? (
-                                                    sortBy.type === "asc" ? (
-                                                        <TiArrowSortedUp
-                                                            size={16}
-                                                        />
+                                                        <FaSort size={14} />
+                                                    )}
+                                                </span>
+                                            </th>
+                                            <th className="w-[15%] min-w-36 p-4 text-left">
+                                                <span
+                                                    onClick={() =>
+                                                        handleSortBy("category")
+                                                    }
+                                                    className="flex w-fit cursor-pointer items-center gap-2"
+                                                >
+                                                    Category
+                                                    {sortBy.field ===
+                                                    "category" ? (
+                                                        sortBy.type ===
+                                                        "asc" ? (
+                                                            <TiArrowSortedUp
+                                                                size={16}
+                                                            />
+                                                        ) : (
+                                                            <TiArrowSortedDown
+                                                                size={16}
+                                                            />
+                                                        )
                                                     ) : (
-                                                        <TiArrowSortedDown
-                                                            size={16}
-                                                        />
-                                                    )
-                                                ) : (
-                                                    <FaSort size={14} />
-                                                )}
-                                            </span>
-                                        </th>
-                                        <th className="w-[10%] p-4">
-                                            <span
-                                                onClick={() =>
-                                                    handleSortBy("stock")
-                                                }
-                                                className="mx-auto flex w-fit cursor-pointer items-center gap-2"
-                                            >
-                                                Quantity
-                                                {sortBy.field === "stock" ? (
-                                                    sortBy.type === "asc" ? (
-                                                        <TiArrowSortedUp
-                                                            size={16}
-                                                        />
+                                                        <FaSort size={14} />
+                                                    )}
+                                                </span>
+                                            </th>
+                                            <th className="w-[10%] p-4">
+                                                <span
+                                                    onClick={() =>
+                                                        handleSortBy("stock")
+                                                    }
+                                                    className="mx-auto flex w-fit cursor-pointer items-center gap-2"
+                                                >
+                                                    Quantity
+                                                    {sortBy.field ===
+                                                    "stock" ? (
+                                                        sortBy.type ===
+                                                        "asc" ? (
+                                                            <TiArrowSortedUp
+                                                                size={16}
+                                                            />
+                                                        ) : (
+                                                            <TiArrowSortedDown
+                                                                size={16}
+                                                            />
+                                                        )
                                                     ) : (
-                                                        <TiArrowSortedDown
-                                                            size={16}
-                                                        />
-                                                    )
-                                                ) : (
-                                                    <FaSort size={14} />
-                                                )}
-                                            </span>
-                                        </th>
+                                                        <FaSort size={14} />
+                                                    )}
+                                                </span>
+                                            </th>
 
-                                        <th className="w-[10%] p-4">
-                                            <span
-                                                onClick={() =>
-                                                    handleSortBy("price")
-                                                }
-                                                className="mx-auto flex w-fit cursor-pointer items-center gap-2"
-                                            >
-                                                Price (PHP)
-                                                {sortBy.field === "price" ? (
-                                                    sortBy.type === "asc" ? (
-                                                        <TiArrowSortedUp
-                                                            size={16}
-                                                        />
+                                            <th className="w-[10%] p-4">
+                                                <span
+                                                    onClick={() =>
+                                                        handleSortBy("price")
+                                                    }
+                                                    className="mx-auto flex w-fit cursor-pointer items-center gap-2"
+                                                >
+                                                    Price (PHP)
+                                                    {sortBy.field ===
+                                                    "price" ? (
+                                                        sortBy.type ===
+                                                        "asc" ? (
+                                                            <TiArrowSortedUp
+                                                                size={16}
+                                                            />
+                                                        ) : (
+                                                            <TiArrowSortedDown
+                                                                size={16}
+                                                            />
+                                                        )
                                                     ) : (
-                                                        <TiArrowSortedDown
-                                                            size={16}
-                                                        />
-                                                    )
-                                                ) : (
-                                                    <FaSort size={14} />
-                                                )}
-                                            </span>
-                                        </th>
+                                                        <FaSort size={14} />
+                                                    )}
+                                                </span>
+                                            </th>
 
-                                        <th className="w-[10%] p-4">
-                                            <span
-                                                onClick={() =>
-                                                    handleSortBy("controlled")
-                                                }
-                                                className="mx-auto flex w-fit cursor-pointer items-center gap-2"
-                                            >
-                                                Controlled
-                                                {sortBy.field ===
-                                                "controlled" ? (
-                                                    sortBy.type === "asc" ? (
-                                                        <TiArrowSortedUp
-                                                            size={16}
-                                                        />
+                                            <th className="w-[10%] p-4">
+                                                <span
+                                                    onClick={() =>
+                                                        handleSortBy(
+                                                            "controlled",
+                                                        )
+                                                    }
+                                                    className="mx-auto flex w-fit cursor-pointer items-center gap-2"
+                                                >
+                                                    Controlled
+                                                    {sortBy.field ===
+                                                    "controlled" ? (
+                                                        sortBy.type ===
+                                                        "asc" ? (
+                                                            <TiArrowSortedUp
+                                                                size={16}
+                                                            />
+                                                        ) : (
+                                                            <TiArrowSortedDown
+                                                                size={16}
+                                                            />
+                                                        )
                                                     ) : (
-                                                        <TiArrowSortedDown
-                                                            size={16}
-                                                        />
-                                                    )
-                                                ) : (
-                                                    <FaSort size={14} />
-                                                )}
-                                            </span>
-                                        </th>
+                                                        <FaSort size={14} />
+                                                    )}
+                                                </span>
+                                            </th>
 
-                                        <th className="w-[10%] p-4">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-black/10">
-                                    {medications.map((med) => (
-                                        <tr key={med.id}>
-                                            <td className="p-4">
-                                                {new Date(
-                                                    med.created_at,
-                                                ).toLocaleDateString("us-en", {
-                                                    day: "numeric",
-                                                    month: "long",
-                                                    year: "numeric",
-                                                })}
-                                            </td>
-                                            <td className="p-4">{med.name}</td>
-                                            <td className="p-4">
-                                                {med.category}
-                                            </td>
-                                            <td className="p-4 text-center">
-                                                {med.quantity}
-                                            </td>
-                                            <td className="p-4 text-center">
-                                                {med.price}
-                                            </td>
-                                            <td className="p-4 text-center">
-                                                {med.controlled ? "Yes" : "-"}
-                                            </td>
-                                            <td className="p-4 text-center">
-                                                <div className="flex items-center justify-center gap-2">
-                                                    <button
-                                                        onClick={() => {
-                                                            setMedicineToEdit(
-                                                                med,
-                                                            );
-                                                            setMedicineModalOpen(
-                                                                true,
-                                                            );
-                                                        }}
-                                                        className="rounded-md border border-transparent p-1.5 duration-100 hover:border-accent-400 hover:bg-accent-300"
-                                                    >
-                                                        <img
-                                                            src="/assets/icons/edit-icon.svg"
-                                                            alt="Edit Icon"
-                                                            className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4"
-                                                        />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            setDeleteMedicineModalOpen(
-                                                                true,
-                                                            );
-                                                            setMedicineToDelete(
-                                                                med,
-                                                            );
-                                                        }}
-                                                        className="rounded-md border border-transparent p-1.5 duration-100 hover:border-accent-400 hover:bg-accent-300"
-                                                    >
-                                                        <img
-                                                            src="/assets/icons/delete-icon.svg"
-                                                            alt="Edit Icon"
-                                                            className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4"
-                                                        />
-                                                    </button>
-                                                </div>
-                                            </td>
+                                            <th className="w-[10%] p-4">
+                                                Actions
+                                            </th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody className="divide-y divide-black/10">
+                                        {medications.map((med) => (
+                                            <tr key={med.id}>
+                                                <td className="p-4">
+                                                    {new Date(
+                                                        med.created_at,
+                                                    ).toLocaleDateString(
+                                                        "us-en",
+                                                        {
+                                                            day: "numeric",
+                                                            month: "long",
+                                                            year: "numeric",
+                                                        },
+                                                    )}
+                                                </td>
+                                                <td className="p-4">
+                                                    {med.name}
+                                                </td>
+                                                <td className="p-4">
+                                                    {med.category}
+                                                </td>
+                                                <td className="p-4 text-center">
+                                                    {med.quantity}
+                                                </td>
+                                                <td className="p-4 text-center">
+                                                    {med.price}
+                                                </td>
+                                                <td className="p-4 text-center">
+                                                    {med.controlled
+                                                        ? "Yes"
+                                                        : "-"}
+                                                </td>
+                                                <td className="p-4 text-center">
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        <button
+                                                            onClick={() => {
+                                                                setMedicineToEdit(
+                                                                    med,
+                                                                );
+                                                                setMedicineModalOpen(
+                                                                    true,
+                                                                );
+                                                            }}
+                                                            className="rounded-md border border-transparent p-1.5 duration-100 hover:border-accent-400 hover:bg-accent-300"
+                                                        >
+                                                            <img
+                                                                src="/assets/icons/edit-icon.svg"
+                                                                alt="Edit Icon"
+                                                                className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4"
+                                                            />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setDeleteMedicineModalOpen(
+                                                                    true,
+                                                                );
+                                                                setMedicineToDelete(
+                                                                    med,
+                                                                );
+                                                            }}
+                                                            className="rounded-md border border-transparent p-1.5 duration-100 hover:border-accent-400 hover:bg-accent-300"
+                                                        >
+                                                            <img
+                                                                src="/assets/icons/delete-icon.svg"
+                                                                alt="Edit Icon"
+                                                                className="h-3.5 w-3.5 object-contain sm:h-4 sm:w-4"
+                                                            />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
