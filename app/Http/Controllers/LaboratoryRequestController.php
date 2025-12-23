@@ -18,80 +18,69 @@ class LaboratoryRequestController extends Controller
             'patient_id' => 'required',
             'test_names' => 'nullable|array',
             'others' => 'nullable|string',
-            'appointment_id' => 'required|string'
+            'appointment_id' => 'nullable|string',
+            'patient_visit_record_id' => 'required|string',
         ]);
 
-
         $patientId = $validated['patient_id'];
-        $appointment_id = $validated['appointment_id'];
+        $visitRecordId = $validated['patient_visit_record_id'];
+        $appointmentId = $validated['appointment_id'] ?? null;
         $testNames = $validated['test_names'] ?? [];
 
-        // 1. Delete removed standard tests (ignore "others" entries)
-        $existingTests = LaboratoryRequest::where('patient_id', $patientId)->where('appointment_id', $appointment_id)
-            ->whereNull('others') // only standard test names
-            ->pluck('test_name')
-            ->toArray();
+        // Delete removed standard tests (ignore "others")
+        LaboratoryRequest::where('patient_id', $patientId)
+            ->where('patient_visit_record_id', $visitRecordId)
+            ->whereNull('others')
+            ->whereNotIn('test_name', $testNames)
+            ->delete();
 
-        $toDelete = array_diff($existingTests, $testNames);
-
-        if (!empty($toDelete)) {
-            LaboratoryRequest::where('patient_id', $patientId)
-                ->whereNull('others')
-                ->whereIn('test_name', $toDelete)
-                ->delete();
-        }
-
-        // 2. Create or update standard tests
+        // Upsert standard tests
         foreach (array_filter($testNames) as $test) {
             LaboratoryRequest::updateOrCreate(
                 [
                     'patient_id' => $patientId,
+                    'patient_visit_record_id' => $visitRecordId,
                     'doctor_id' => Auth::id(),
                     'test_name' => $test,
-                    'appointment_id' => $appointment_id,
-                    'others' => null
+                    'others' => null,
+                ],
+                [
+                    'appointment_id' => $appointmentId,
                 ]
             );
         }
 
-
-        if (array_key_exists('others', $validated)) {
+        // Handle "others"
+        if (!empty($validated['others'])) {
             $others = collect(explode(',', $validated['others']))
                 ->map(fn($item) => trim($item))
                 ->filter()
                 ->unique()
                 ->implode(', ');
 
-            $existing = LaboratoryRequest::where('patient_id', $patientId)
-                ->where('appointment_id', $appointment_id)
+            LaboratoryRequest::updateOrCreate(
+                [
+                    'patient_id' => $patientId,
+                    'patient_visit_record_id' => $visitRecordId,
+                    'doctor_id' => Auth::id(),
+                    'test_name' => null,
+                ],
+                [
+                    'appointment_id' => $appointmentId,
+                    'others' => $others,
+                ]
+            );
+        } else {
+            // Delete "others" if empty
+            LaboratoryRequest::where('patient_id', $patientId)
+                ->where('patient_visit_record_id', $visitRecordId)
                 ->where('doctor_id', Auth::id())
                 ->whereNotNull('others')
-                ->first();
-
-            if ($existing) {
-                if ($validated['others'] == '') {
-                    $existing->delete();
-                }
-                // Update 'others' in the existing row
-                $existing->update(['others' => $others]);
-            } else {
-                // Create a new row with NULL test_name
-                if ($validated['others'] != '') {
-                    LaboratoryRequest::create([
-                        'patient_id' => $patientId,
-                        'doctor_id' => Auth::id(),
-                        'appointment_id' => $appointment_id,
-                        'test_name' => null,
-                        'others' => $others
-                    ]);
-                }
-            }
+                ->delete();
         }
-
 
         return redirect()->back()->with('success', 'Laboratory requests saved successfully.');
     }
-
 
     public function getPatientRequests($patientId, $app_id)
     {

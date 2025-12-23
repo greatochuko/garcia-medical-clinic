@@ -1,80 +1,35 @@
 import React, { useState } from "react";
-import { router } from "@inertiajs/react";
-import { route } from "ziggy-js";
 import PatientEntryModal from "@/Components/modals/PatientEntryModal";
 import { PlusIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
-import { Loader2Icon } from "lucide-react";
 import SearchInput from "../ui/SearchInput";
 import CreateMedicalCertificateModal from "../modals/CreateMedicalCertificateModal";
 import AddLabRequestModal from "../modals/AddLabRequestModal";
 
 export default function PatientEntryCard({
     entry,
-    entryData,
     index,
-    setPatientEntryData,
     patientId,
     appointmentId,
-    patientEntryData,
     inputOptions = [],
     medicalCertificate,
     laboratoryRequest,
     appointmentIsClosed,
     medicalRecords = [],
+    entryList,
+    setEntryList,
+    patientVisitRecordId,
 }) {
-    const [loading, setLoading] = useState(false);
     const [labRequestModalOpen, setLabRequestModalOpen] = useState(false);
     const [medicalCertificateModalOpen, setMedicalCertificateModalOpen] =
         useState(false);
-    const [updating, setUpdating] = useState(false);
     const [modifyEntryModalOpen, setModifyEntryModalOpen] = useState(false);
-    const [entryList, setEntryList] = useState(
-        entryData.data.map((ent) => ({
-            id: ent.id,
-            value: ent[entry.id],
-        })),
-    );
+    const [entryInput, setEntryInput] = useState("");
 
     function handleAddEntry(e) {
         e.preventDefault();
-
-        router.post(
-            route(`patientvisitform.patientEntryAdd.${entry.id}`),
-            {
-                patient_id: patientId,
-                appointment_id: appointmentId,
-                [entry.id]: patientEntryData[entry.id].input,
-            },
-            {
-                onSuccess: (res) => {
-                    setPatientEntryData((prev) => ({
-                        ...prev,
-                        [entry.id]: {
-                            data: res.props.patient[entry.id] || [],
-                            input: "",
-                        },
-                    }));
-                    setEntryList(
-                        res.props.patient[entry.id].map((ent) => ({
-                            id: ent.id,
-                            value: ent[entry.id],
-                        })) || [],
-                    );
-                },
-                onError: (errors) => {
-                    console.error(errors);
-                },
-                onStart: () => {
-                    setLoading(true);
-                },
-                onFinish: () => {
-                    setLoading(false);
-                },
-                preserveScroll: true,
-                preserveState: true,
-            },
-        );
+        setEntryList([...entryList, entryInput]);
+        setEntryInput("");
     }
 
     function openPatientEntryModal() {
@@ -82,47 +37,8 @@ export default function PatientEntryCard({
     }
 
     function handleUpdateEntry(newEntryList) {
-        const entriesToDelete = entryData.data.filter(
-            (en) => !newEntryList.some((newEnt) => newEnt.id === en.id),
-        );
-
-        const entriesToUpdate = newEntryList.map((en) => ({
-            id: en.id,
-            [entry.id]: en.value,
-        }));
-
-        router.put(
-            route(`patientvisitform.patientEntryUpdate.${entry.id}`),
-            {
-                entriesToDelete,
-                entriesToUpdate,
-            },
-            {
-                onStart: () => {
-                    setUpdating(true);
-                },
-                onFinish: () => {
-                    setUpdating(false);
-                },
-                onSuccess: () => {
-                    setPatientEntryData((prev) => ({
-                        ...prev,
-                        [entry.id]: {
-                            data: newEntryList.map((newEntry) => ({
-                                id: newEntry.id,
-                                [entry.id]: newEntry.value,
-                            })),
-                            input: "",
-                        },
-                    }));
-                    setModifyEntryModalOpen(false);
-                },
-                onError: (errors) => {
-                    console.error(errors);
-                },
-                preserveScroll: true,
-            },
-        );
+        setEntryList(newEntryList);
+        setModifyEntryModalOpen(false);
     }
 
     return (
@@ -158,8 +74,8 @@ export default function PatientEntryCard({
                         />
                     </button>
 
-                    {entry.id === "plan" && (
-                        <div className="absolute left-1/2 top-full flex min-w-max -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-md bg-accent-200 p-1">
+                    {entry.id === "plans" && (
+                        <div className="absolute left-1/2 top-full flex min-w-max -translate-x-1/2 -translate-y-1/2 items-center gap-2 rounded-lg bg-accent-200 p-1">
                             <button
                                 disabled={appointmentIsClosed}
                                 onClick={() => setLabRequestModalOpen(true)}
@@ -188,7 +104,7 @@ export default function PatientEntryCard({
                     )}
                 </div>
                 <ul
-                    className={`flex min-h-60 flex-1 flex-col gap-2 overflow-y-auto break-words p-4 ${entry.id === "plan" ? "pt-6" : ""}`}
+                    className={`flex min-h-60 flex-1 flex-col gap-2 overflow-y-auto break-words p-4 ${entry.id === "plans" ? "pt-6" : ""}`}
                 >
                     {entry.id === "medical_records"
                         ? medicalRecords.map((record) => (
@@ -227,13 +143,13 @@ export default function PatientEntryCard({
                                   </div>
                               </div>
                           ))
-                        : patientEntryData[entry.id].data.map((datum) => (
-                              <li key={datum.id}>
+                        : entryList.map((datum, i) => (
+                              <li key={i}>
                                   <span className="mr-2 font-bold">&gt;</span>
-                                  {datum[entry.id]}
+                                  {datum}
                               </li>
                           ))}
-                    {entry.id === "plan" && (
+                    {entry.id === "plans" && (
                         <>
                             {laboratoryRequest.length > 0 && (
                                 <li className="text-[#429ABF]">
@@ -261,53 +177,26 @@ export default function PatientEntryCard({
                     <div className="p-4">
                         <form onSubmit={handleAddEntry} className="relative">
                             <SearchInput
-                                onChange={(value) =>
-                                    setPatientEntryData((prev) => ({
-                                        ...prev,
-                                        [entry.id]: {
-                                            ...prev[entry.id],
-                                            input: value,
-                                        },
-                                    }))
-                                }
-                                onSelect={(value) =>
-                                    setPatientEntryData((prev) => ({
-                                        ...prev,
-                                        [entry.id]: {
-                                            ...prev[entry.id],
-                                            input: value,
-                                        },
-                                    }))
-                                }
+                                onChange={(value) => setEntryInput(value)}
+                                onSelect={(value) => setEntryInput(value)}
                                 className="w-full rounded-xl p-3 pr-16"
                                 options={inputOptions.map((opt) => ({
                                     label: opt,
                                     value: opt,
                                 }))}
-                                value={entryData.input}
+                                value={entryInput}
                                 disabled={appointmentIsClosed}
                             />
                             <button
                                 type="submit"
-                                disabled={
-                                    appointmentIsClosed ||
-                                    !entryData.input ||
-                                    loading
-                                }
+                                disabled={appointmentIsClosed || !entryInput}
                                 className="absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center justify-center rounded-xl rounded-bl-none bg-accent px-4 disabled:opacity-50"
                             >
-                                {loading ? (
-                                    <Loader2Icon
-                                        size={20}
-                                        className="animate-spin text-white"
-                                    />
-                                ) : (
-                                    <PlusIcon
-                                        size={20}
-                                        strokeWidth={5}
-                                        color="#fff"
-                                    />
-                                )}
+                                <PlusIcon
+                                    size={20}
+                                    strokeWidth={5}
+                                    color="#fff"
+                                />
                             </button>
                         </form>
                     </div>
@@ -318,13 +207,11 @@ export default function PatientEntryCard({
                 closeModal={() => setModifyEntryModalOpen(false)}
                 open={modifyEntryModalOpen}
                 entryList={entryList}
-                setEntryList={setEntryList}
                 entryId={entry.id}
-                updating={updating}
                 onSaveEntry={handleUpdateEntry}
             />
 
-            {entry.id === "plan" && (
+            {entry.id === "plans" && (
                 <>
                     <CreateMedicalCertificateModal
                         open={medicalCertificateModalOpen}
@@ -332,11 +219,13 @@ export default function PatientEntryCard({
                         appointmentId={appointmentId}
                         patientId={patientId}
                         medicalCertificate={medicalCertificate}
+                        patientVisitRecordId={patientVisitRecordId}
                     />
                     <AddLabRequestModal
                         open={labRequestModalOpen}
                         closeModal={() => setLabRequestModalOpen(false)}
                         appointmentId={appointmentId}
+                        patientVisitRecordId={patientVisitRecordId}
                         patientId={patientId}
                         laboratoryRequest={laboratoryRequest}
                     />

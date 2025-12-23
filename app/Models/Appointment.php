@@ -22,8 +22,8 @@ class Appointment extends Model
 
     protected $casts = [
         'appointment_date' => 'date',
-        'order_number'     => 'integer',
-        'queue_number'     => 'integer',
+        'order_number' => 'integer',
+        'queue_number' => 'integer',
     ];
 
     /**
@@ -37,5 +37,10 @@ class Appointment extends Model
     public function serviceCharge()
     {
         return $this->hasOne(ServiceCharge::class, 'id', 'service');
+    }
+
+    public function patientVisitRecord()
+    {
+        return $this->hasOne(PatientVisitRecord::class, 'appointment_id', 'id');
     }
 }

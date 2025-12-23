@@ -46,20 +46,20 @@ class MedicalCertificateController extends Controller
 
         $certificate = [
             'patient' => [
-                'name'       => $result->patient_name . $result->patient_last_name,
-                'age'        => $result->age,
-                'gender'     => $result->gender,
+                'name' => $result->patient_name . $result->patient_last_name,
+                'age' => $result->age,
+                'gender' => $result->gender,
                 'civilStatus' => $result->civilStatus,
-                'address'    => $result->address,
+                'address' => $result->address,
                 'visitDate' => Carbon::createFromTimestamp($result->last_visit_date)->format('F j, Y'),
             ],
             'diagnosis' => $result->diagnosis,
-            'comments'  => $result->comments,
-            'date'      => Carbon::parse($result->created_at)->format('F j, Y'),
+            'comments' => $result->comments,
+            'date' => Carbon::parse($result->created_at)->format('F j, Y'),
             'doctor' => [
-                'name'      => $result->doctor_name . $result->doctor_last_name,
+                'name' => $result->doctor_name . $result->doctor_last_name,
                 'licenseNo' => $result->doctor_license,
-                'ptrNo'     => $result->doctor_ptr,
+                'ptrNo' => $result->doctor_ptr,
             ],
         ];
 
@@ -74,7 +74,8 @@ class MedicalCertificateController extends Controller
             'civilStatus' => 'required|string|in:Married,Single,Widowed,Divorced',
             'diagnosis' => 'required|string|max:500',
             'comments' => 'required|string|max:1000',
-            'appointment_id' => 'required'
+            'appointment_id' => 'nullable',
+            'patient_visit_record_id' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -90,20 +91,22 @@ class MedicalCertificateController extends Controller
 
             if ($existing) {
                 $existing->update([
-                    'civilStatus'    => $data['civilStatus'],
-                    'diagnosis'      => $data['diagnosis'],
-                    'comments'       => $data['comments'],
+                    'civilStatus' => $data['civilStatus'],
+                    'diagnosis' => $data['diagnosis'],
+                    'comments' => $data['comments'],
                     'appointment_id' => $data['appointment_id'],
-                    'doctor_id'      => auth()->id(),
+                    'patient_visit_record_id' => $data['patient_visit_record_id'],
+                    'doctor_id' => auth()->id(),
                 ]);
             } else {
                 MedicalCertificate::create([
-                    'civilStatus'    => $data['civilStatus'],
-                    'diagnosis'      => $data['diagnosis'],
-                    'comments'       => $data['comments'],
-                    'patient_id'     => $data['patient_id'],
+                    'civilStatus' => $data['civilStatus'],
+                    'diagnosis' => $data['diagnosis'],
+                    'comments' => $data['comments'],
+                    'patient_id' => $data['patient_id'],
                     'appointment_id' => $data['appointment_id'],
-                    'doctor_id'      => auth()->id(),
+                    'patient_visit_record_id' => $data['patient_visit_record_id'],
+                    'doctor_id' => auth()->id(),
                 ]);
             }
 

@@ -3,7 +3,14 @@ import { MedicalRecordsHistory } from "@/Components/medical-records/MedicalRecor
 import PatientProfile from "@/Components/medical-records/PatientProfile";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
-export default function ViewMedicalRecord({ auth, patient, medicalHistory }) {
+export default function ViewMedicalRecord({
+    auth,
+    patient,
+    medicalRecord,
+    medicalHistory,
+    patientVisitRecords,
+}) {
+    console.log({ patientVisitRecords });
     return (
         <AuthenticatedLayout
             pageTitle={`${patient.first_name} ${patient.last_name} - Medical Records`}
@@ -13,7 +20,11 @@ export default function ViewMedicalRecord({ auth, patient, medicalHistory }) {
                     patient={patient}
                     medicalHistory={medicalHistory}
                 />
-                <MedicalRecordsHistory patient={patient} user={auth.user} />
+                <MedicalRecordsHistory
+                    patient={patient}
+                    medicalRecord={medicalRecord}
+                    user={auth.user}
+                />
             </div>
         </AuthenticatedLayout>
     );

@@ -34,7 +34,7 @@ export default function UserDropdown({ user }) {
 
     const [dropdownRef] = useClickOutside(() => setDropdownOpen(false));
 
-    const userFullName = `${user?.first_name}${user?.middle_initial ? ` ${user.middle_initial}.` : ""} ${user?.last_name}`;
+    const userFullName = `${user?.first_name || ""} ${user?.middle_initial ? `${user.middle_initial}.` : ""} ${user?.last_name || ""}`;
 
     function handleLogout() {
         router.post(route("logout"), {
@@ -55,24 +55,24 @@ export default function UserDropdown({ user }) {
                     {userFullName}
                 </h4>
                 <p
-                    className={`text-[10px] ${user.role === "admin" ? "text-accent-orange" : user.role === "doctor" ? "text-white" : "text-[#429ABF]"}`}
+                    className={`text-[10px] ${user?.role === "admin" ? "text-accent-orange" : user?.role === "doctor" ? "text-white" : "text-[#429ABF]"}`}
                 >
-                    {user.role.toUpperCase()}
+                    {user ? user?.role.toUpperCase() : ""}
                 </p>
             </div>
             <img
-                src={user.avatar_url || "/images/placeholder-avatar.jpg"}
+                src={user?.avatar_url || "/images/placeholder-avatar.jpg"}
                 alt={userFullName + " profile picture"}
                 height={45}
                 width={45}
-                className={`overflow-hidden rounded-full border-2 object-cover ${user.role === "admin" ? "border-accent-orange" : user.role === "doctor" ? "border-white" : "border-[#429ABF]"}`}
+                className={`overflow-hidden rounded-full border-2 object-cover ${user?.role === "admin" ? "border-accent-orange" : user?.role === "doctor" ? "border-white" : "border-[#429ABF]"}`}
             />
 
             <div
                 className={`absolute bottom-0 right-0 z-10 flex w-40 flex-col divide-y divide-accent-200 overflow-hidden rounded-md bg-white text-xs shadow-md duration-200 ${dropdownOpen ? "translate-y-[calc(100%+.5rem)]" : "invisible translate-y-[calc(100%+.8rem)] opacity-0"} `}
             >
                 {dropdownLinks.map((link, i) =>
-                    link.allowedRoles.includes(user.role) ? (
+                    link.allowedRoles.includes(user?.role) ? (
                         <Link
                             key={i}
                             href={link.href}

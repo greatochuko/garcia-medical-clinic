@@ -3,13 +3,13 @@ import MedicalHistoryModal from "../modals/MedicalHistoryModal";
 
 export default function MedicalHistoryButton({
     patientId,
-    setPatient,
+    setMedicalHistory,
     medicalHistory,
 }) {
     const [modalOpen, setModalOpen] = useState(false);
 
     function updateMedicalHistory(newMedicalHistory) {
-        setPatient((prev) => ({ ...prev, medicalHistory: newMedicalHistory }));
+        setMedicalHistory(newMedicalHistory);
     }
 
     return (

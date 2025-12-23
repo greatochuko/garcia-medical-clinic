@@ -97,7 +97,8 @@ class PatientVisitController extends Controller
     {
         $patient_chief_complaint = PatientChiefComplaint::where('patient_id', $id)
             ->where('appointment_id', $app_id)
-            ->get();;
+            ->get();
+        ;
         return $patient_chief_complaint;
     }
 
@@ -107,14 +108,15 @@ class PatientVisitController extends Controller
             $request->validate([
                 'patient_id' => 'required|string|max:255',
                 'chief_complaint' => 'required|string|max:1000',
-                'appointment_id' => 'required'
+                'appointment_id' => 'nullable',
+                'patient_visit_record_id' => 'required'
             ]);
 
             PatientChiefComplaint::updateOrCreate(
                 [
-                    'patient_id'      => $request->patient_id,
+                    'patient_id' => $request->patient_id,
                     'chief_complaint' => $request->chief_complaint,
-                    'appointment_id'  => $request->appointment_id
+                    'appointment_id' => $request->appointment_id
                 ],
                 ['updated_at' => now()]
             );
@@ -170,8 +172,8 @@ class PatientVisitController extends Controller
     {
         try {
             $request->validate([
-                'patient_id'     => 'required|string|max:255',
-                'physical_exam'  => 'required|string|max:1000',
+                'patient_id' => 'required|string|max:255',
+                'physical_exam' => 'required|string|max:1000',
                 'appointment_id' => 'required',
             ]);
 
@@ -183,7 +185,7 @@ class PatientVisitController extends Controller
 
             PatientPhysicalExam::updateOrCreate(
                 [
-                    'patient_id'    => $request->patient_id,
+                    'patient_id' => $request->patient_id,
                     'physical_exam' => $request->physical_exam,
                     'appointment_id' => $request->appointment_id,
                 ],
@@ -241,8 +243,8 @@ class PatientVisitController extends Controller
     {
         try {
             $request->validate([
-                'patient_id'     => 'required',
-                'plan'           => 'required|string|max:255',
+                'patient_id' => 'required',
+                'plan' => 'required|string|max:255',
                 'appointment_id' => 'required'
             ]);
 
@@ -254,9 +256,9 @@ class PatientVisitController extends Controller
 
             PatientPlans::updateOrCreate(
                 [
-                    'patient_id'     => $request->patient_id,
+                    'patient_id' => $request->patient_id,
                     'appointment_id' => $request->appointment_id,
-                    'plan'       => $existingPlan->name,
+                    'plan' => $existingPlan->name,
                 ],
                 [
                     'updated_at' => now()
@@ -315,15 +317,15 @@ class PatientVisitController extends Controller
     {
         try {
             $request->validate([
-                'patient_id'     => 'required|string',
-                'diagnosis'      => 'required|string',
+                'patient_id' => 'required|string',
+                'diagnosis' => 'required|string',
                 'appointment_id' => 'required'
             ]);
 
             PatientDiagnosis::updateOrCreate(
                 [
-                    'patient_id'     => $request->patient_id,
-                    'diagnosis'      => $request->diagnosis,
+                    'patient_id' => $request->patient_id,
+                    'diagnosis' => $request->diagnosis,
                     'appointment_id' => $request->appointment_id,
                 ],
                 $request->all()
@@ -383,15 +385,16 @@ class PatientVisitController extends Controller
     {
         try {
             $validated = $request->validate([
-                'patient_id'     => 'required|exists:patient_records,patient_id',
-                'medication_id'  => 'nullable|integer',
-                'medication'     => 'required|string|max:255',
-                'dosage'         => 'required|string|max:255',
-                'frequency_id'   => 'nullable|integer',
-                'frequency'      => 'required|string|max:255',
-                'amount'         => 'required|string|max:255',
-                'duration'       => 'required|string|max:255',
-                'appointment_id' => 'required',
+                'patient_id' => 'required|exists:patient_records,patient_id',
+                'medication_id' => 'nullable|integer',
+                'medication' => 'required|string|max:255',
+                'dosage' => 'required|string|max:255',
+                'frequency_id' => 'nullable|integer',
+                'frequency' => 'required|string|max:255',
+                'amount' => 'required|string|max:255',
+                'duration' => 'required|string|max:255',
+                'appointment_id' => 'nullable',
+                'patient_visit_record_id' => 'required',
             ]);
 
             // Get or create medication
@@ -399,10 +402,10 @@ class PatientVisitController extends Controller
                 $medication = MedicationList::findOrFail($validated['medication_id']);
             } else {
                 $medication = MedicationList::create([
-                    'name'       => $validated['medication'],
-                    'category'   => 'General',
-                    'price'      => 0,
-                    'quantity'   => 0,
+                    'name' => $validated['medication'],
+                    'category' => 'General',
+                    'price' => 0,
+                    'quantity' => 0,
                     'controlled' => false,
                 ]);
             }
@@ -416,15 +419,16 @@ class PatientVisitController extends Controller
 
             // Create prescription
             PatientPrescription::create([
-                'patient_id'     => $validated['patient_id'],
-                'doctor_id'      => Auth::id(),
-                'medication_id'  => $medication->id,
-                'dosage'         => $validated['dosage'],
-                'frequency_id'   => $frequency->id,
-                'amount'         => $validated['amount'],
-                'quantity'         => $validated['amount'],
-                'duration'       => $validated['duration'],
+                'patient_id' => $validated['patient_id'],
+                'doctor_id' => Auth::id(),
+                'medication_id' => $medication->id,
+                'dosage' => $validated['dosage'],
+                'frequency_id' => $frequency->id,
+                'amount' => $validated['amount'],
+                'quantity' => $validated['amount'],
+                'duration' => $validated['duration'],
                 'appointment_id' => $validated['appointment_id'],
+                'patient_visit_record_id' => $validated['patient_visit_record_id'],
             ]);
 
             return back()->with('success', 'Prescription added successfully.');
@@ -437,14 +441,14 @@ class PatientVisitController extends Controller
     {
         try {
             $validated = $request->validate([
-                'patient_id'     => 'required|exists:patient_records,patient_id',
-                'medication_id'  => 'nullable|integer',
-                'medication'     => 'required|string|max:255',
-                'dosage'         => 'required|string|max:255',
-                'frequency_id'   => 'nullable|integer',
-                'frequency'      => 'required|string|max:255',
-                'amount'         => 'required|max:255',
-                'duration'       => 'required|max:255',
+                'patient_id' => 'required|exists:patient_records,patient_id',
+                'medication_id' => 'nullable|integer',
+                'medication' => 'required|string|max:255',
+                'dosage' => 'required|string|max:255',
+                'frequency_id' => 'nullable|integer',
+                'frequency' => 'required|string|max:255',
+                'amount' => 'required|max:255',
+                'duration' => 'required|max:255',
                 'appointment_id' => 'required',
             ]);
 
@@ -458,9 +462,9 @@ class PatientVisitController extends Controller
                 $medication = MedicationList::firstOrCreate(
                     ['name' => $validated['medication']],
                     [
-                        'category'   => 'General',
-                        'price'      => 0,
-                        'quantity'   => 0,
+                        'category' => 'General',
+                        'price' => 0,
+                        'quantity' => 0,
                         'controlled' => false,
                     ]
                 );
@@ -475,14 +479,14 @@ class PatientVisitController extends Controller
 
             // Update prescription
             $prescription->update([
-                'patient_id'     => $validated['patient_id'],
-                'doctor_id'      => Auth::id(),
-                'medication_id'  => $medication->id,
-                'dosage'         => $validated['dosage'],
-                'frequency_id'   => $frequency->id,
-                'amount'         => $validated['amount'],
-                'quantity'         => $validated['amount'],
-                'duration'       => $validated['duration'],
+                'patient_id' => $validated['patient_id'],
+                'doctor_id' => Auth::id(),
+                'medication_id' => $medication->id,
+                'dosage' => $validated['dosage'],
+                'frequency_id' => $frequency->id,
+                'amount' => $validated['amount'],
+                'quantity' => $validated['amount'],
+                'duration' => $validated['duration'],
                 'appointment_id' => $validated['appointment_id'],
             ]);
 
@@ -574,8 +578,8 @@ class PatientVisitController extends Controller
     {
         $request->validate([
             'patient_id' => 'required|string|max:255',
-            'note'       => 'required|string|max:1000',
-            'appointment_id'       => 'required'
+            'note' => 'required|string|max:1000',
+            'appointment_id' => 'required'
         ]);
 
         $note = $request->note;
@@ -584,8 +588,8 @@ class PatientVisitController extends Controller
         $patientNote = PatientNotes::updateOrCreate(
             [
                 'patient_id' => $request->patient_id,
-                'note'       => $note,
-                'appointment_id'       => $request->appointment_id,
+                'note' => $note,
+                'appointment_id' => $request->appointment_id,
             ],
             [
                 'updated_at' => now(), // Optional, ensures timestamp is updated

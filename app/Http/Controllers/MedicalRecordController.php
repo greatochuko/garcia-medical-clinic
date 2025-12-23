@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\MedicalHistory;
 use App\Models\MedicalRecord;
 use App\Models\MedicationList;
+use App\Models\PatientVisitRecord;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -80,9 +81,20 @@ class MedicalRecordController extends Controller
         $medicalHistory = MedicalHistory::where('patient_id', $patient['patient_id'])->get();
         $medications = MedicationList::all();
 
+        $patientVisitRecords = PatientVisitRecord::with([
+            'doctor',
+            'appointment',
+            'labRequest',
+            'medicalCertificate',
+        ])
+            ->where('patient_id', $patient->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
         return Inertia::render('MedicalRecords/ViewMedicalRecord', [
             'patient' => $patient,
             'medicalRecords' => $medicalRecords,
+            'patientVisitRecords' => $patientVisitRecords,
             'medications' => $medications,
             'medicalHistory' => $medicalHistory,
             'totalappointments' => 5
@@ -118,7 +130,7 @@ class MedicalRecordController extends Controller
         $patient = [
             'id' => $id,
             'fullName' => $patient['first_name'] . $patient['last_name'],
-            'age' =>  $patient['age'],
+            'age' => $patient['age'],
             'gender' => $patient['gender'],
             'patient_id' => $patient['patient_id'],
             'dateOfBirth' => $patient['dob'],

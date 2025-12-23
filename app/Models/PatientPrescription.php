@@ -13,6 +13,7 @@ class PatientPrescription extends Model
         "patient_id",
         "doctor_id",
         "appointment_id",
+        "patient_visit_record_id",
         "medication_id",
         "dosage",
         "amount",
@@ -35,5 +36,10 @@ class PatientPrescription extends Model
     public function frequency()
     {
         return $this->belongsTo(FrequencyList::class, 'frequency_id');
+    }
+
+    public function patientVisitRecord()
+    {
+        return $this->belongsTo(PatientVisitRecord::class, 'patient_visit_record_id');
     }
 }

@@ -3,21 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Patient;
+use App\Models\PatientVisitRecord;
 
 class LaboratoryRequest extends Model
 {
     protected $table = 'laboratory_requests';
+
     protected $fillable = [
         'patient_id',
         'doctor_id',
         'appointment_id',
         'test_name',
-        'others'
+        'others',
+        'patient_visit_record_id',
     ];
 
-    // public function patient()
-    // {
-    //     return $this->belongsTo(Patient::class);
-    // }
+    // One lab request belongs to a patient visit record
+    public function patientVisitRecord()
+    {
+        return $this->belongsTo(PatientVisitRecord::class);
+    }
 }

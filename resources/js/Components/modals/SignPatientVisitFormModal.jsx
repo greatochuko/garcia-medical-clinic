@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 export default function SignPatientVisitFormModal({
     open,
     closeModal: closeSignModal,
-    appointmentId,
+    patientVisitRecordId,
     diagnosis,
     prescribed_medications,
 }) {
@@ -17,7 +17,7 @@ export default function SignPatientVisitFormModal({
 
     function handleSignAppointment() {
         router.put(
-            route("appointments.close-form", { id: appointmentId }),
+            route("patientVisitRecords.close", { id: patientVisitRecordId }),
             { diagnosis, prescribed_medications },
             {
                 preserveScroll: true,

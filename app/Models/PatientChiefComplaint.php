@@ -8,9 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class PatientChiefComplaint extends Model
 {
     use HasFactory;
-     protected $fillable = [
+    protected $fillable = [
         'patient_id',
         'appointment_id',
         'chief_complaint',
+        'patient_visit_record_id',
     ];
+
+
+    public function patientVisitRecords()
+    {
+        return $this->hasMany(PatientVisitRecord::class);
+    }
 }
+

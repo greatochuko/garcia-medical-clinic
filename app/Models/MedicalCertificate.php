@@ -16,17 +16,24 @@ class MedicalCertificate extends Model
         'comments',
         'patient_id',
         'appointment_id',
+        'patient_visit_record_id',
         'doctor_id'
     ];
 
-   public function patient()
-{
-    return $this->belongsTo(Patient::class, 'patient_id')->withTrashed();
-}
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class, 'patient_id')->withTrashed();
+    }
 
 
     public function doctor()
     {
         return $this->belongsTo(User::class, 'doctor_id');
     }
-} 
+
+
+    public function patientVisitRecord()
+    {
+        return $this->belongsTo(PatientVisitRecord::class, 'patient_visit_record_id');
+    }
+}

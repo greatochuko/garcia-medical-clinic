@@ -21,8 +21,8 @@ class AppointmentManagerController extends Controller
     public function index(Request $request)
     {
         $perPage = (int) $request->input('perPage', 10);
-        $search  = $request->input('search', '');
-        $type  = $request->input('type', '');
+        $search = $request->input('search', '');
+        $type = $request->input('type', '');
 
         $query = Appointment::with(['patient.vitals', 'serviceCharge']);
         if ($type === 'completed') {
@@ -48,9 +48,11 @@ class AppointmentManagerController extends Controller
         }
 
         // Fetch with pagination
-        $appointments = $query->orderBy('appointments.appointment_date', 'desc')
+        $appointments = $query->with('patientVisitRecord.patient', 'patientVisitRecord.doctor')
+            ->orderBy('appointments.appointment_date', 'desc')
             ->paginate($perPage)
             ->withQueryString();
+
 
         $serviceTypes = ServiceCharge::select('id', 'name', 'charge', 'patient_type')
             ->get();
@@ -256,11 +258,11 @@ class AppointmentManagerController extends Controller
     public function createNewAppointment(Request $request)
     {
         $request->validate([
-            'patient_id'       => 'required',
+            'patient_id' => 'required',
             'appointment_date' => 'required|date',
-            'service_type'     => 'required|string|exists:service_charges,id',
-            'status'           => 'required',
-            'queue_number'     => 'required'
+            'service_type' => 'required|string|exists:service_charges,id',
+            'status' => 'required',
+            'queue_number' => 'required'
         ]);
 
         preg_match('/^([A-Z]+)(\d+)$/i', $request->queue_number, $matches);
@@ -285,13 +287,13 @@ class AppointmentManagerController extends Controller
                 }
 
                 $appointment = Appointment::create([
-                    'order_number'     => $newOrderNumber,
-                    'patient_id'       => $request->patient_id,
+                    'order_number' => $newOrderNumber,
+                    'patient_id' => $request->patient_id,
                     'appointment_date' => $request->appointment_date,
-                    'service'          => $request->service_type,
-                    'status'           => strtolower($request->status),
-                    'queue_type'       => $queue_type,
-                    'queue_number'     => $queue_number,
+                    'service' => $request->service_type,
+                    'status' => strtolower($request->status),
+                    'queue_type' => $queue_type,
+                    'queue_number' => $queue_number,
                 ]);
 
                 Patient::where('patient_id', $request->patient_id)->update([
@@ -428,19 +430,19 @@ class AppointmentManagerController extends Controller
             // Validate request data
             $validated = $request->validate(
                 [
-                    'diagnosis'                  => 'nullable|string|max:1000',
-                    'prescribed_medications'     => 'nullable|array',
-                    'prescribed_medications.*'   => 'string|max:255',
+                    'diagnosis' => 'nullable|string|max:1000',
+                    'prescribed_medications' => 'nullable|array',
+                    'prescribed_medications.*' => 'string|max:255',
                 ],
                 [
                     // 'diagnosis.required'         => 'A medical certificate is required before closing the form.',
-                    'diagnosis.string'           => 'The diagnosis must be a valid text.',
-                    'diagnosis.max'              => 'The diagnosis cannot exceed 1000 characters.',
+                    'diagnosis.string' => 'The diagnosis must be a valid text.',
+                    'diagnosis.max' => 'The diagnosis cannot exceed 1000 characters.',
 
                     // 'prescribed_medications.required'   => 'Prescribed medications are required before closing the form.',
-                    'prescribed_medications.array'   => 'Prescribed medications must be a valid list.',
+                    'prescribed_medications.array' => 'Prescribed medications must be a valid list.',
                     'prescribed_medications.*.string' => 'Each medication must be a valid text.',
-                    'prescribed_medications.*.max'    => 'Each medication cannot exceed 255 characters.',
+                    'prescribed_medications.*.max' => 'Each medication cannot exceed 255 characters.',
                 ]
             );
 
@@ -450,11 +452,11 @@ class AppointmentManagerController extends Controller
 
             // Create medical record
             MedicalRecord::create([
-                'appointment_id'         => $appointment->id,
-                'diagnosis'              => $validated['diagnosis'] ?? "N/A",
+                'appointment_id' => $appointment->id,
+                'diagnosis' => $validated['diagnosis'] ?? "N/A",
                 'prescribed_medications' => $validated['prescribed_medications'] ?? [],
-                'doctor_id'              => $user->id,
-                'patient_id'             => $appointment->patient_id,
+                'doctor_id' => $user->id,
+                'patient_id' => $appointment->patient_id,
             ]);
 
             $appointment->save();

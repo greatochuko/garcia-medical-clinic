@@ -12,6 +12,7 @@ export default function CreateMedicalCertificateModal({
     patientId,
     appointmentId,
     medicalCertificate,
+    patientVisitRecordId,
 }) {
     const { processing, data, setData, post } = useForm(
         medicalCertificate || {
@@ -20,8 +21,11 @@ export default function CreateMedicalCertificateModal({
             comments: "",
             patient_id: patientId,
             appointment_id: appointmentId,
+            patient_visit_record_id: patientVisitRecordId,
         },
     );
+
+    console.log({ data });
 
     function handleCreateCertificate(e) {
         e.preventDefault();
@@ -33,7 +37,7 @@ export default function CreateMedicalCertificateModal({
                 console.error(errors);
             },
             preserveScroll: true,
-            preserveState: true,
+            // preserveState: true,
         });
     }
 

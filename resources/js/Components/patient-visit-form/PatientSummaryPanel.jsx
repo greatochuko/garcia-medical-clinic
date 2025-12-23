@@ -7,6 +7,7 @@ import useVitals from "@/hooks/useVitals";
 
 export default function PatientSummaryPanel({
     appointmentId,
+    patientVisitRecord,
     patient,
     setPatient,
     medicalCertificate,
@@ -14,7 +15,9 @@ export default function PatientSummaryPanel({
     prescriptions,
     appointmentIsClosed,
     medications,
+    medicalHistory: initialMedicalHistory,
 }) {
+    const [medicalHistory, setMedicalHistory] = useState(initialMedicalHistory);
     const [currentTab, setCurrentTab] = useState("medicalHistory");
     const [signFormModalOpen, setSignFormModalOpen] = useState(false);
 
@@ -75,6 +78,10 @@ export default function PatientSummaryPanel({
         },
     ];
 
+    function handleSaveForm() {
+        console.log(patientVisitRecord);
+    }
+
     return (
         <>
             <div className="grid gap-4 rounded-lg bg-[#FAFAFA] p-2 shadow sm:grid-cols-2 lg:flex">
@@ -124,15 +131,13 @@ export default function PatientSummaryPanel({
                                 <h3 className="font-bold">Medical History</h3>
                                 <MedicalHistoryButton
                                     patientId={patient.patient_id}
-                                    setPatient={setPatient}
-                                    medicalHistory={
-                                        patient.medicalHistory || []
-                                    }
+                                    setMedicalHistory={setMedicalHistory}
+                                    medicalHistory={medicalHistory || []}
                                 />
                             </div>
                             <p>
-                                {patient.medicalHistory?.length > 0
-                                    ? patient.medicalHistory.join(", ")
+                                {medicalHistory?.length > 0
+                                    ? medicalHistory.join(", ")
                                     : "No Medical History"}
                             </p>
                         </div>
@@ -183,7 +188,10 @@ export default function PatientSummaryPanel({
                                 >
                                     SIGN AND CLOSE FORM
                                 </button>
-                                <button className="rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90 disabled:pointer-events-none disabled:opacity-50">
+                                <button
+                                    onClick={handleSaveForm}
+                                    className="rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90 disabled:pointer-events-none disabled:opacity-50"
+                                >
                                     SAVE AND FINISH LATER
                                 </button>
                             </>
@@ -267,7 +275,7 @@ export default function PatientSummaryPanel({
             </div>
 
             <SignPatientVisitFormModal
-                appointmentId={appointmentId}
+                patientVisitRecordId={patientVisitRecord.id}
                 closeModal={() => setSignFormModalOpen(false)}
                 open={signFormModalOpen}
                 diagnosis={medicalCertificate?.diagnosis}

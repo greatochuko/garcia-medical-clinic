@@ -23,6 +23,7 @@ use App\Http\Controllers\VitalSignsModalController;
 use App\Http\Controllers\PrescriptionController;
 use App\Http\Controllers\PatientLaboratoryTestController;
 use App\Http\Controllers\LaboratoryRequestController;
+use App\Http\Controllers\PatientVisitRecordController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\StatController;
 use App\Http\Controllers\UserAccountController;
@@ -288,6 +289,23 @@ Route::middleware('auth')->group(function () {
     //Expense routes
     Route::get("expenses", [ExpenseController::class, 'index'])->name('expenses.index');
     Route::post("expenses", [ExpenseController::class, 'store'])->name('expenses.store');
+
+
+    Route::prefix('patient-visit-records')->group(function () {
+        Route::post('/', [PatientVisitRecordController::class, 'store'])
+            ->name('patientVisitRecords.store');
+
+        Route::get('/{id}', [PatientVisitRecordController::class, 'show'])
+            ->name('patientVisitRecords.show');
+
+        Route::put('/{id}', [PatientVisitRecordController::class, 'update'])
+            ->name('patientVisitRecords.update');
+
+        Route::post('/{id}/close', [PatientVisitRecordController::class, 'closeRecord'])
+            ->name('patientVisitRecords.close');
+    });
+
+
 });
 
 

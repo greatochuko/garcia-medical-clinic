@@ -13,6 +13,7 @@ export default function AddPrescriptionModal({
     appointmentId,
     prescriptions: initialPrescriptions,
     inputOptions,
+    patientVisitRecordId,
 }) {
     const initialData = {
         medication: "",
@@ -22,6 +23,7 @@ export default function AddPrescriptionModal({
         amount: "",
         patient_id: patient.patient_id.toString(),
         appointment_id: appointmentId,
+        patient_visit_record_id: patientVisitRecordId,
     };
     const [prescriptions, setPrescriptions] = useState(
         initialPrescriptions || [],
@@ -37,7 +39,7 @@ export default function AddPrescriptionModal({
         e.preventDefault();
         post(route("patientvisitform.patientprescriptionadd"), {
             onSuccess: (response) => {
-                setPrescriptions(response.props.prescriptions);
+                // setPrescriptions(response.props.prescriptions);
                 setData(initialData);
             },
             onError: (errors) => {

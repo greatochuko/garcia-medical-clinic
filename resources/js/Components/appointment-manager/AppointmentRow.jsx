@@ -35,6 +35,7 @@ export function AppointmentRow({
     const [vitalSignsModalOpen, setVitalSignsModalOpen] = useState(false);
     const [billingModalOpen, setBillingModalOpen] = useState(false);
     const [prescriptions, setPrescriptions] = useState([]);
+    const [addingRecord, setAddingRecord] = useState(false);
 
     const { post, put, processing, data, setData } = useForm({
         patient_id: appointment.patient.patient_id,
@@ -174,6 +175,30 @@ export function AppointmentRow({
         );
     }
 
+    function handleAddRecord() {
+        router.post(
+            route("patientVisitRecords.store"),
+            {
+                patient_id: appointment.patient.id,
+                appointment_id: appointment.id,
+            },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onStart: () => {
+                    setAddingRecord(true);
+                },
+                onFinish: () => {
+                    setAddingRecord(false);
+                },
+                onError: (errors) => {
+                    console.error(errors);
+                    toast.error("An error occurred while creating the record.");
+                },
+            },
+        );
+    }
+
     return (
         <Draggable draggableId={`appointment-${appointment.id}`} index={index}>
             {(provided, snapshot) => (
@@ -272,20 +297,46 @@ export function AppointmentRow({
                                     >
                                         VS / Measurements
                                     </button>
-                                ) : (
-                                    <Link
-                                        href={route("patientvisitform.index", {
-                                            patient_id:
-                                                appointment.patient.patient_id,
-                                            appointment_id: appointment.id,
-                                        })}
-                                        aria-disabled={
-                                            appointment.status !== "checked_in"
+                                ) : appointment.patient_visit_record ? (
+                                    <button
+                                        onClick={() =>
+                                            router.get(
+                                                route(
+                                                    "patientVisitRecords.show",
+                                                    {
+                                                        id: appointment
+                                                            .patient_visit_record
+                                                            .id,
+                                                    },
+                                                ),
+                                            )
                                         }
-                                        className="rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 aria-disabled:border-none aria-disabled:bg-transparent aria-disabled:text-[#B4BBC2]"
+                                        disabled={
+                                            appointment.status !==
+                                                "checked_in" || addingRecord
+                                        }
+                                        className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
                                     >
-                                        Add Record
-                                    </Link>
+                                        Update Record
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={handleAddRecord}
+                                        disabled={
+                                            appointment.status !==
+                                                "checked_in" || addingRecord
+                                        }
+                                        className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
+                                    >
+                                        {addingRecord ? (
+                                            <>
+                                                <LoadingIndicator color="#15475b" />
+                                                Adding...
+                                            </>
+                                        ) : (
+                                            "Add Record"
+                                        )}
+                                    </button>
                                 )}
                             </div>
                         </div>

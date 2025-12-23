@@ -14,7 +14,7 @@ export default function AuthenticatedLayout({ children, pageTitle }) {
             <FlashMessage />
             <main className="flex flex-1 text-accent">{children}</main>
             <Footer />
-            <Chatbox />
+            {auth.user && <Chatbox />}
         </div>
     );
 }

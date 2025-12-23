@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import MedicationRefillModal from "../modals/MedicationRefillModal";
 import { Link, usePage } from "@inertiajs/react";
 import { route } from "ziggy-js";
+import { Loader2Icon } from "lucide-react";
 
 export function MedicalRecordsHistory({ patient, user }) {
     const { medicalRecords, medications } = usePage().props;
     const [refillModalOpen, setRefillModalOpen] = useState(false);
+    const [addingRecord, setAddingRecord] = useState(false);
 
     const lastVisitDate = new Date(patient.last_visit_date);
 
@@ -47,6 +49,11 @@ export function MedicalRecordsHistory({ patient, user }) {
         },
     ];
 
+    function handleAddRecord() {
+        setAddingRecord(true);
+        setAddingRecord(false);
+    }
+
     return (
         <>
             <div className="flex flex-[1.6] flex-col divide-y-2 divide-accent-200 rounded-md border border-[#efefef] shadow">
@@ -71,18 +78,47 @@ export function MedicalRecordsHistory({ patient, user }) {
                         </div>
                     ))}
 
-                    <button
-                        onClick={() => setRefillModalOpen(true)}
-                        className="absolute right-4 top-full flex -translate-y-1/2 items-center gap-2 rounded-md border border-dashed border-accent bg-white px-3 py-1.5 text-xs font-medium uppercase duration-200 hover:bg-accent-200"
-                    >
-                        <img
-                            src="/assets/icons/plus-icon.svg"
-                            alt="user edit icon"
-                            width={14}
-                            height={14}
-                        />
-                        Medication Refill
-                    </button>
+                    <div className="absolute right-4 top-full flex -translate-y-1/2 items-center gap-4">
+                        {user.role !== "secretary" && (
+                            <button
+                                onClick={handleAddRecord}
+                                disabled={addingRecord}
+                                className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-3 py-1.5 text-xs font-medium uppercase duration-200 hover:bg-accent-200 disabled:pointer-events-none disabled:opacity-50"
+                            >
+                                {addingRecord ? (
+                                    <>
+                                        <Loader2Icon
+                                            size={14}
+                                            className="animate-spin"
+                                        />
+                                        Adding...
+                                    </>
+                                ) : (
+                                    <>
+                                        <img
+                                            src="/assets/icons/plus-icon.svg"
+                                            alt="user edit icon"
+                                            width={14}
+                                            height={14}
+                                        />
+                                        Add Record
+                                    </>
+                                )}
+                            </button>
+                        )}
+                        <button
+                            onClick={() => setRefillModalOpen(true)}
+                            className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-3 py-1.5 text-xs font-medium uppercase duration-200 hover:bg-accent-200"
+                        >
+                            <img
+                                src="/assets/icons/plus-icon.svg"
+                                alt="user edit icon"
+                                width={14}
+                                height={14}
+                            />
+                            Medication Refill
+                        </button>
+                    </div>
                 </div>
                 <div className="flex flex-col gap-1 p-4 pt-8">
                     {medicalRecords.length > 0 ? (

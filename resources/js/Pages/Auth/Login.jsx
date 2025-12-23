@@ -52,9 +52,9 @@ export default function Login() {
                             <div className="relative flex justify-center">
                                 <div className="relative w-[320px]">
                                     <input
-                                        id="login_id"
+                                        id="username"
                                         type="text"
-                                        name="login_id"
+                                        name="username"
                                         value={data.login_id}
                                         className="h-12 w-full rounded-full border-2 border-[#FFFFFF] bg-transparent px-6 pl-10 text-center text-white placeholder-white/80 backdrop-blur-sm focus:border-white focus:outline-none"
                                         placeholder="Login ID"

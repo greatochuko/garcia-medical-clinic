@@ -1,24 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ModalContainer from "../layout/ModalContainer";
 import XIcon from "../icons/XIcon";
-import LoadingIndicator from "../layout/LoadingIndicator";
 import Input from "../layout/Input";
 
 export default function PatientEntryModal({
     open,
     closeModal: closeEntryModal,
-    entryList,
-    setEntryList,
-    updating,
+    entryList: initialEntryList,
     onSaveEntry,
 }) {
+    const [entryList, setEntryList] = useState(initialEntryList ?? []);
+
+    useEffect(() => {
+        setEntryList(initialEntryList ?? []);
+    }, [initialEntryList]);
+
     function closeModal() {
-        if (updating) return;
         closeEntryModal();
     }
 
-    function removeFromList(entryId) {
-        setEntryList((prev) => prev.filter((e) => e.id !== entryId));
+    function removeFromList(entryIndex) {
+        setEntryList((prev) => prev.filter((e, i) => i !== entryIndex));
     }
 
     return (
@@ -37,27 +39,21 @@ export default function PatientEntryModal({
                     </button>
                 </div>
                 <div className="flex h-72 flex-col gap-2 overflow-y-auto p-4">
-                    {entryList.map((ent) => (
-                        <div key={ent.id} className="flex items-center gap-2">
+                    {entryList.map((ent, i) => (
+                        <div key={i} className="flex items-center gap-2">
                             <Input
-                                value={ent.value}
+                                value={ent}
                                 onChange={(ev) =>
                                     setEntryList((prev) =>
-                                        prev.map((e) =>
-                                            e.id === ent.id
-                                                ? {
-                                                      ...e,
-                                                      value: ev.target.value,
-                                                  }
-                                                : e,
+                                        prev.map((e, index) =>
+                                            i === index ? ev.target.value : e,
                                         ),
                                     )
                                 }
                                 className="w-0 flex-1"
                             />
                             <button
-                                disabled={updating}
-                                onClick={() => removeFromList(ent.id)}
+                                onClick={() => removeFromList(i)}
                                 type="button"
                                 className="rounded-md border border-transparent p-2.5 duration-100 hover:border-accent-400 hover:bg-accent-300"
                             >
@@ -75,23 +71,15 @@ export default function PatientEntryModal({
                 <div className="flex items-center justify-end gap-4 p-4 text-xs">
                     <button
                         onClick={closeModal}
-                        disabled={updating}
                         className="btn rounded-md border border-accent px-4 py-2 duration-200 hover:bg-accent-200"
                     >
                         Cancel
                     </button>
                     <button
-                        disabled={updating}
                         onClick={() => onSaveEntry(entryList)}
                         className="btn flex items-center gap-2 rounded-md border border-accent bg-accent px-4 py-2 text-white duration-200 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
                     >
-                        {updating ? (
-                            <>
-                                <LoadingIndicator /> Saving...
-                            </>
-                        ) : (
-                            "Save"
-                        )}
+                        Save
                     </button>
                 </div>
             </div>
