@@ -3,9 +3,12 @@ import MedicationRefillModal from "../modals/MedicationRefillModal";
 import { Link, usePage } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import { Loader2Icon } from "lucide-react";
+import { router } from "@inertiajs/react";
+import toast from "react-hot-toast";
 
-export function MedicalRecordsHistory({ patient, user }) {
-    const { medicalRecords, medications } = usePage().props;
+export function MedicalRecordsHistory() {
+    const { medications, patient, auth, patientVisitRecords } = usePage().props;
+    const user = auth.user;
     const [refillModalOpen, setRefillModalOpen] = useState(false);
     const [addingRecord, setAddingRecord] = useState(false);
 
@@ -51,6 +54,26 @@ export function MedicalRecordsHistory({ patient, user }) {
 
     function handleAddRecord() {
         setAddingRecord(true);
+        router.post(
+            route("patientVisitRecords.store"),
+            {
+                patient_id: patient.id,
+            },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onStart: () => {
+                    setAddingRecord(true);
+                },
+                onFinish: () => {
+                    setAddingRecord(false);
+                },
+                onError: (errors) => {
+                    console.error(errors);
+                    toast.error("An error occurred while creating the record.");
+                },
+            },
+        );
         setAddingRecord(false);
     }
 
@@ -121,8 +144,8 @@ export function MedicalRecordsHistory({ patient, user }) {
                     </div>
                 </div>
                 <div className="flex flex-col gap-1 p-4 pt-8">
-                    {medicalRecords.length > 0 ? (
-                        medicalRecords.map((record) => (
+                    {patientVisitRecords.length > 0 ? (
+                        patientVisitRecords.map((record) => (
                             <div
                                 key={record.id}
                                 className="flex items-stretch gap-2"
@@ -140,14 +163,19 @@ export function MedicalRecordsHistory({ patient, user }) {
                                 <div className="flex flex-col gap-2 pb-4 pt-1.5 text-xs">
                                     <p className="text-[#666666]">
                                         {new Date(
-                                            record.appointment.appointment_date,
+                                            record.appointment
+                                                ?.appointment_date ||
+                                                record.created_at,
                                         ).toLocaleDateString("en-US", {
                                             year: "numeric",
                                             month: "long",
                                             day: "numeric",
                                         })}{" "}
                                         |{" "}
-                                        {record.appointment.service_charge.name}
+                                        {
+                                            record.appointment?.service_charge
+                                                .name
+                                        }
                                     </p>
                                     <div className="">
                                         {user.role === "secretary" ? (
@@ -160,30 +188,42 @@ export function MedicalRecordsHistory({ patient, user }) {
                                         ) : (
                                             <Link
                                                 href={route(
-                                                    "patientvisitform.index",
+                                                    "patientVisitRecords.show",
                                                     {
-                                                        patient_id:
-                                                            record.patient_id,
-                                                        appointment_id:
-                                                            record.appointment_id,
+                                                        id: record.id,
                                                     },
                                                 )}
                                                 className="text-sm font-semibold hover:underline"
                                             >
-                                                {record.diagnosis}
+                                                {record.medical_certificate
+                                                    ?.diagnosis ||
+                                                    "No Diagnosis"}
                                             </Link>
                                         )}
                                         <p className="text-[#666666]">
                                             Prescribed Medications:{" "}
-                                            {record.prescribed_medications.join(
-                                                ", ",
-                                            )}
+                                            {record.prescriptions.length > 0
+                                                ? record.prescriptions
+                                                      .map(
+                                                          (prescription) =>
+                                                              prescription
+                                                                  .medication
+                                                                  ?.name,
+                                                      )
+                                                      .join(", ")
+                                                : " None"}
                                         </p>
                                     </div>
                                     <p className="text-[#5E8696]">
-                                        {record.doctor.first_name},{" "}
-                                        {record.doctor.middle_initial}{" "}
-                                        {record.doctor.last_name} MD
+                                        {record.doctor ? (
+                                            <span>
+                                                {record.doctor.first_name},{" "}
+                                                {record.doctor.middle_initial}{" "}
+                                                {record.doctor.last_name} MD
+                                            </span>
+                                        ) : (
+                                            " N/A"
+                                        )}
                                     </p>
                                 </div>
                             </div>

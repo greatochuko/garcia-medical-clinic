@@ -46,7 +46,7 @@ class PatientVisitRecordController extends Controller
             ])
                 ->where('patient_id', $record->patient_id)
                 ->where('is_closed', true)
-                ->where('id', '!=', $record->id) // exclude current record
+                // ->where('id', '!=', $record->id) // exclude current record
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -197,19 +197,19 @@ class PatientVisitRecordController extends Controller
         DB::beginTransaction();
 
         try {
-            $record = PatientVisitRecord::findOrFail($id);
+            $record = PatientVisitRecord::with('medicalCertificate')->findOrFail($id);
 
             if ($record->is_closed) {
-                return back()->withErrors([
-                    'record' => 'This record has already been closed',
+                return back()->with([
+                    'error' => 'This record has already been closed',
                 ]);
             }
 
             $user = auth()->user();
 
             if (!in_array($user->role, ['doctor', 'admin'])) {
-                return back()->withErrors([
-                    'authorization' => 'Only a doctor or admin can close patient records',
+                return back()->with([
+                    'error' => 'Only a doctor or admin can close patient records',
                 ]);
             }
 
@@ -217,13 +217,13 @@ class PatientVisitRecordController extends Controller
                 'chief_complaints' => ['nullable', 'array'],
                 'physical_exams' => ['nullable', 'array'],
                 'plans' => ['nullable', 'array'],
-                'diagnoses' => ['required', 'array'],
+                'diagnoses' => ['nullable', 'array'],
                 'diagnostic_results' => ['nullable', 'array'],
             ]);
 
-            if (empty($validated['diagnoses'])) {
-                return back()->withErrors([
-                    'diagnoses' => 'Cannot close record without at least one diagnosis',
+            if (!$record->medical_certificate) {
+                return back()->with([
+                    'error' => 'Cannot close record without a medical certificate',
                 ]);
             }
 
@@ -275,18 +275,21 @@ class PatientVisitRecordController extends Controller
                 'is_closed' => true,
             ]);
 
-            $appointment = Appointment::find($record->appointment_id);
-            if (!$appointment) {
-                return back()->withErrors(['error' => 'Appointment not found']);
+            if (!empty($record->appointment_id)) {
+
+                $appointment = Appointment::find($record->appointment_id);
+                if (!$appointment) {
+                    return back()->withErrors(['error' => 'Appointment not found']);
+                }
+
+                $appointment->status = "for_billing";
+
+                $appointment->save();
+
+                $appointment->load(['patient.vitals', 'serviceCharge']);
+
+                broadcast(new AppointmentUpdated($appointment))->toOthers();
             }
-
-            $appointment->status = "for_billing";
-
-            $appointment->save();
-
-            $appointment->load(['patient.vitals', 'serviceCharge']);
-
-            broadcast(new AppointmentUpdated($appointment))->toOthers();
 
             DB::commit();
 

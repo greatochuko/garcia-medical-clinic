@@ -217,7 +217,14 @@ export function AppointmentRow({
                             {appointment.queue_type + appointment.queue_number}
                         </div>
                         <div className="min-w-60 flex-[4] p-4">
-                            <h4 className="font-semibold">{patientFullName}</h4>
+                            <Link
+                                href={route("medicalrecords.view", {
+                                    id: appointment.patient.id,
+                                })}
+                                className="font-semibold hover:underline"
+                            >
+                                {patientFullName}
+                            </Link>
                             <p className="text-xs text-gray-500">
                                 {appointment.patient.age},{" "}
                                 {appointment.patient.gender}
@@ -249,7 +256,7 @@ export function AppointmentRow({
                                         checkInLoading ||
                                         appointment.status !== "waiting"
                                     }
-                                    className={`flex items-center gap-1.5 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 ${checkInLoading ? "pointer-events-none" : "disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"}`}
+                                    className={`flex items-center gap-1.5 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 ${checkInLoading ? "pointer-events-none" : "disabled:pointer-events-none disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"}`}
                                 >
                                     {checkInLoading ? (
                                         <>
@@ -267,7 +274,7 @@ export function AppointmentRow({
                                         checkOutLoading ||
                                         userRole === "doctor"
                                     }
-                                    className={`flex items-center gap-1.5 rounded-md border border-dashed border-[#8D2310] bg-white px-2 py-1.5 text-[#8D2310] duration-200 hover:bg-[#8D2310]/5 ${checkOutLoading ? "pointer-events-none" : "disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"}`}
+                                    className={`flex items-center gap-1.5 rounded-md border border-dashed border-[#8D2310] bg-white px-2 py-1.5 text-[#8D2310] duration-200 hover:bg-[#8D2310]/5 ${checkOutLoading ? "pointer-events-none" : "disabled:pointer-events-none disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"}`}
                                 >
                                     {checkOutLoading ? (
                                         <>
@@ -293,7 +300,7 @@ export function AppointmentRow({
                                                 appointment.status,
                                             )
                                         }
-                                        className="rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
+                                        className="rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:pointer-events-none disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
                                     >
                                         VS / Measurements
                                     </button>
@@ -315,7 +322,7 @@ export function AppointmentRow({
                                             appointment.status !==
                                                 "checked_in" || addingRecord
                                         }
-                                        className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
+                                        className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:pointer-events-none disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
                                     >
                                         Update Record
                                     </button>
@@ -326,7 +333,7 @@ export function AppointmentRow({
                                             appointment.status !==
                                                 "checked_in" || addingRecord
                                         }
-                                        className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
+                                        className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 duration-200 hover:bg-accent-200 disabled:pointer-events-none disabled:border-none disabled:bg-transparent disabled:text-[#B4BBC2]"
                                     >
                                         {addingRecord ? (
                                             <>

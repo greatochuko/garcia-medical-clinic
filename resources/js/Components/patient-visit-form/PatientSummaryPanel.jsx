@@ -6,7 +6,7 @@ import { route } from "ziggy-js";
 import useVitals from "@/hooks/useVitals";
 import { Loader2Icon } from "lucide-react";
 import { CircleCheckIcon } from "lucide-react";
-import { router } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import toast from "react-hot-toast";
 
 export default function PatientSummaryPanel({
@@ -68,6 +68,7 @@ export default function PatientSummaryPanel({
                 },
                 onFinish() {
                     setClosing(false);
+                    setSignFormModalOpen(false);
                 },
                 preserveState: false,
                 preserveScroll: true,
@@ -77,8 +78,6 @@ export default function PatientSummaryPanel({
                 },
             },
         );
-
-        setSignFormModalOpen(false);
     }
 
     useVitals(({ vitals: updatedVitals }) => {
@@ -153,7 +152,14 @@ export default function PatientSummaryPanel({
                             width={80}
                         />
                         <div className="flex flex-col gap-1">
-                            <h4 className="font-bold">{patientFullName}</h4>
+                            <Link
+                                href={route("medicalrecords.view", {
+                                    id: patient.id,
+                                })}
+                                className="font-bold hover:underline"
+                            >
+                                {patientFullName}
+                            </Link>
                             <p className="text-sm">
                                 {patient.age}, {patient.gender}
                             </p>

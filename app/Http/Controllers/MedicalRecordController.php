@@ -73,19 +73,20 @@ class MedicalRecordController extends Controller
         if (!$patient) {
             abort(404, 'Patient not found.');
         }
-        $medicalRecords = MedicalRecord::with(['appointment.serviceCharge', 'doctor', 'patient'])
-            ->where('patient_id', $patient['patient_id'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // $medicalRecords = MedicalRecord::with(['appointment.serviceCharge', 'doctor', 'patient'])
+        //     ->where('patient_id', $patient['patient_id'])
+        //     ->orderBy('created_at', 'desc')
+        //     ->get();
 
         $medicalHistory = MedicalHistory::where('patient_id', $patient['patient_id'])->get();
         $medications = MedicationList::all();
 
         $patientVisitRecords = PatientVisitRecord::with([
             'doctor',
-            'appointment',
-            'labRequest',
+            'patient',
+            'appointment.serviceCharge',
             'medicalCertificate',
+            'prescriptions.medication'
         ])
             ->where('patient_id', $patient->id)
             ->orderBy('created_at', 'desc')
@@ -93,7 +94,7 @@ class MedicalRecordController extends Controller
 
         return Inertia::render('MedicalRecords/ViewMedicalRecord', [
             'patient' => $patient,
-            'medicalRecords' => $medicalRecords,
+            // 'medicalRecords' => $medicalRecords,
             'patientVisitRecords' => $patientVisitRecords,
             'medications' => $medications,
             'medicalHistory' => $medicalHistory,

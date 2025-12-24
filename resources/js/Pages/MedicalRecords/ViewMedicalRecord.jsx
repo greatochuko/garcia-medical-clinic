@@ -6,11 +6,10 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 export default function ViewMedicalRecord({
     auth,
     patient,
-    medicalRecord,
+    // medicalRecord,
     medicalHistory,
     patientVisitRecords,
 }) {
-    console.log({ patientVisitRecords });
     return (
         <AuthenticatedLayout
             pageTitle={`${patient.first_name} ${patient.last_name} - Medical Records`}
@@ -22,7 +21,7 @@ export default function ViewMedicalRecord({
                 />
                 <MedicalRecordsHistory
                     patient={patient}
-                    medicalRecord={medicalRecord}
+                    patientVisitRecords={patientVisitRecords}
                     user={auth.user}
                 />
             </div>

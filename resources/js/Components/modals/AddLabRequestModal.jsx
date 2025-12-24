@@ -102,7 +102,7 @@ export default function AddLabRequestModal({
 
     const initialData = {
         patient_id: patientId,
-        appointment_id: appointmentId.toString(),
+        appointment_id: appointmentId?.toString() || "",
         patient_visit_record_id: patientVisitRecordId.toString(),
         test_names: laboratoryRequest.map((lr) => lr.test_name) || [],
         others: otherTests[0]?.others || "",

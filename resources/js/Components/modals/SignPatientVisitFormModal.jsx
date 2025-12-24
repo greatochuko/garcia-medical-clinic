@@ -52,7 +52,7 @@ export default function SignPatientVisitFormModal({
                     >
                         {closing ? (
                             <>
-                                <LoadingIndicator /> Signing...
+                                <LoadingIndicator /> Closing...
                             </>
                         ) : (
                             "Confirm"

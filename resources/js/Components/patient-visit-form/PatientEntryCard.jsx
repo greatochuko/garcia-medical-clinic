@@ -5,6 +5,8 @@ import { twMerge } from "tailwind-merge";
 import SearchInput from "../ui/SearchInput";
 import CreateMedicalCertificateModal from "../modals/CreateMedicalCertificateModal";
 import AddLabRequestModal from "../modals/AddLabRequestModal";
+import { route } from "ziggy-js";
+import { Link } from "@inertiajs/react";
 
 export default function PatientEntryCard({
     entry,
@@ -134,9 +136,20 @@ export default function PatientEntryCard({
                                               day: "numeric",
                                           })}
                                       </p>
-                                      <h4 className="text-sm font-semibold">
-                                          {record.diagnosis}
-                                      </h4>
+                                      <Link
+                                          href={route(
+                                              "patientVisitRecords.show",
+                                              {
+                                                  id: record.id,
+                                              },
+                                          )}
+                                          className="text-sm font-semibold hover:underline"
+                                      >
+                                          {
+                                              record.medical_certificate
+                                                  ?.diagnosis
+                                          }
+                                      </Link>
                                       <p className="text-[#5E8696]">
                                           {record.doctor.first_name},{" "}
                                           {record.doctor.middle_initial}{" "}
