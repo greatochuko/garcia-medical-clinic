@@ -12,8 +12,10 @@ export default function PatientEntryModal({
     const [entryList, setEntryList] = useState(initialEntryList ?? []);
 
     useEffect(() => {
-        setEntryList(initialEntryList ?? []);
-    }, [initialEntryList]);
+        if (open) {
+            setEntryList(initialEntryList ?? []);
+        }
+    }, [initialEntryList, open]);
 
     function closeModal() {
         closeEntryModal();

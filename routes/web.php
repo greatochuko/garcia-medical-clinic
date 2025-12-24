@@ -301,8 +301,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/{id}', [PatientVisitRecordController::class, 'update'])
             ->name('patientVisitRecords.update');
 
-        Route::post('/{id}/close', [PatientVisitRecordController::class, 'closeRecord'])
+        Route::post('/{id}/close', [PatientVisitRecordController::class, 'close'])
             ->name('patientVisitRecords.close');
+
+        Route::post('/{id}/reopen', [PatientVisitRecordController::class, 'reopen'])
+            ->name('patientVisitRecords.reopen');
     });
 
 

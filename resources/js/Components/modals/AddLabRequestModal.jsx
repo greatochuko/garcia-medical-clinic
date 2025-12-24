@@ -127,7 +127,7 @@ export default function AddLabRequestModal({
                 console.error(errors);
             },
             preserveScroll: true,
-            preserveState: true,
+            preserveState: false,
         });
     }
 

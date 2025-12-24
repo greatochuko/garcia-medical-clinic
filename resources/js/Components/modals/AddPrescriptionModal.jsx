@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import XIcon from "../icons/XIcon";
 import ModalContainer from "../layout/ModalContainer";
 import { useForm } from "@inertiajs/react";
@@ -11,7 +11,8 @@ export default function AddPrescriptionModal({
     open,
     patient,
     appointmentId,
-    prescriptions: initialPrescriptions,
+    prescriptions,
+    setPrescriptions,
     inputOptions,
     patientVisitRecordId,
 }) {
@@ -25,9 +26,7 @@ export default function AddPrescriptionModal({
         appointment_id: appointmentId,
         patient_visit_record_id: patientVisitRecordId,
     };
-    const [prescriptions, setPrescriptions] = useState(
-        initialPrescriptions || [],
-    );
+
     const { data, setData, processing, post } = useForm(initialData);
     const patientFullName = `${patient.first_name} ${patient.middle_initial || ""} ${patient.last_name}`;
 
@@ -39,7 +38,9 @@ export default function AddPrescriptionModal({
         e.preventDefault();
         post(route("patientvisitform.patientprescriptionadd"), {
             onSuccess: (response) => {
-                // setPrescriptions(response.props.prescriptions);
+                setPrescriptions(
+                    response.props.patientVisitRecord.prescriptions,
+                );
                 setData(initialData);
             },
             onError: (errors) => {

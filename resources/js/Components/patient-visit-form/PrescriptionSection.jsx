@@ -5,9 +5,11 @@ export default function PrescriptionSection({
     patient,
     appointmentId,
     prescriptions,
+    setPrescriptions,
     inputOptions,
     appointmentIsClosed,
     patientVisitRecordId,
+    saving,
 }) {
     const [prescriptionModalOpen, setPrescriptionModalOpen] = useState(false);
 
@@ -17,9 +19,9 @@ export default function PrescriptionSection({
                 <div className="relative p-4">
                     <h3 className="text-center font-semibold">PRESCRIPTIONS</h3>
                     <button
-                        disabled={appointmentIsClosed}
+                        disabled={appointmentIsClosed || saving}
                         onClick={() => setPrescriptionModalOpen(true)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md border border-transparent p-1.5 duration-200 hover:border-accent-400 hover:bg-accent-200"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md border border-transparent p-1.5 duration-200 hover:border-accent-400 hover:bg-accent-200 disabled:pointer-events-none disabled:opacity-50"
                     >
                         <img
                             src={"/assets/icons/edit-icon-2.svg"}
@@ -31,9 +33,9 @@ export default function PrescriptionSection({
 
                     <div className="absolute left-1/2 top-full -translate-x-1/2 -translate-y-1/2 rounded-md bg-accent-200 p-1">
                         <button
-                            disabled={appointmentIsClosed}
+                            disabled={appointmentIsClosed || saving}
                             onClick={() => setPrescriptionModalOpen(true)}
-                            className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1 text-xs font-medium duration-200 hover:bg-accent-100"
+                            className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1 text-xs font-medium duration-200 hover:bg-accent-100 disabled:pointer-events-none disabled:opacity-50"
                         >
                             <img
                                 src="/assets/icons/pills-icon.svg"
@@ -66,6 +68,7 @@ export default function PrescriptionSection({
                 patient={patient}
                 appointmentId={appointmentId}
                 prescriptions={prescriptions}
+                setPrescriptions={setPrescriptions}
                 inputOptions={inputOptions}
                 patientVisitRecordId={patientVisitRecordId}
             />

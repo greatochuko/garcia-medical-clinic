@@ -25,8 +25,6 @@ export default function CreateMedicalCertificateModal({
         },
     );
 
-    console.log({ data });
-
     function handleCreateCertificate(e) {
         e.preventDefault();
         post(route("medical-certificate.store"), {
@@ -37,7 +35,7 @@ export default function CreateMedicalCertificateModal({
                 console.error(errors);
             },
             preserveScroll: true,
-            // preserveState: true,
+            preserveState: false,
         });
     }
 

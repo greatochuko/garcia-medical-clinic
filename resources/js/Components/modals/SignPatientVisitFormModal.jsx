@@ -1,47 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import ModalContainer from "../layout/ModalContainer";
 import XIcon from "../icons/XIcon";
 import LoadingIndicator from "../layout/LoadingIndicator";
-import { route } from "ziggy-js";
-import { router } from "@inertiajs/react";
-import toast from "react-hot-toast";
 
 export default function SignPatientVisitFormModal({
     open,
     closeModal: closeSignModal,
-    patientVisitRecordId,
-    diagnosis,
-    prescribed_medications,
+    handleCloseForm,
+    closing,
 }) {
-    const [loading, setLoading] = useState();
-
-    function handleSignAppointment() {
-        router.put(
-            route("patientVisitRecords.close", { id: patientVisitRecordId }),
-            { diagnosis, prescribed_medications },
-            {
-                preserveScroll: true,
-                // preserveState: true,
-                onStart: () => {
-                    setLoading(true);
-                },
-                onFinish: () => {
-                    setLoading(false);
-                },
-                onSuccess: () => {
-                    closeModal();
-                },
-                onError: (errors) => {
-                    Object.values(errors).forEach((err) => {
-                        toast.error(err);
-                    });
-                },
-            },
-        );
-    }
-
     function closeModal() {
-        if (loading) return;
+        if (closing) return;
         closeSignModal();
     }
 
@@ -71,17 +40,17 @@ export default function SignPatientVisitFormModal({
                 <div className="flex items-center justify-end gap-4 p-4 text-xs">
                     <button
                         onClick={closeModal}
-                        disabled={loading}
+                        disabled={closing}
                         className="btn rounded-md border border-accent px-4 py-2 duration-200 hover:bg-accent-200"
                     >
                         Cancel
                     </button>
                     <button
-                        disabled={loading}
-                        onClick={handleSignAppointment}
+                        disabled={closing}
+                        onClick={handleCloseForm}
                         className="btn flex items-center gap-2 rounded-md border border-accent bg-accent px-4 py-2 text-white duration-200 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
                     >
-                        {loading ? (
+                        {closing ? (
                             <>
                                 <LoadingIndicator /> Signing...
                             </>

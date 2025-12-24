@@ -4,6 +4,10 @@ import VitalSignsButton from "./VitalSignsButton";
 import SignPatientVisitFormModal from "../modals/SignPatientVisitFormModal";
 import { route } from "ziggy-js";
 import useVitals from "@/hooks/useVitals";
+import { Loader2Icon } from "lucide-react";
+import { CircleCheckIcon } from "lucide-react";
+import { router } from "@inertiajs/react";
+import toast from "react-hot-toast";
 
 export default function PatientSummaryPanel({
     appointmentId,
@@ -14,12 +18,68 @@ export default function PatientSummaryPanel({
     labRequest,
     prescriptions,
     appointmentIsClosed,
-    medications,
+    isSaved,
     medicalHistory: initialMedicalHistory,
+    saving,
+    handleSaveForm,
+    closing,
+    setClosing,
 }) {
     const [medicalHistory, setMedicalHistory] = useState(initialMedicalHistory);
     const [currentTab, setCurrentTab] = useState("medicalHistory");
     const [signFormModalOpen, setSignFormModalOpen] = useState(false);
+    const [reopening, setReopening] = useState(false);
+
+    function handleReopenForm() {
+        router.post(
+            route("patientVisitRecords.reopen", { id: patientVisitRecord.id }),
+            {},
+            {
+                onStart() {
+                    setReopening(true);
+                },
+                onFinish() {
+                    setReopening(false);
+                },
+                preserveScroll: true,
+                preserveState: false,
+                onError: (errors) => {
+                    console.error(errors);
+                    toast.error("Failed to Re-open Patient Visit Form");
+                },
+            },
+        );
+    }
+
+    function handleCloseForm() {
+        const payload = {
+            chief_complaints: patientVisitRecord.chief_complaints,
+            physical_exams: patientVisitRecord.physical_exams,
+            plans: patientVisitRecord.plans,
+            diagnoses: patientVisitRecord.diagnoses,
+        };
+
+        router.post(
+            route("patientVisitRecords.close", { id: patientVisitRecord.id }),
+            payload,
+            {
+                onStart() {
+                    setClosing(true);
+                },
+                onFinish() {
+                    setClosing(false);
+                },
+                preserveState: false,
+                preserveScroll: true,
+                onError: (errors) => {
+                    console.error(errors);
+                    toast.error("Failed to Close Patient Visit Form");
+                },
+            },
+        );
+
+        setSignFormModalOpen(false);
+    }
 
     useVitals(({ vitals: updatedVitals }) => {
         if (String(updatedVitals.patient_id) === String(patient?.patient_id)) {
@@ -77,10 +137,6 @@ export default function PatientSummaryPanel({
             value: patient.vitals?.weight ? patient.vitals?.weight + " kg" : "",
         },
     ];
-
-    function handleSaveForm() {
-        console.log(patientVisitRecord);
-    }
 
     return (
         <>
@@ -177,22 +233,62 @@ export default function PatientSummaryPanel({
                     </h2>
                     <div className="flex flex-1 flex-col justify-center gap-2 p-4">
                         {appointmentIsClosed ? (
-                            <button className="mx-auto w-fit rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90 disabled:pointer-events-none disabled:opacity-50">
-                                MODIFY RECORD
+                            <button
+                                onClick={handleReopenForm}
+                                disabled={reopening}
+                                className="mx-auto flex w-fit items-center justify-center gap-2 rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90 disabled:pointer-events-none disabled:opacity-50"
+                            >
+                                {reopening ? (
+                                    <>
+                                        <Loader2Icon
+                                            size={14}
+                                            className="animate-spin"
+                                        />
+                                        OPENING...
+                                    </>
+                                ) : (
+                                    "MODIFY RECORD"
+                                )}
                             </button>
                         ) : (
                             <>
                                 <button
                                     onClick={() => setSignFormModalOpen(true)}
-                                    className="rounded-md bg-accent px-3 py-2 text-xs font-medium text-white duration-100 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
+                                    disabled={saving || closing}
+                                    className="flex items-center justify-center gap-2 rounded-md bg-accent px-3 py-2 text-xs font-medium text-white duration-100 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
                                 >
-                                    SIGN AND CLOSE FORM
+                                    {closing ? (
+                                        <>
+                                            <Loader2Icon
+                                                size={14}
+                                                className="animate-spin"
+                                            />
+                                            CLOSING...
+                                        </>
+                                    ) : (
+                                        "SIGN AND CLOSE FORM"
+                                    )}
                                 </button>
                                 <button
                                     onClick={handleSaveForm}
-                                    className="rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90 disabled:pointer-events-none disabled:opacity-50"
+                                    disabled={saving || closing}
+                                    className="flex items-center justify-center gap-2 rounded-md bg-[#DEDEDE] px-3 py-2 text-xs font-medium text-accent duration-100 hover:bg-[#DEDEDE]/90 disabled:pointer-events-none disabled:opacity-50"
                                 >
-                                    SAVE AND FINISH LATER
+                                    {isSaved ? (
+                                        <>
+                                            <CircleCheckIcon size={14} /> SAVED
+                                        </>
+                                    ) : saving ? (
+                                        <>
+                                            <Loader2Icon
+                                                size={14}
+                                                className="animate-spin"
+                                            />
+                                            SAVING...
+                                        </>
+                                    ) : (
+                                        "SAVE AND FINISH LATER"
+                                    )}
                                 </button>
                             </>
                         )}
@@ -275,11 +371,10 @@ export default function PatientSummaryPanel({
             </div>
 
             <SignPatientVisitFormModal
-                patientVisitRecordId={patientVisitRecord.id}
                 closeModal={() => setSignFormModalOpen(false)}
                 open={signFormModalOpen}
-                diagnosis={medicalCertificate?.diagnosis}
-                prescribed_medications={medications}
+                handleCloseForm={handleCloseForm}
+                closing={closing}
             />
         </>
     );

@@ -180,7 +180,7 @@ const initialDiagnosticResults = [
     },
 ];
 
-export default function DiagnosticResultsCard({ appointmentIsClosed }) {
+export default function DiagnosticResultsCard({ appointmentIsClosed, saving }) {
     const [currentTab, setCurrentTab] = useState("hematology");
     const [addResultsModalOpen, setAddResultsModalOpen] = useState(false);
     const [diagnosticResults, setDiagnosticResults] = useState(
@@ -197,19 +197,21 @@ export default function DiagnosticResultsCard({ appointmentIsClosed }) {
         })),
     );
 
+    const loading = appointmentIsClosed || saving;
+
     return (
         <>
             <div
-                className={`divide-y-2 divide-accent-200 rounded-md bg-white shadow-md ${appointmentIsClosed ? "grayscale" : ""}`}
+                className={`divide-y-2 divide-accent-200 rounded-md bg-white shadow-md ${loading ? "grayscale" : ""}`}
             >
                 <div className="relative p-2 pb-20 text-center md:pb-6">
                     <h2 className="text-sm font-bold">DIAGNOSTIC RESULTS</h2>
                     <button
                         onClick={() => {
-                            if (appointmentIsClosed) return;
+                            if (loading) return;
                             setAddResultsModalOpen(true);
                         }}
-                        disabled={appointmentIsClosed}
+                        disabled={loading}
                         className="absolute right-3 top-3 rounded-md border border-transparent p-1 duration-200 hover:border-accent-400 hover:bg-accent-200 disabled:pointer-events-none"
                     >
                         <ExpandIcon
@@ -218,9 +220,9 @@ export default function DiagnosticResultsCard({ appointmentIsClosed }) {
                         />
                     </button>
                     <button
-                        disabled={appointmentIsClosed}
+                        disabled={loading}
                         onClick={() => {
-                            if (appointmentIsClosed) return;
+                            if (loading) return;
                             setAddResultsModalOpen(true);
                         }}
                         className="absolute left-1/2 top-12 flex -translate-x-1/2 -translate-y-1/2 items-center gap-1 rounded-md border border-dashed border-accent bg-white px-2 py-1.5 text-xs font-medium duration-200 hover:bg-accent-200 disabled:pointer-events-none md:left-4 md:top-full md:translate-x-0"

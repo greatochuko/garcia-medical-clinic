@@ -10,7 +10,6 @@ class PatientVisitRecord extends Model
         'patient_id',
         'doctor_id',
         'appointment_id',
-        'medical_certificate_id',
         'is_closed',
         'chief_complaints',
         'physical_exams',

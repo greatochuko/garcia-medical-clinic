@@ -15,6 +15,7 @@ export default function PatientEntryCard({
     medicalCertificate,
     laboratoryRequest,
     appointmentIsClosed,
+    saving,
     medicalRecords = [],
     entryList,
     setEntryList,
@@ -57,10 +58,11 @@ export default function PatientEntryCard({
                     <button
                         disabled={
                             appointmentIsClosed ||
+                            saving ||
                             entry.id === "medical_records"
                         }
                         onClick={openPatientEntryModal}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md border border-transparent p-1.5 duration-200 hover:border-accent-400 hover:bg-accent-200 disabled:pointer-events-none"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md border border-transparent p-1.5 duration-200 hover:border-accent-400 hover:bg-accent-200 disabled:pointer-events-none disabled:opacity-50"
                     >
                         <img
                             src={
@@ -77,7 +79,7 @@ export default function PatientEntryCard({
                     {entry.id === "plans" && (
                         <div className="absolute left-1/2 top-full flex min-w-max -translate-x-1/2 -translate-y-1/2 items-center gap-2 rounded-lg bg-accent-200 p-1">
                             <button
-                                disabled={appointmentIsClosed}
+                                disabled={appointmentIsClosed || saving}
                                 onClick={() => setLabRequestModalOpen(true)}
                                 className="flex items-center gap-2 rounded-md border border-dashed border-accent bg-white px-2 py-1 text-xs font-medium duration-200 hover:bg-accent-100"
                             >
@@ -88,7 +90,7 @@ export default function PatientEntryCard({
                                 LAB REQUEST
                             </button>
                             <button
-                                disabled={appointmentIsClosed}
+                                disabled={appointmentIsClosed || saving}
                                 onClick={() =>
                                     setMedicalCertificateModalOpen(true)
                                 }
@@ -185,11 +187,13 @@ export default function PatientEntryCard({
                                     value: opt,
                                 }))}
                                 value={entryInput}
-                                disabled={appointmentIsClosed}
+                                disabled={appointmentIsClosed || saving}
                             />
                             <button
                                 type="submit"
-                                disabled={appointmentIsClosed || !entryInput}
+                                disabled={
+                                    appointmentIsClosed || saving || !entryInput
+                                }
                                 className="absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center justify-center rounded-xl rounded-bl-none bg-accent px-4 disabled:opacity-50"
                             >
                                 <PlusIcon

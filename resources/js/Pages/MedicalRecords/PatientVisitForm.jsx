@@ -6,6 +6,9 @@ import PrescriptionSection from "@/Components/patient-visit-form/PrescriptionSec
 
 import PatientEntryCard from "@/Components/patient-visit-form/PatientEntryCard";
 import DiagnosticResultsCard from "@/Components/patient-visit-form/DiagnosticResultsCard";
+import { router } from "@inertiajs/react";
+import { route } from "ziggy-js";
+import toast from "react-hot-toast";
 
 const patientEntries = [
     { id: "chief_complaints", title: "CHIEF COMPLAINT", value: [] },
@@ -28,15 +31,58 @@ export default function PatientVisitForm({
 }) {
     const [patientVisitRecord, setPatientVisitRecord] = useState(initialRecord);
     const [patient, setPatient] = useState(patientVisitRecord.patient);
+    const [saving, setSaving] = useState(false);
+    const [closing, setClosing] = useState(false);
+    const [prescriptions, setPrescriptions] = useState(
+        initialRecord.prescriptions || [],
+    );
 
     const medicalCertificate = patientVisitRecord.medical_certificate;
 
     const laboratoryRequest = patientVisitRecord.lab_request;
-    const prescriptions = patientVisitRecord.prescriptions;
 
     const appointment = patientVisitRecord.appointment;
     const appointmentId = appointment?.id;
     const patientRecordIsClosed = patientVisitRecord.is_closed;
+
+    const isSaved =
+        JSON.stringify(initialRecord.chief_complaints) ===
+            JSON.stringify(patientVisitRecord.chief_complaints) &&
+        JSON.stringify(initialRecord.physical_exams) ===
+            JSON.stringify(patientVisitRecord.physical_exams) &&
+        JSON.stringify(initialRecord.plans) ===
+            JSON.stringify(patientVisitRecord.plans) &&
+        JSON.stringify(initialRecord.diagnoses) ===
+            JSON.stringify(patientVisitRecord.diagnoses) &&
+        JSON.stringify(initialRecord.prescriptions) ===
+            JSON.stringify(patientVisitRecord.prescriptions);
+
+    function handleSaveForm() {
+        const payload = {
+            chief_complaints: patientVisitRecord.chief_complaints,
+            physical_exams: patientVisitRecord.physical_exams,
+            plans: patientVisitRecord.plans,
+            diagnoses: patientVisitRecord.diagnoses,
+        };
+
+        router.put(
+            route("patientVisitRecords.update", { id: patientVisitRecord.id }),
+            payload,
+            {
+                onStart() {
+                    setSaving(true);
+                },
+                onFinish() {
+                    setSaving(false);
+                },
+                preserveScroll: true,
+                onError: (errors) => {
+                    console.error(errors);
+                    toast.error("Failed to Save Patient Visit Form");
+                },
+            },
+        );
+    }
 
     return (
         <AuthenticatedLayout
@@ -44,19 +90,21 @@ export default function PatientVisitForm({
         >
             <div className="mx-auto mt-4 flex w-[90%] max-w-screen-2xl flex-col gap-4">
                 <PatientSummaryPanel
-                    patientVisitRecord={patientVisitRecord}
                     appointmentId={appointmentId}
-                    patient={patient}
-                    medicalHistory={medicalHistory}
-                    setPatient={setPatient}
-                    medicalCertificate={medicalCertificate}
-                    labRequest={laboratoryRequest}
-                    prescriptions={prescriptions}
                     appointmentIsClosed={patientRecordIsClosed}
+                    closing={closing}
+                    handleSaveForm={handleSaveForm}
+                    isSaved={isSaved}
+                    labRequest={laboratoryRequest}
+                    medicalCertificate={medicalCertificate}
+                    medicalHistory={medicalHistory}
+                    patient={patient}
+                    patientVisitRecord={patientVisitRecord}
+                    prescriptions={prescriptions}
+                    saving={saving}
+                    setPatient={setPatient}
                     setPatientVisitRecord={setPatientVisitRecord}
-                    medications={prescriptions.map(
-                        (pres) => pres.medication.name,
-                    )}
+                    setClosing={setClosing}
                 />
                 <div className="flex flex-col gap-4 rounded-lg bg-accent-100 py-2 shadow">
                     <div className="relative flex items-center justify-center">
@@ -75,6 +123,7 @@ export default function PatientVisitForm({
                                 appointmentId={appointmentId}
                                 appointmentIsClosed={patientRecordIsClosed}
                                 entry={entry}
+                                saving={saving}
                                 index={index}
                                 patientId={patient.patient_id}
                                 entryList={patientVisitRecord[entry.id]}
@@ -97,14 +146,17 @@ export default function PatientVisitForm({
                             patient={patient}
                             appointmentId={appointmentId}
                             prescriptions={prescriptions}
+                            setPrescriptions={setPrescriptions}
                             inputOptions={inputOptions}
                             appointmentIsClosed={patientRecordIsClosed}
+                            saving={saving}
                             patientVisitRecordId={patientVisitRecord.id}
                         />
 
                         {patientEntries.slice(2).map((entry, index) => (
                             <PatientEntryCard
                                 entry={entry}
+                                saving={saving}
                                 key={entry.id}
                                 index={index + 2}
                                 appointmentId={appointmentId}
@@ -132,6 +184,7 @@ export default function PatientVisitForm({
                     <div className="px-2">
                         <DiagnosticResultsCard
                             appointmentIsClosed={patientRecordIsClosed}
+                            saving={saving}
                         />
                     </div>
                 </div>
