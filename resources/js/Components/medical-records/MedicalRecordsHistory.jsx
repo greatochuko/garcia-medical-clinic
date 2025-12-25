@@ -53,7 +53,6 @@ export function MedicalRecordsHistory() {
     ];
 
     function handleAddRecord() {
-        setAddingRecord(true);
         router.post(
             route("patientVisitRecords.store"),
             {
@@ -74,7 +73,6 @@ export function MedicalRecordsHistory() {
                 },
             },
         );
-        setAddingRecord(false);
     }
 
     return (
