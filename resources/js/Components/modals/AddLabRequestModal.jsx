@@ -5,6 +5,7 @@ import LoadingIndicator from "../layout/LoadingIndicator";
 import { useForm } from "@inertiajs/react";
 import Input from "../layout/Input";
 import { route } from "ziggy-js";
+import toast from "react-hot-toast";
 
 const labRequestOptions = [
     {
@@ -97,6 +98,7 @@ export default function AddLabRequestModal({
     appointmentId,
     patientVisitRecordId,
     laboratoryRequest,
+    setPatientVisitRecord,
 }) {
     const otherTests = laboratoryRequest.filter((req) => req.others);
 
@@ -120,14 +122,16 @@ export default function AddLabRequestModal({
     function handleCreateLabRequest(e) {
         e.preventDefault();
         post(route("laboratory.store"), {
-            onSuccess: () => {
+            onSuccess: (res) => {
+                setPatientVisitRecord(res.props.patientVisitRecord);
                 closeLabRequestModal();
             },
             onError: (errors) => {
+                toast.error("Failed to add Laboratory Request(s).");
                 console.error(errors);
             },
             preserveScroll: true,
-            preserveState: false,
+            preserveState: true,
         });
     }
 

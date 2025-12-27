@@ -178,6 +178,7 @@ export default function PatientVisitForm({
                                 laboratoryRequest={laboratoryRequest}
                                 medicalRecords={medicalRecords}
                                 patientVisitRecordId={patientVisitRecord.id}
+                                setPatientVisitRecord={setPatientVisitRecord}
                             />
                         ))}
                     </div>

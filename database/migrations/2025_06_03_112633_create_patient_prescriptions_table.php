@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->id();
             $table->string('patient_id'); // Required
             $table->string('doctor_id'); // Required
-            $table->string('appointment_id')->nullable(); // Required
+            $table->string('appointment_id')->nullable();
             $table->string('medication'); // Required
             $table->string('dosage')->nullable();
             $table->string('amount')->nullable();

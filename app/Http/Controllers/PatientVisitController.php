@@ -427,7 +427,7 @@ class PatientVisitController extends Controller
                 'amount' => $validated['amount'],
                 'quantity' => $validated['amount'],
                 'duration' => $validated['duration'],
-                'appointment_id' => $validated['appointment_id'],
+                'appointment_id' => $validated['appointment_id'] ?? null,
                 'patient_visit_record_id' => $validated['patient_visit_record_id'],
             ]);
 

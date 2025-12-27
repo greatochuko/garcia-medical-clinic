@@ -22,6 +22,7 @@ export default function PatientEntryCard({
     entryList,
     setEntryList,
     patientVisitRecordId,
+    setPatientVisitRecord,
 }) {
     const [labRequestModalOpen, setLabRequestModalOpen] = useState(false);
     const [medicalCertificateModalOpen, setMedicalCertificateModalOpen] =
@@ -129,7 +130,9 @@ export default function PatientEntryCard({
                                   <div className="flex flex-col gap-1 pb-2 pt-1.5 text-xs">
                                       <p className="text-[#666666]">
                                           {new Date(
-                                              record.appointment.appointment_date,
+                                              record.appointment
+                                                  ?.appointment_date ||
+                                                  record.created_at,
                                           ).toLocaleDateString("en-US", {
                                               year: "numeric",
                                               month: "long",
@@ -237,12 +240,14 @@ export default function PatientEntryCard({
                         patientId={patientId}
                         medicalCertificate={medicalCertificate}
                         patientVisitRecordId={patientVisitRecordId}
+                        setPatientVisitRecord={setPatientVisitRecord}
                     />
                     <AddLabRequestModal
                         open={labRequestModalOpen}
                         closeModal={() => setLabRequestModalOpen(false)}
                         appointmentId={appointmentId}
                         patientVisitRecordId={patientVisitRecordId}
+                        setPatientVisitRecord={setPatientVisitRecord}
                         patientId={patientId}
                         laboratoryRequest={laboratoryRequest}
                     />

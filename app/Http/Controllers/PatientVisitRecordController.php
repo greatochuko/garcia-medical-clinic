@@ -221,7 +221,7 @@ class PatientVisitRecordController extends Controller
                 'diagnostic_results' => ['nullable', 'array'],
             ]);
 
-            if (!$record->medical_certificate) {
+            if (!$record->medicalCertificate) {
                 return back()->with([
                     'error' => 'Cannot close record without a medical certificate',
                 ]);

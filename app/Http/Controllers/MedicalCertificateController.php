@@ -84,9 +84,11 @@ class MedicalCertificateController extends Controller
 
         $data = $validator->validated();
 
+        $appointmentId = $data['appointment_id'] ?? null;
+
         try {
             $existing = MedicalCertificate::where('patient_id', $data['patient_id'])
-                ->where('appointment_id', $data['appointment_id'])
+                ->where('appointment_id', $appointmentId)
                 ->first();
 
             if ($existing) {
@@ -94,7 +96,7 @@ class MedicalCertificateController extends Controller
                     'civilStatus' => $data['civilStatus'],
                     'diagnosis' => $data['diagnosis'],
                     'comments' => $data['comments'],
-                    'appointment_id' => $data['appointment_id'],
+                    'appointment_id' => $appointmentId,
                     'patient_visit_record_id' => $data['patient_visit_record_id'],
                     'doctor_id' => auth()->id(),
                 ]);
@@ -104,7 +106,7 @@ class MedicalCertificateController extends Controller
                     'diagnosis' => $data['diagnosis'],
                     'comments' => $data['comments'],
                     'patient_id' => $data['patient_id'],
-                    'appointment_id' => $data['appointment_id'],
+                    'appointment_id' => $appointmentId,
                     'patient_visit_record_id' => $data['patient_visit_record_id'],
                     'doctor_id' => auth()->id(),
                 ]);
@@ -112,7 +114,10 @@ class MedicalCertificateController extends Controller
 
             return redirect()->back()->with('success', 'Medical certificate saved successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'An error occurred while saving: ' . $e->getMessage());
+            return redirect()->back()->withErrors([
+                'error' => 'Something went wrong while saving medical certificate.',
+                'errorMessage' => $e->getMessage(),
+            ]);
         }
     }
 

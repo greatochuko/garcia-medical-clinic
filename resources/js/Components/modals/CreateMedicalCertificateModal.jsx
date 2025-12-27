@@ -5,6 +5,7 @@ import LoadingIndicator from "../layout/LoadingIndicator";
 import { useForm } from "@inertiajs/react";
 import Input from "../layout/Input";
 import { route } from "ziggy-js";
+import toast from "react-hot-toast";
 
 export default function CreateMedicalCertificateModal({
     open,
@@ -13,6 +14,7 @@ export default function CreateMedicalCertificateModal({
     appointmentId,
     medicalCertificate,
     patientVisitRecordId,
+    setPatientVisitRecord,
 }) {
     const { processing, data, setData, post } = useForm(
         medicalCertificate || {
@@ -28,14 +30,16 @@ export default function CreateMedicalCertificateModal({
     function handleCreateCertificate(e) {
         e.preventDefault();
         post(route("medical-certificate.store"), {
-            onSuccess: () => {
+            onSuccess: (res) => {
+                setPatientVisitRecord(res.props.patientVisitRecord);
                 closeModal();
             },
             onError: (errors) => {
+                toast.error("Failed to save medical certificate");
                 console.error(errors);
             },
             preserveScroll: true,
-            preserveState: false,
+            preserveState: true,
         });
     }
 
