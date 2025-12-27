@@ -58,7 +58,6 @@ export default function AllPatients({ authh ,  patient }) {
 
     // Handle pagination click
     const handlePaginationnClick = (url) => {
-        console.log(url)
         if (url) {
             router.get(url, {
                 preserveState: true,
@@ -204,7 +203,6 @@ export default function AllPatients({ authh ,  patient }) {
     };
 
     const handlePaginationClick = (url) => {
-        console.log(url)
         if (url) {
             router.get(url, {
                 preserveState: true,

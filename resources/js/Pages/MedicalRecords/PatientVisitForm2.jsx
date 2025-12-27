@@ -523,8 +523,6 @@ export default function PatientVisitForm(props, appointment) {
                 }),
             )
             .then((response) => {
-                console.log("Lab tests response:", response.data); // Debug log
-
                 setLabTests(response.data.tests);
                 setTestDates(response.data.dates);
             })
@@ -609,7 +607,6 @@ export default function PatientVisitForm(props, appointment) {
                 `/vitalsignsmodal/${patient.patient_id}`,
             );
             const vitalData = await response.json();
-            console.log(vitalData);
             setData({
                 patient_id: vitalData.patient_id || "",
                 blood_diastolic_pressure:

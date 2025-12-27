@@ -116,7 +116,6 @@ export default function BillingModal({
 
     async function handleSubmit() {
         setLoading(true);
-        console.log({ selectedServiceCharge, patient });
         try {
             const data = {
                 patient: {

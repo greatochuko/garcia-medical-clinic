@@ -22,8 +22,6 @@ const MedicalCertificateModal = ({ isOpen, onClose, patientInfo, diagnosis , app
   axios.get(`/medical-certificate/patient/info/${patientInfo.patient_id}/${appointment_id}`)
     .then((response) => {
       const data = response.data;
-      // Optional: console.log(data) if needed
-      // console.log("Fetched data:", data);
       setFormData(prev => ({
         ...prev,
         civilStatus: data.civilStatus || '',
