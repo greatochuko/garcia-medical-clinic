@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Head } from "@inertiajs/react";
-import "../../../css/prescription-print.css";
 
 export default function Print({ prescription }) {
     const [imagesLoaded, setImagesLoaded] = useState({
@@ -15,11 +14,10 @@ export default function Print({ prescription }) {
     }, [imagesLoaded]);
 
     const medications = prescription?.medications || [];
+    const MEDICATIONS_PER_PAGE = 3;
     const pages = [];
 
-    const MEDICATIONS_PER_PAGE = 6;
-
-    // Split medications into chunks of 3 per page
+    // Split medications into chunks
     for (let i = 0; i < medications.length; i += MEDICATIONS_PER_PAGE) {
         pages.push(medications.slice(i, i + MEDICATIONS_PER_PAGE));
     }
@@ -29,14 +27,16 @@ export default function Print({ prescription }) {
             <Head title="Print Prescription" />
 
             {pages.map((pageMeds, pageIndex) => (
-                <div className="page" key={pageIndex}>
+                <div
+                    key={pageIndex}
+                    className="relative mx-auto box-border h-[85mm] w-[140mm] break-after-page py-[10mm]"
+                >
                     {/* Header */}
-                    <div className="header">
-                        {/* <img src="/images/garcia-logo.png" alt="Logo" className="logo" /> */}
+                    <div className="mb-2 text-center">
                         <img
                             src="/images/garcia-logo.png"
                             alt="Logo"
-                            className="logo"
+                            className="mx-auto mb-2 block w-[60mm]"
                             onLoad={() =>
                                 setImagesLoaded((prev) => ({
                                     ...prev,
@@ -45,38 +45,37 @@ export default function Print({ prescription }) {
                             }
                         />
 
-                        <div className="patient-row">
-                            <div className="patient-info">
+                        <div className="mb-1 flex justify-between text-sm">
+                            <div className="flex-1 text-left">
                                 <div>
-                                    <strong>Patient Name:</strong>
-                                    <span className="text-[13px]">
-                                        {" "}
-                                        {prescription?.patient_name}{" "}
-                                    </span>
+                                    <strong>Name:</strong>{" "}
+                                    {prescription?.patient_name || "N/A"}
                                 </div>
                                 <div>
                                     <strong>Address:</strong>{" "}
-                                    {prescription?.address}
+                                    {prescription?.address || "N/A"}
                                 </div>
                             </div>
-                            <div className="patient-meta">
+
+                            <div className="ml-[10mm] flex-shrink-0 text-right">
                                 <div>
-                                    <strong>Date:</strong> {prescription?.date}
+                                    <strong>Date:</strong>{" "}
+                                    {prescription?.date || "N/A"}
                                 </div>
                                 <div>
                                     <strong>Age/Sex:</strong>{" "}
-                                    {prescription?.age}/{prescription?.sex}
+                                    {prescription?.age || "N/A"}/
+                                    {prescription?.sex || "N/A"}
                                 </div>
                             </div>
                         </div>
 
-                        <hr className="divider" />
+                        <hr className="my-[2mm] border-t border-black" />
 
-                        {/* <img src="/images/rx.png" alt="Rx" className="rx-icon" /> */}
                         <img
                             src="/images/rx.png"
                             alt="Rx"
-                            className="rx-icon"
+                            className="mx-0 mb-2 block h-auto w-[15mm]"
                             onLoad={() =>
                                 setImagesLoaded((prev) => ({
                                     ...prev,
@@ -86,38 +85,40 @@ export default function Print({ prescription }) {
                         />
                     </div>
 
-                    {/* Content */}
-                    {pageMeds.map((med, index) => {
-                        const globalIndex =
-                            pageIndex * MEDICATIONS_PER_PAGE + index + 1;
-                        return (
-                            <div className="medication-item" key={index}>
-                                <div className="med-line">
-                                    <span>
-                                        {globalIndex}. {med.name.name}
-                                    </span>
-                                    <span className="tab-count">
-                                        #{med.amount}
-                                    </span>
+                    {/* Medications */}
+                    <div className="mb-[25mm]">
+                        {pageMeds.map((med, index) => {
+                            const globalIndex =
+                                pageIndex * MEDICATIONS_PER_PAGE + index + 1;
+                            return (
+                                <div key={index} className="mb-3">
+                                    <div className="flex justify-between font-semibold">
+                                        <span>
+                                            {globalIndex}. {med.name.name}
+                                        </span>
+                                        <span className="ml-1 whitespace-nowrap">
+                                            #{med.amount}
+                                        </span>
+                                    </div>
+                                    <div className="ml-1">
+                                        Sig: {med.quantity} {med.sig.name} for{" "}
+                                        {med.duration} days
+                                    </div>
                                 </div>
-                                <div className="sig-line">
-                                    Sig: {med.quantity} {med.sig.name}
-                                </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
+                    </div>
 
-                    {/* Doctor signature */}
-                    <div className="doctor-signature">
-                        <hr />
-                        <p className="text-[13px]">
+                    {/* Doctor Signature */}
+                    <div className="fixed bottom-[10mm] right-[10mm] box-border w-[55mm] bg-white p-[2mm] text-right text-[9px]">
+                        <hr className="mb-1 border-t border-black" />
+                        <p className="text-[13px] font-bold">
                             {prescription?.doctor_name}
                         </p>
                         <div>
-                            <strong>License No.:</strong>
+                            <strong>License No.:</strong>{" "}
                             <span className="text-[13px]">
-                                {" "}
-                                {prescription?.license_no}{" "}
+                                {prescription?.license_no}
                             </span>
                         </div>
                         <div>

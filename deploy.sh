@@ -15,7 +15,7 @@ pnpm build
 echo "Zipping code files into $ZIP_NAME..."
 zip -r $ZIP_NAME \
     app bootstrap config database public resources routes artisan composer.json composer.lock package.json pnpm-lock.yaml \
-    -x "*.env*" "node_modules/*" "vendor/*" "storage/*" "tests/*" ".*" "_tmp_*" "bash.exe.stackdump"
+    -x "*.env*" "node_modules/*" "vendor/*" "storage/*" "tests/*" ".*" "_tmp_*" "bash.exe.stackdump" "public/hot"
 
 # Step 2: Upload the zip to the server
 echo "Uploading $ZIP_NAME to $USER@$HOST:$REMOTE_DIR..."

@@ -37,7 +37,7 @@ export default function BillingModal({
     );
 
     const [selectedServiceChargeId, setSelectedServiceChargeId] = useState(
-        service.id,
+        service?.id,
     );
 
     const selectedServiceCharge = serviceTypes.find(
@@ -105,7 +105,7 @@ export default function BillingModal({
 
     function calculateSubtotal() {
         return (
-            Number(service.charge) +
+            (service ? Number(service?.charge) : 0) +
             prescriptions.reduce((sum, pres) => sum + calculateTotal(pres), 0)
         );
     }
@@ -278,7 +278,7 @@ export default function BillingModal({
                                         <tr>
                                             <td className="p-2">
                                                 {readOnly ? (
-                                                    service.name
+                                                    service?.name || "N/A"
                                                 ) : (
                                                     <select
                                                         value={
@@ -314,10 +314,12 @@ export default function BillingModal({
                                                 1
                                             </td>
                                             <td className="p-2 text-center">
-                                                {service.charge}
+                                                {service?.charge || "N/A"}
                                             </td>
                                             <td className="p-2 text-center">
-                                                {formatPHP(service.charge)}
+                                                {service
+                                                    ? formatPHP(service?.charge)
+                                                    : "N/A"}
                                             </td>
                                         </tr>
 

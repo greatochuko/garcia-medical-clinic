@@ -230,7 +230,7 @@ export function AppointmentRow({
                                 {appointment.patient.gender}
                             </p>
                             <p className="text-xs text-gray-500">
-                                {appointment.service_charge.name}
+                                {appointment.service_charge?.name || "N/A"}
                             </p>
                         </div>
                         <div className="flex min-w-40 flex-[2] items-center justify-center p-4">

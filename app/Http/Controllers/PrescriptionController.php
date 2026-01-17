@@ -48,9 +48,16 @@ class PrescriptionController extends Controller
         //     abort(404, 'No prescriptions found');
         // }
 
+        // dd($medications);
+
         // Format prescription
         $prescription = [
-            'patient_name' => $patient->first_name ?? 'N/A',
+            'patient_name' => trim(
+                ($patient->first_name ?? '') . ' ' .
+                    ($patient->middle_initial ?? '') . ' ' .
+                    ($patient->last_name ?? '')
+            ) ?: 'N/A',
+
             'address' => $patient->address ?? 'N/A',
             'age' => $patient->age ?? 'N/A',
             'sex' => $patient->gender ?? 'N/A',
@@ -64,6 +71,7 @@ class PrescriptionController extends Controller
                     'amount' => $item->amount,
                     'sig' => $item->frequency ?? 'N/A',
                     'quantity' => $item->dosage ?? 'N/A',
+                    'duration' => $item->duration ?? 'N/A',
                 ];
             })->toArray(),
         ];
