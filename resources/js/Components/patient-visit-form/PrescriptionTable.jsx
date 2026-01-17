@@ -7,6 +7,7 @@ import { route } from "ziggy-js";
 import SearchInput from "../ui/SearchInput";
 import { SaveIcon } from "lucide-react";
 import XIcon from "../icons/XIcon";
+import toast from "react-hot-toast";
 
 export default function PrescriptionTable({
     prescriptions,
@@ -25,7 +26,7 @@ export default function PrescriptionTable({
         "medication",
         "dosage",
         "frequency",
-        "duration",
+        // "duration",
         "amount",
     ];
 
@@ -91,6 +92,11 @@ export default function PrescriptionTable({
                 onFinish: () => {
                     setPrescriptionLoading("");
                 },
+                onError: (error) => {
+                    Object.values(error).forEach((errorMessage) => {
+                        toast.error(errorMessage);
+                    });
+                },
                 preserveScroll: true,
                 preserveState: true,
             },
@@ -152,7 +158,7 @@ export default function PrescriptionTable({
                                         {pres.frequency.name}
                                     </td>
                                     <td className="px-2 py-4 text-center">
-                                        {pres.duration}
+                                        {pres.duration || "N/A"}
                                     </td>
                                     <td className="px-2 py-4 text-center">
                                         {pres.amount}
@@ -251,8 +257,8 @@ export default function PrescriptionTable({
             </table>
 
             {/* Sticky bottom input row */}
-            <div className="sticky bottom-0 z-10 mt-auto flex min-w-min bg-white">
-                <div className="w-3/10 min-w-48 px-2 py-4 pl-4">
+            <div className="mt-auto flex bg-white">
+                <div className="min-w-48 flex-[2.5] px-2 py-4 pl-4">
                     <div className="group relative">
                         <SearchInput
                             onChange={(value) => {
@@ -290,7 +296,7 @@ export default function PrescriptionTable({
                         />
                     </div>
                 </div>
-                <div className="w-1/10 min-w-20 px-2 py-4">
+                <div className="min-w-20 flex-1 px-2 py-4">
                     <Input
                         disabled={processing}
                         placeholder="Dose"
@@ -304,7 +310,7 @@ export default function PrescriptionTable({
                         }
                     />
                 </div>
-                <div className="w-3/10 min-w-[177.5px] px-2 py-4">
+                <div className="min-w-[177.5px] flex-[2.5] px-2 py-4">
                     <SearchInput
                         value={data.frequency}
                         onChange={(value) => {
@@ -340,7 +346,7 @@ export default function PrescriptionTable({
                         className="w-full px-2"
                     />
                 </div>
-                <div className="w-1/10 min-w-[127px] px-2 py-4">
+                <div className="min-w-[127px] flex-[1.75] px-2 py-4">
                     <Input
                         disabled={processing}
                         type="number"
@@ -355,7 +361,7 @@ export default function PrescriptionTable({
                         }
                     />
                 </div>
-                <div className="w-1/10 min-w-[100px] px-2 py-4">
+                <div className="min-w-[100px] flex-[1.25] px-2 py-4">
                     <Input
                         disabled={processing}
                         type="number"
@@ -370,11 +376,11 @@ export default function PrescriptionTable({
                         }
                     />
                 </div>
-                <div className="w-1/10 px-2 py-4 pr-4 text-center">
+                <div className="max-w-28 flex-[1.5] px-2 py-4 pr-4 text-center">
                     <button
                         type="submit"
                         disabled={fieldVacant || processing}
-                        className="mx-auto flex items-center justify-center rounded-xl rounded-bl-none bg-accent p-2 px-4 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="mx-auto flex items-center justify-center rounded-xl rounded-bl-none bg-accent p-2 px-4 disabled:cursor-[not-allowed!important] disabled:opacity-60"
                     >
                         {processing ? (
                             <Loader2Icon

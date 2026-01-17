@@ -98,7 +98,6 @@ class PatientVisitController extends Controller
         $patient_chief_complaint = PatientChiefComplaint::where('patient_id', $id)
             ->where('appointment_id', $app_id)
             ->get();
-        ;
         return $patient_chief_complaint;
     }
 
@@ -392,7 +391,7 @@ class PatientVisitController extends Controller
                 'frequency_id' => 'nullable|integer',
                 'frequency' => 'required|string|max:255',
                 'amount' => 'required|string|max:255',
-                'duration' => 'required|string|max:255',
+                'duration' => 'nullable|integer',
                 'appointment_id' => 'nullable',
                 'patient_visit_record_id' => 'required',
             ]);
@@ -426,7 +425,7 @@ class PatientVisitController extends Controller
                 'frequency_id' => $frequency->id,
                 'amount' => $validated['amount'],
                 'quantity' => $validated['amount'],
-                'duration' => $validated['duration'],
+                'duration' => $validated['duration'] ?? 0,
                 'appointment_id' => $validated['appointment_id'] ?? null,
                 'patient_visit_record_id' => $validated['patient_visit_record_id'],
             ]);
@@ -448,7 +447,7 @@ class PatientVisitController extends Controller
                 'frequency_id' => 'nullable|integer',
                 'frequency' => 'required|string|max:255',
                 'amount' => 'required|max:255',
-                'duration' => 'required|max:255',
+                'duration' => 'nullable|integer',
                 'appointment_id' => 'required',
             ]);
 
@@ -486,7 +485,7 @@ class PatientVisitController extends Controller
                 'frequency_id' => $frequency->id,
                 'amount' => $validated['amount'],
                 'quantity' => $validated['amount'],
-                'duration' => $validated['duration'],
+                'duration' => $validated['duration'] ?? 0,
                 'appointment_id' => $validated['appointment_id'],
             ]);
 

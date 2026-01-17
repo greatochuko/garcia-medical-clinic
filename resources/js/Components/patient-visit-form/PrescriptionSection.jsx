@@ -53,7 +53,10 @@ export default function PrescriptionSection({
                                 <div className="flex flex-col">
                                     {pres.medication.name} #{pres.amount} tabs
                                     <span className="text-xs text-[#666666]">
-                                        {pres.dosage} {pres.frequency.name}
+                                        {pres.dosage} {pres.frequency.name}{" "}
+                                        {pres.duration
+                                            ? `for ${pres.duration} day${pres.duration > 1 ? "s" : ""}`
+                                            : ""}
                                     </span>
                                 </div>
                             </li>
