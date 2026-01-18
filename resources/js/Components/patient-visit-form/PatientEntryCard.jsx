@@ -10,6 +10,7 @@ import { Link } from "@inertiajs/react";
 import { Trash2Icon } from "lucide-react";
 import { router } from "@inertiajs/react";
 import { Loader2Icon } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function PatientEntryCard({
     entry,
@@ -62,6 +63,9 @@ export default function PatientEntryCard({
             onSuccess() {
                 setPatientVisitRecord((prev) => ({ ...prev, lab_request: [] }));
             },
+            onError() {
+                toast.error("An error occured deleting Lab Request");
+            },
             preserveState: true,
             preserveScroll: true,
         });
@@ -80,6 +84,10 @@ export default function PatientEntryCard({
                     ...prev,
                     medical_certificate: null,
                 }));
+            },
+
+            onError() {
+                toast.error("An error occured deleting Medical Certificate");
             },
             preserveState: true,
             preserveScroll: true,
@@ -225,20 +233,22 @@ export default function PatientEntryCard({
                                             )
                                             .join(", ")}
                                     </p>
-                                    <button
-                                        disabled={deletingLabRequest}
-                                        onClick={handleDeteLabRequest}
-                                        className="p-1 text-red-500 disabled:cursor-[not-allowed!important] disabled:opacity-50"
-                                    >
-                                        {deletingLabRequest ? (
-                                            <Loader2Icon
-                                                size={14}
-                                                className="animate-spin"
-                                            />
-                                        ) : (
-                                            <Trash2Icon size={14} />
-                                        )}
-                                    </button>
+                                    {!appointmentIsClosed && (
+                                        <button
+                                            disabled={deletingLabRequest}
+                                            onClick={handleDeteLabRequest}
+                                            className="p-1 text-red-500 disabled:cursor-[not-allowed!important] disabled:opacity-50"
+                                        >
+                                            {deletingLabRequest ? (
+                                                <Loader2Icon
+                                                    size={14}
+                                                    className="animate-spin"
+                                                />
+                                            ) : (
+                                                <Trash2Icon size={14} />
+                                            )}
+                                        </button>
+                                    )}
                                 </li>
                             )}
                             {medicalCertificate && (

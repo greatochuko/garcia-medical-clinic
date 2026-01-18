@@ -113,19 +113,15 @@ class LaboratoryRequestController extends Controller
                 ]);
             }
 
-            // Filter requests that the user can delete
-            $deletable = $labRequests->filter(function ($request) use ($user) {
-                return  $user->role === 'admin' || $request->doctor_id === $user->id;
-            });
 
-            if ($deletable->isEmpty()) {
+            if ($user->role !== 'doctor' && $user->role !== 'admin') {
                 return redirect()->back()->withErrors([
                     'error' => 'You are not authorized to delete any laboratory requests for this appointment.',
                 ]);
             }
 
             // Delete the allowed requests
-            LaboratoryRequest::whereIn('id', $deletable->pluck('id'))->delete();
+            LaboratoryRequest::whereIn('id', $labRequests->pluck('id'))->delete();
 
             return redirect()->back()->with('success', 'Laboratory requests deleted successfully.');
         } catch (\Throwable $e) {
@@ -137,8 +133,6 @@ class LaboratoryRequestController extends Controller
             ]);
         }
     }
-
-
 
     public function getPatientRequests($patientId, $app_id)
     {

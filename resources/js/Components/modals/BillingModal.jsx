@@ -147,6 +147,7 @@ export default function BillingModal({
                 setPaid(true);
                 setPaymentModalOpen(false);
                 removeAppointmentFromList?.();
+                toast.success("Checkout successfull");
             } else {
                 toast.error("Failed to bill client");
             }
@@ -356,7 +357,7 @@ export default function BillingModal({
                                                             value={
                                                                 prescription.quantity
                                                             }
-                                                            min={1}
+                                                            min={0}
                                                             className="w-full rounded-md border border-accent-400 bg-white p-2 text-center text-xs outline-none focus:border-accent-500 focus:ring-2 focus:ring-[#089bab]/50"
                                                             onChange={(e) =>
                                                                 handleQuantityChange(

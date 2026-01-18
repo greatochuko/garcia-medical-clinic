@@ -19,6 +19,7 @@ const formFields = [
         id: "middle_initial",
         label: "Middle Initial",
         type: "text",
+        maxLength: 1,
     },
     {
         id: "dob",
@@ -266,6 +267,7 @@ export default function AddPatientForm() {
                                                 disabled={
                                                     field.disabled || processing
                                                 }
+                                                maxLength={field.maxLength}
                                             />
                                             {field.icon && (
                                                 <img

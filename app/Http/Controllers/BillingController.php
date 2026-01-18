@@ -80,7 +80,7 @@ class BillingController extends Controller
                         throw new \Exception("Medication not found (ID: {$prescription['medication']['id']}).");
                     }
 
-                    $quantity = $prescription['amount'];
+                    $quantity = $prescription['quantity'];
                     $available = $medication->quantity;
 
                     // Fail if requested amount exceeds available stock

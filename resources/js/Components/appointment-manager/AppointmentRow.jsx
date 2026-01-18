@@ -106,7 +106,7 @@ export function AppointmentRow({
         }
     }
 
-    const patientFullName = getUserFullname(appointment.patient)
+    const patientFullName = getUserFullname(appointment.patient);
 
     let statusClassName = "";
 
@@ -133,6 +133,10 @@ export function AppointmentRow({
     }
 
     async function handleCheckOut() {
+        if (userRole === "doctor") {
+            toast.error("Only admins and secretaries can check out a patient");
+            return;
+        }
         try {
             setCheckOutLoading(true);
             const res = await fetch(
@@ -147,8 +151,9 @@ export function AppointmentRow({
         } catch (error) {
             toast.error("An error occurred fetching prescriptions");
             console.error(error);
+        } finally {
+            setCheckOutLoading(false);
         }
-        setCheckOutLoading(false);
     }
 
     async function changeStatus(newStatus, setLoading) {

@@ -135,19 +135,14 @@ class MedicalCertificateController extends Controller
                 ]);
             }
 
-            // Filter certificates user is allowed to delete
-            $deletable = $certificates->filter(function ($certificate) use ($user) {
-                return $certificate->doctor_id === $user->id || $user->role === 'admin';
-            });
-
-            if ($deletable->isEmpty()) {
+            if ($user->role !== 'doctor' && $user->role !== 'admin') {
                 return redirect()->back()->withErrors([
                     'error' => 'You are not authorized to delete this medical certificate.',
                 ]);
             }
 
             // Delete allowed certificates
-            MedicalCertificate::whereIn('id', $deletable->pluck('id'))->delete();
+            MedicalCertificate::whereIn('id', $certificates->pluck('id'))->delete();
 
             return redirect()->back()->with('success', 'Medical certificate deleted successfully.');
         } catch (\Throwable $e) {
