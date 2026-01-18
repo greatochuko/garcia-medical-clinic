@@ -103,7 +103,7 @@ export default function Print({ prescription }) {
                                     <div className="ml-1">
                                         Sig: {med.quantity} {med.sig.name}{" "}
                                         {med.duration
-                                            ? `for ${med.duration} day${med.duration > 1 ? "s" : ""}`
+                                            ? `for ${med.duration}`
                                             : ""}
                                     </div>
                                 </div>

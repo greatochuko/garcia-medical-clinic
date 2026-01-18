@@ -122,7 +122,7 @@ export default function PrescriptionTable({
                             Frequency / Instruction
                         </th>
                         <th className="w-1/10 whitespace-nowrap px-2 py-4 text-center font-normal">
-                            Duration (Days)
+                            Duration
                         </th>
                         <th className="w-1/10 whitespace-nowrap px-2 py-4 text-center font-normal">
                             Amount (#)
@@ -349,7 +349,7 @@ export default function PrescriptionTable({
                 <div className="min-w-[127px] flex-[1.75] px-2 py-4">
                     <Input
                         disabled={processing}
-                        type="number"
+                        type="text"
                         placeholder="Duration"
                         className="w-full px-2"
                         value={data.duration}
@@ -523,7 +523,7 @@ function PrescriptionEditingRow({
             <td className="px-2 py-2 text-center">
                 <div className="flex w-full">
                     <Input
-                        type="number"
+                        type="text"
                         value={prescriptionToEdit.duration || ""}
                         onChange={(e) =>
                             setPrescriptionToEdit((prev) => ({

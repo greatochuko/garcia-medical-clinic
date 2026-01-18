@@ -391,7 +391,7 @@ class PatientVisitController extends Controller
                 'frequency_id' => 'nullable|integer',
                 'frequency' => 'required|string|max:255',
                 'amount' => 'required|string|max:255',
-                'duration' => 'nullable|integer',
+                'duration' => 'nullable|string|max:255',
                 'appointment_id' => 'nullable',
                 'patient_visit_record_id' => 'required',
             ]);
@@ -447,7 +447,7 @@ class PatientVisitController extends Controller
                 'frequency_id' => 'nullable|integer',
                 'frequency' => 'required|string|max:255',
                 'amount' => 'required|max:255',
-                'duration' => 'nullable|integer',
+                'duration' => 'nullable|string|max:255',
                 'appointment_id' => 'required',
             ]);
 

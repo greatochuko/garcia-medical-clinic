@@ -55,7 +55,7 @@ export default function PrescriptionSection({
                                     <span className="text-xs text-[#666666]">
                                         {pres.dosage} {pres.frequency.name}{" "}
                                         {pres.duration
-                                            ? `for ${pres.duration} day${pres.duration > 1 ? "s" : ""}`
+                                            ? `for ${pres.duration}`
                                             : ""}
                                     </span>
                                 </div>
