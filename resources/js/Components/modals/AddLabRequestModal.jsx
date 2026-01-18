@@ -123,7 +123,10 @@ export default function AddLabRequestModal({
         e.preventDefault();
         post(route("laboratory.store"), {
             onSuccess: (res) => {
-                setPatientVisitRecord(res.props.patientVisitRecord);
+                setPatientVisitRecord((prev) => ({
+                    ...prev,
+                    lab_request: res.props.patientVisitRecord.lab_request,
+                }));
                 closeLabRequestModal();
             },
             onError: (errors) => {

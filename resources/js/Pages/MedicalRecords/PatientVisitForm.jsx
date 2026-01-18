@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import PatientSummaryPanel from "@/Components/patient-visit-form/PatientSummaryPanel";
 
@@ -22,6 +22,8 @@ const patientEntries = [
         hideInput: true,
     },
 ];
+
+const AUTOSAVE_INTERVAL = 30_000; // 30 seconds
 
 export default function PatientVisitForm({
     patientVisitRecord: initialRecord,
@@ -57,32 +59,56 @@ export default function PatientVisitForm({
         JSON.stringify(initialRecord.prescriptions) ===
             JSON.stringify(patientVisitRecord.prescriptions);
 
-    function handleSaveForm() {
-        const payload = {
-            chief_complaints: patientVisitRecord.chief_complaints,
-            physical_exams: patientVisitRecord.physical_exams,
-            plans: patientVisitRecord.plans,
-            diagnoses: patientVisitRecord.diagnoses,
-        };
+    const handleSaveForm = useCallback(
+        (showToastNotification = true) => {
+            const payload = {
+                chief_complaints: patientVisitRecord.chief_complaints,
+                physical_exams: patientVisitRecord.physical_exams,
+                plans: patientVisitRecord.plans,
+                diagnoses: patientVisitRecord.diagnoses,
+            };
 
-        router.put(
-            route("patientVisitRecords.update", { id: patientVisitRecord.id }),
-            payload,
-            {
-                onStart() {
-                    setSaving(true);
+            router.put(
+                route("patientVisitRecords.update", {
+                    id: patientVisitRecord.id,
+                }),
+                payload,
+                {
+                    onStart() {
+                        setSaving(true);
+                    },
+                    onFinish() {
+                        setSaving(false);
+                    },
+                    onSuccess() {
+                        if (showToastNotification) {
+                            toast.success("Form Saved Successfully");
+                        }
+                    },
+                    preserveScroll: true,
+                    onError: (errors) => {
+                        console.error(errors);
+                        toast.error("Failed to Save Patient Visit Form");
+                    },
                 },
-                onFinish() {
-                    setSaving(false);
-                },
-                preserveScroll: true,
-                onError: (errors) => {
-                    console.error(errors);
-                    toast.error("Failed to Save Patient Visit Form");
-                },
-            },
-        );
-    }
+            );
+        },
+        [
+            patientVisitRecord.chief_complaints,
+            patientVisitRecord.diagnoses,
+            patientVisitRecord.id,
+            patientVisitRecord.physical_exams,
+            patientVisitRecord.plans,
+        ],
+    );
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            handleSaveForm(false);
+        }, AUTOSAVE_INTERVAL);
+
+        return () => clearInterval(intervalId);
+    }, [handleSaveForm]);
 
     return (
         <AuthenticatedLayout

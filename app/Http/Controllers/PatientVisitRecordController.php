@@ -173,7 +173,7 @@ class PatientVisitRecordController extends Controller
             DB::commit();
 
             return back()->with([
-                'success' => 'Form Saved Successfully',
+                'message' => 'Form Saved Successfully',
                 'record' => $record->fresh(),
             ]);
         } catch (\Throwable $e) {
@@ -293,10 +293,6 @@ class PatientVisitRecordController extends Controller
             }
 
             DB::commit();
-
-            // return redirect()->route('appointments.index')
-            //     ->with('success', 'Form closed and medical record created successfully!');
-
             return back()->with([
                 'success' => 'Patient visit record closed successfully',
                 'record' => $record->fresh(),
@@ -307,7 +303,6 @@ class PatientVisitRecordController extends Controller
             Log::error($e->getMessage(), [
                 'exception' => $e->getMessage(),
             ]);
-
 
             return back()->withErrors([
                 'error' => 'Something went wrong while closing the record',

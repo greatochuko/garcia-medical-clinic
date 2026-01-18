@@ -31,7 +31,11 @@ export default function CreateMedicalCertificateModal({
         e.preventDefault();
         post(route("medical-certificate.store"), {
             onSuccess: (res) => {
-                setPatientVisitRecord(res.props.patientVisitRecord);
+                setPatientVisitRecord((prev) => ({
+                    ...prev,
+                    medical_certificate:
+                        res.props.patientVisitRecord.medical_certificate,
+                }));
                 closeModal();
             },
             onError: (errors) => {
