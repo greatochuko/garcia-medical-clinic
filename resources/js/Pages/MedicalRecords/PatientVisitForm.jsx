@@ -112,9 +112,6 @@ export default function PatientVisitForm({
         return () => clearInterval(intervalId);
     }, [handleSaveForm, isSaved]);
 
-    console.clear();
-    console.log(patientVisitRecord);
-
     const doctorFullName = patientVisitRecord.doctor
         ? getUserFullname(patientVisitRecord.doctor)
         : "";
