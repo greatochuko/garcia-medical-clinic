@@ -62,9 +62,9 @@ const initialDiagnosticResults = [
             {
                 category: "Kidney Panel",
                 tests: [
-                    { name: "Sodium (Na)" },
-                    { name: "Potassium (K)" },
-                    { name: "Magnesium (Mg)" },
+                    { name: "Creatinine" },
+                    { name: "Serum Uric Acid (SUA)" },
+                    { name: "Urea Nitrogen (BUN)" },
                 ],
             },
             {
