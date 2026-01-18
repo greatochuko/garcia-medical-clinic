@@ -8,6 +8,7 @@ import { Loader2Icon } from "lucide-react";
 import { CircleCheckIcon } from "lucide-react";
 import { Link, router } from "@inertiajs/react";
 import toast from "react-hot-toast";
+import { getUserFullname } from "@/utils/getUserFullname";
 
 export default function PatientSummaryPanel({
     appointmentId,
@@ -89,7 +90,7 @@ export default function PatientSummaryPanel({
         }
     });
 
-    const patientFullName = `${patient.first_name} ${patient.middle_initial || ""} ${patient.last_name}`;
+    const patientFullName = getUserFullname(patient);
 
     const vitalSigns = [
         {

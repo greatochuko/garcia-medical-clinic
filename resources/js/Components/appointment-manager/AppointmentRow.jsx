@@ -13,6 +13,7 @@ import useAppointments from "@/hooks/useAppointmets";
 import useVitals from "@/hooks/useVitals";
 import { generateVitalsData } from "@/utils/generateVitalsData";
 import axios from "axios";
+import { getUserFullname } from "@/utils/getUserFullname";
 
 function formatStatus(status) {
     return status
@@ -105,7 +106,7 @@ export function AppointmentRow({
         }
     }
 
-    const patientFullName = `${appointment.patient.first_name}, ${appointment.patient.middle_initial || ""} ${appointment.patient.last_name}`;
+    const patientFullName = getUserFullname(appointment.patient)
 
     let statusClassName = "";
 

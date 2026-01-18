@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { InfoIcon, PlusIcon } from "lucide-react";
 import SearchInput from "../ui/SearchInput";
 import PaymentModal from "./PaymentModal";
+import { getUserFullname } from "@/utils/getUserFullname";
 
 function formatPHP(amount) {
     return `PHP ${Number(amount).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -32,7 +33,7 @@ export default function MedicationRefillModal({
     const [cashTendered, setCashTendered] = useState("");
 
     const patientFullName = patient
-        ? `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`
+        ? getUserFullname(patient)
         : "WALK IN PATIENT";
 
     function closeModal() {

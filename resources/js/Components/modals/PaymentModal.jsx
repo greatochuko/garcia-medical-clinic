@@ -2,6 +2,7 @@ import React from "react";
 import ModalContainer from "../layout/ModalContainer";
 import { XIcon } from "lucide-react";
 import { Loader2Icon } from "lucide-react";
+import { getUserFullname } from "@/utils/getUserFullname";
 
 export default function PaymentModal({
     open,
@@ -15,7 +16,7 @@ export default function PaymentModal({
     setCashTendered,
 }) {
     const patientFullName = patient
-        ? `${patient.first_name}, ${patient.middle_initial || ""} ${patient.last_name}`
+        ? getUserFullname(patient)
         : "WALK IN PATIENT";
 
     const handleNumberClick = (val) => {

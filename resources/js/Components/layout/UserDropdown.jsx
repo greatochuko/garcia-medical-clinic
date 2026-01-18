@@ -7,6 +7,7 @@ import { router } from "@inertiajs/react";
 import { MdLogout, MdSettings } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { LuChartColumn } from "react-icons/lu";
+import { getUserFullname } from "@/utils/getUserFullname";
 
 const dropdownLinks = [
     {
@@ -34,7 +35,7 @@ export default function UserDropdown({ user }) {
 
     const [dropdownRef] = useClickOutside(() => setDropdownOpen(false));
 
-    const userFullName = `${user?.first_name || ""} ${user?.middle_initial ? `${user.middle_initial}.` : ""} ${user?.last_name || ""}`;
+    const userFullName = getUserFullname(user);
 
     function handleLogout() {
         router.post(route("logout"), {

@@ -9,6 +9,7 @@ import DiagnosticResultsCard from "@/Components/patient-visit-form/DiagnosticRes
 import { router } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import toast from "react-hot-toast";
+import { getUserFullname } from "@/utils/getUserFullname";
 
 const patientEntries = [
     { id: "chief_complaints", title: "CHIEF COMPLAINT", value: [] },
@@ -110,6 +111,28 @@ export default function PatientVisitForm({
         return () => clearInterval(intervalId);
     }, [handleSaveForm]);
 
+    console.clear();
+    console.log(patientVisitRecord);
+
+    const doctorFullName = patientVisitRecord.doctor
+        ? getUserFullname(patientVisitRecord.doctor)
+        : "";
+
+    const patientVisitDate = new Date(
+        patientVisitRecord.created_at,
+    ).toLocaleString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+    });
+
+    const patientVisitHeader = patientVisitRecord
+        ? `Patient Visit Form ID No. ${patientVisitRecord.id} · ${patientVisitDate} ${patientVisitRecord.doctor ? `· ${doctorFullName}` : ""}`
+        : "";
+
     return (
         <AuthenticatedLayout
             pageTitle={`${patient.first_name} ${patient.last_name} - Patient Visit Form`}
@@ -135,8 +158,7 @@ export default function PatientVisitForm({
                 <div className="flex flex-col gap-4 rounded-lg bg-accent-100 py-2 shadow">
                     <div className="relative flex items-center justify-center">
                         <h2 className="z-20 rounded-md bg-accent-200 p-2 px-4 text-center">
-                            Patient Visit Form ID No. 1 . July 16, 2025 2:26 PM
-                            . Royce V. Garcia, MD
+                            {patientVisitHeader}
                         </h2>
                         <div className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 bg-accent-200"></div>
                     </div>

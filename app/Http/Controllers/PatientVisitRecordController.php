@@ -83,6 +83,8 @@ class PatientVisitRecordController extends Controller
                 'appointment_id' => ['nullable', 'exists:appointments,id'],
             ]);
 
+            $validated['doctor_id'] = auth()->id();
+
             $record = PatientVisitRecord::create($validated);
 
             // Return JSON instead of redirect for Inertia
