@@ -111,12 +111,15 @@ class BillingController extends Controller
 
             // Mark appointment as checked out if applicable
             if (!empty($validated['appointment_id'])) {
-                $appointment = Appointment::with('patient')->find($validated['appointment_id']);
+                $appointment = Appointment::with(['patient', 'patientVisitRecord'])->find($validated['appointment_id']);
                 if ($appointment) {
+                    Log::info('Appointment:', ['appointment' => $appointment]);
+
                     $appointment->update(['status' => 'checked_out']);
 
                     $medicalRecord = MedicalRecord::where('appointment_id', $appointment->id)->first();
-                    $receiverId = $medicalRecord?->doctor_id;
+
+                    $receiverId = $medicalRecord?->doctor_id ?? $appointment->patientVisitRecord?->doctor_id;
 
                     $transactionData = [
                         'billing_id' => $billing->id,
@@ -132,14 +135,14 @@ class BillingController extends Controller
                         'amount_paid' => $billing->amount_paid,
                     ];
 
-                    Log::info($transactionData);
-
-                    ChatController::sendChatMessage(
-                        $receiverId,
-                        'transaction',
-                        'New billing record created for your visit.',
-                        $transactionData
-                    );
+                    if ($receiverId) {
+                        ChatController::sendChatMessage(
+                            $receiverId,
+                            'transaction',
+                            'New billing record created for your visit.',
+                            $transactionData
+                        );
+                    }
 
                     $appointment->load(['patient.vitals', 'serviceCharge']);
 
