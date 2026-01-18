@@ -31,7 +31,7 @@ export default function ReceiptMessage({ message, isSender }) {
                     {message.transaction.queue_type}
                     {message.transaction.queue_number} {" - "}
                     {message.transaction.patient_name}
-                    {isSender ? "Is sender" : " not sender"}
+                    {/* {isSender ? "Is sender" : " not sender"} */}
                 </p>
                 <p className="text-xs">Total: {message.transaction.total}</p>
                 <p className="text-xs">
