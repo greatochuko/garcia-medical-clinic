@@ -33,7 +33,8 @@ export default function SelectPatient({ patients }) {
                                     type="text"
                                     value={searchQuery}
                                     onChange={(value) => setSearchQuery(value)}
-                                    className="w-full flex-1 pr-10"
+                                    className="pr-10"
+                                    containerClassName="flex-1"
                                     dropdownClassName="text-sm"
                                     placeholder="Start typing..."
                                     position="bottom"
@@ -56,38 +57,6 @@ export default function SelectPatient({ patients }) {
                                     height={18}
                                     className="absolute right-3 top-1/2 -translate-y-1/2"
                                 />
-
-                                {/* {searchQuery && (
-                                    <div className="absolute left-1/2 top-full w-full -translate-x-1/2 translate-y-1">
-                                        <ul className="max-h-40 overflow-y-auto rounded-lg border bg-white text-start text-sm shadow-md">
-                                            {filteredPatients.length > 0 ? (
-                                                filteredPatients.map(
-                                                    (patient) => (
-                                                        <li key={patient.id}>
-                                                            <Link
-                                                                href={`/appointments/create?id=${patient.patient_id}`}
-                                                                key={patient.id}
-                                                                className="block p-3 duration-200 hover:bg-accent-200"
-                                                            >
-                                                                {
-                                                                    patient.first_name
-                                                                }{" "}
-                                                                {
-                                                                    patient.last_name
-                                                                }
-                                                            </Link>
-                                                        </li>
-                                                    ),
-                                                )
-                                            ) : (
-                                                <p className="p-3 text-accent-500">
-                                                    No record found for search
-                                                    &ldquo;{searchQuery}&rdquo;
-                                                </p>
-                                            )}
-                                        </ul>
-                                    </div>
-                                )} */}
                             </div>
                         </div>
                         <div className="flex flex-1 flex-col items-center gap-6 border-b-2 border-accent-200 py-12 text-center">

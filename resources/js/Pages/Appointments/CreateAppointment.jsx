@@ -212,6 +212,7 @@ export default function CreateAppointment({ patientData, serviceTypes }) {
                     <div className="flex items-center justify-end gap-4 p-6">
                         <button
                             type="button"
+                            disabled={processing}
                             onClick={() => router.visit("/appointments")}
                             className="rounded-md border border-accent px-4 py-2 text-sm duration-200 hover:bg-accent-200"
                         >
@@ -219,6 +220,7 @@ export default function CreateAppointment({ patientData, serviceTypes }) {
                         </button>
                         <button
                             type="submit"
+                            disabled={processing}
                             className="flex items-center gap-2 rounded-md border border-accent bg-accent px-4 py-2 text-sm text-white duration-200 hover:bg-accent/90"
                         >
                             {processing ? (

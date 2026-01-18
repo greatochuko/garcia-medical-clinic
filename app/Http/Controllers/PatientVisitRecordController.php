@@ -85,27 +85,28 @@ class PatientVisitRecordController extends Controller
 
             $record = PatientVisitRecord::create($validated);
 
-            return redirect()
-                ->route('patientVisitRecords.show', ['id' => $record->id])
-                ->with('success', 'Patient visit record created successfully');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            // Handle validation errors separately if needed
-            return redirect()->back()
-                ->withErrors($e->errors())
-                ->withInput();
-        } catch (\Exception $e) {
-            // Log the exception for debugging
-            Log::error('Error creating patient visit record: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
+            // Return JSON instead of redirect for Inertia
+            return response()->json([
+                'success' => true,
+                'message' => 'Patient visit record created successfully',
+                'url' => route('patientVisitRecords.show', ['id' => $record->id]),
+                'record' => $record,
             ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
 
-            dd($e->getMessage(), $e->getTraceAsString());
-
-            // Redirect back with a generic error message
-            return redirect()->back()
-                ->with('error', 'An unexpected error occurred. Please try again.');
+            return response()->json([
+                'success' => false,
+                'message' => 'An unexpected error occurred. Please try again.',
+            ], 500);
         }
     }
+
 
     /**
      * UPDATE an existing patient visit record

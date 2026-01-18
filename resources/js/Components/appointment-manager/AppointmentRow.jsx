@@ -12,6 +12,7 @@ import BillingModal from "../modals/BillingModal";
 import useAppointments from "@/hooks/useAppointmets";
 import useVitals from "@/hooks/useVitals";
 import { generateVitalsData } from "@/utils/generateVitalsData";
+import axios from "axios";
 
 function formatStatus(status) {
     return status
@@ -175,28 +176,31 @@ export function AppointmentRow({
         );
     }
 
-    function handleAddRecord() {
-        router.post(
-            route("patientVisitRecords.store"),
-            {
-                patient_id: appointment.patient.id,
-                appointment_id: appointment.id,
-            },
-            {
-                preserveScroll: true,
-                preserveState: true,
-                onStart: () => {
-                    setAddingRecord(true);
+    async function handleAddRecord() {
+        try {
+            setAddingRecord(true);
+            const response = await axios.post(
+                route("patientVisitRecords.store"),
+                {
+                    patient_id: appointment.patient.id,
+                    appointment_id: appointment.id,
                 },
-                onFinish: () => {
-                    setAddingRecord(false);
-                },
-                onError: (errors) => {
-                    console.error(errors);
-                    toast.error("An error occurred while creating the record.");
-                },
-            },
-        );
+            );
+
+            if (response.data.success) {
+                setAppointment((prev) => ({
+                    ...prev,
+                    patient_visit_record: response.data.record,
+                }));
+                // Open the new record in a new tab
+                window.open(response.data.url, "_blank");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("An error occurred while creating the record.");
+        } finally {
+            setAddingRecord(false);
+        }
     }
 
     return (
@@ -306,18 +310,17 @@ export function AppointmentRow({
                                     </button>
                                 ) : appointment.patient_visit_record ? (
                                     <button
-                                        onClick={() =>
-                                            router.get(
-                                                route(
-                                                    "patientVisitRecords.show",
-                                                    {
-                                                        id: appointment
-                                                            .patient_visit_record
-                                                            .id,
-                                                    },
-                                                ),
-                                            )
-                                        }
+                                        onClick={() => {
+                                            const url = route(
+                                                "patientVisitRecords.show",
+                                                {
+                                                    id: appointment
+                                                        .patient_visit_record
+                                                        .id,
+                                                },
+                                            );
+                                            window.open(url, "_blank");
+                                        }}
                                         disabled={
                                             appointment.status !==
                                                 "checked_in" || addingRecord

@@ -240,7 +240,7 @@ class AppointmentManagerController extends Controller
         }
 
         $serviceTypes = ServiceCharge::select('id', 'name', 'charge', 'patient_type')
-            ->where('patient_type', $patientData['age'] >= 65 ? 1 : 0)
+            ->where('patient_type', $patientData['age'] >= 60 ? 1 : 0)
             ->get();
 
         return Inertia::render('Appointments/CreateAppointment', [
