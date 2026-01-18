@@ -104,7 +104,6 @@ class PatientVisitRecordController extends Controller
             // Redirect back with a generic error message
             return redirect()->back()
                 ->with('error', 'An unexpected error occurred. Please try again.');
-
         }
     }
 
@@ -197,6 +196,8 @@ class PatientVisitRecordController extends Controller
         DB::beginTransaction();
 
         try {
+            logger('LOG TEST — if you see this, logging works');
+
             $record = PatientVisitRecord::with('medicalCertificate')->findOrFail($id);
 
             if ($record->is_closed) {
@@ -221,11 +222,11 @@ class PatientVisitRecordController extends Controller
                 'diagnostic_results' => ['nullable', 'array'],
             ]);
 
-            if (!$record->medicalCertificate) {
-                return back()->with([
-                    'error' => 'Cannot close record without a medical certificate',
-                ]);
-            }
+            // if (!$record->medicalCertificate) {
+            //     return back()->with([
+            //         'error' => 'Cannot close record without a medical certificate',
+            //     ]);
+            // }
 
             // Update visit data first
             $record->update(array_merge(
@@ -303,6 +304,10 @@ class PatientVisitRecordController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
             report($e);
+            Log::error($e->getMessage(), [
+                'exception' => $e->getMessage(),
+            ]);
+
 
             return back()->withErrors([
                 'error' => 'Something went wrong while closing the record',
