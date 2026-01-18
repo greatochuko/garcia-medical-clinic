@@ -105,11 +105,12 @@ export default function PatientVisitForm({
 
     useEffect(() => {
         const intervalId = setInterval(() => {
+            if (isSaved) return;
             handleSaveForm(false);
         }, AUTOSAVE_INTERVAL);
 
         return () => clearInterval(intervalId);
-    }, [handleSaveForm]);
+    }, [handleSaveForm, isSaved]);
 
     console.clear();
     console.log(patientVisitRecord);
