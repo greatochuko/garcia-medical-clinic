@@ -10,7 +10,7 @@ use App\Models\Patient;
 use App\Models\LaboratoryRequest;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Auth;
 
 class MedicalCertificateController extends Controller
 {
@@ -116,6 +116,45 @@ class MedicalCertificateController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->withErrors([
                 'error' => 'Something went wrong while saving medical certificate.',
+                'errorMessage' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function delete_medical_certificate(Request $request, $appointment_id)
+    {
+        try {
+            $user = Auth::user();
+
+            // Fetch all certificates for this appointment
+            $certificates = MedicalCertificate::where('appointment_id', $appointment_id)->get();
+
+            if ($certificates->isEmpty()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'No medical certificate found for this appointment.',
+                ]);
+            }
+
+            // Filter certificates user is allowed to delete
+            $deletable = $certificates->filter(function ($certificate) use ($user) {
+                return $certificate->doctor_id === $user->id || $user->role === 'admin';
+            });
+
+            if ($deletable->isEmpty()) {
+                return redirect()->back()->withErrors([
+                    'error' => 'You are not authorized to delete this medical certificate.',
+                ]);
+            }
+
+            // Delete allowed certificates
+            MedicalCertificate::whereIn('id', $deletable->pluck('id'))->delete();
+
+            return redirect()->back()->with('success', 'Medical certificate deleted successfully.');
+        } catch (\Throwable $e) {
+            report($e);
+
+            return redirect()->back()->withErrors([
+                'error' => 'Something went wrong while deleting medical certificate.',
                 'errorMessage' => $e->getMessage(),
             ]);
         }

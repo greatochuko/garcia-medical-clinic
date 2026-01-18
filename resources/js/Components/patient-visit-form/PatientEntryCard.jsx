@@ -7,6 +7,9 @@ import CreateMedicalCertificateModal from "../modals/CreateMedicalCertificateMod
 import AddLabRequestModal from "../modals/AddLabRequestModal";
 import { route } from "ziggy-js";
 import { Link } from "@inertiajs/react";
+import { Trash2Icon } from "lucide-react";
+import { router } from "@inertiajs/react";
+import { Loader2Icon } from "lucide-react";
 
 export default function PatientEntryCard({
     entry,
@@ -29,6 +32,9 @@ export default function PatientEntryCard({
         useState(false);
     const [modifyEntryModalOpen, setModifyEntryModalOpen] = useState(false);
     const [entryInput, setEntryInput] = useState("");
+    const [deletingLabRequest, setDeletingLabRequest] = useState(false);
+    const [deletingMedicalCertificate, setDeletingMedicalCertificate] =
+        useState(false);
 
     function handleAddEntry(e) {
         e.preventDefault();
@@ -43,6 +49,41 @@ export default function PatientEntryCard({
     function handleUpdateEntry(newEntryList) {
         setEntryList(newEntryList);
         setModifyEntryModalOpen(false);
+    }
+
+    function handleDeteLabRequest() {
+        router.delete(route("laboratory.destroy", appointmentId), {
+            onStart() {
+                setDeletingLabRequest(true);
+            },
+            onFinish() {
+                setDeletingLabRequest(false);
+            },
+            onSuccess() {
+                setPatientVisitRecord((prev) => ({ ...prev, lab_request: [] }));
+            },
+            preserveState: true,
+            preserveScroll: true,
+        });
+    }
+
+    function handleDeteMedicalCertificate() {
+        router.delete(route("medical-certificate.destroy", appointmentId), {
+            onStart() {
+                setDeletingMedicalCertificate(true);
+            },
+            onFinish() {
+                setDeletingMedicalCertificate(false);
+            },
+            onSuccess() {
+                setPatientVisitRecord((prev) => ({
+                    ...prev,
+                    medical_certificate: null,
+                }));
+            },
+            preserveState: true,
+            preserveScroll: true,
+        });
     }
 
     return (
@@ -170,22 +211,58 @@ export default function PatientEntryCard({
                     {entry.id === "plans" && (
                         <>
                             {laboratoryRequest.length > 0 && (
-                                <li className="text-[#429ABF]">
-                                    <span className="mr-2 font-bold">&gt;</span>
-                                    For{" "}
-                                    {laboratoryRequest
-                                        .map(
-                                            (labReq) =>
-                                                labReq.test_name ||
-                                                labReq.others,
-                                        )
-                                        .join(", ")}
+                                <li className="flex items-start justify-between gap-2">
+                                    <p className="flex-1 text-[#429ABF]">
+                                        <span className="mr-2 font-bold">
+                                            &gt;
+                                        </span>
+                                        For{" "}
+                                        {laboratoryRequest
+                                            .map(
+                                                (labReq) =>
+                                                    labReq.test_name ||
+                                                    labReq.others,
+                                            )
+                                            .join(", ")}
+                                    </p>
+                                    <button
+                                        disabled={deletingLabRequest}
+                                        onClick={handleDeteLabRequest}
+                                        className="p-1 text-red-500 disabled:cursor-[not-allowed!important] disabled:opacity-50"
+                                    >
+                                        {deletingLabRequest ? (
+                                            <Loader2Icon
+                                                size={14}
+                                                className="animate-spin"
+                                            />
+                                        ) : (
+                                            <Trash2Icon size={14} />
+                                        )}
+                                    </button>
                                 </li>
                             )}
                             {medicalCertificate && (
-                                <li className="text-[#429ABF]">
-                                    <span className="mr-2 font-bold">&gt;</span>
-                                    Issued Medical Certificate
+                                <li className="flex items-start justify-between gap-2">
+                                    <p className="flex-1 text-[#429ABF]">
+                                        <span className="mr-2 font-bold">
+                                            &gt;
+                                        </span>
+                                        Issued Medical Certificate
+                                    </p>
+                                    <button
+                                        disabled={deletingMedicalCertificate}
+                                        onClick={handleDeteMedicalCertificate}
+                                        className="p-1 text-red-500 disabled:cursor-[not-allowed!important] disabled:opacity-50"
+                                    >
+                                        {deletingMedicalCertificate ? (
+                                            <Loader2Icon
+                                                size={14}
+                                                className="animate-spin"
+                                            />
+                                        ) : (
+                                            <Trash2Icon size={14} />
+                                        )}
+                                    </button>
                                 </li>
                             )}
                         </>

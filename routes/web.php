@@ -229,6 +229,7 @@ Route::middleware('auth')->group(function () {
         ->name('medical-certificate.getinfo');
 
     Route::post('/medical-certificate', [MedicalCertificateController::class, 'store_medical_certificate'])->name('medical-certificate.store');
+    Route::delete('/medical-certificate/{appointment_id}', [MedicalCertificateController::class, 'delete_medical_certificate'])->name('medical-certificate.destroy');
 
     Route::post('/appointment-manager/reorder', [AppointmentManagerController::class, 'reorder'])->name('appointments.reorder');
     Route::get('/appointments/poll', [AppointmentManagerController::class, 'poll'])->name('appointments.poll');
@@ -244,6 +245,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/laboratory-tests', [PatientLaboratoryTestController::class, 'store'])->name('laboratory.patient.store');
 
     Route::post('/laboratory-requests', [LaboratoryRequestController::class, 'store_laboratory_request'])->name('laboratory.store');
+    Route::delete('/laboratory-requests/{appointment_id}', [LaboratoryRequestController::class, 'delete_laboratory_request'])->name('laboratory.destroy');
     Route::get('/laboratory-requests/{patientId}/{app_id}', [LaboratoryRequestController::class, 'getPatientRequests'])->name('laboratory.patient');
 
     // Billing routes
@@ -307,8 +309,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/{id}/reopen', [PatientVisitRecordController::class, 'reopen'])
             ->name('patientVisitRecords.reopen');
     });
-
-
 });
 
 
