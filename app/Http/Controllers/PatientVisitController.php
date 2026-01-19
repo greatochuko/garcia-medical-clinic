@@ -77,7 +77,7 @@ class PatientVisitController extends Controller
         // Validate input
         $validated = $request->validate([
             'patient_id' => 'required|string',
-            'diseases' => 'required|array'
+            'diseases' => 'array'
         ]);
         // Delete existing history for this patient
         MedicalHistory::where('patient_id', $validated['patient_id'])->delete();

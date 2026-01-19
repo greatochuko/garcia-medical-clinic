@@ -9,10 +9,7 @@ import { Link } from "@inertiajs/react";
 import { router } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import DeleteAccountModal from "@/Components/modals/DeleteAccountModal";
-
-function getUserFullName(account) {
-    return `${account.first_name} ${account.middle_initial ? `${account.middle_initial}.` : ""} ${account.last_name}`;
-}
+import { getUserFullName } from "@/utils/getUserFullname";
 
 export default function Accounts({ auth, accounts: accountList }) {
     const [accountToDelete, setAccountToDelete] = useState(null);

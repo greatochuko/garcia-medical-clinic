@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "../../../css/medicalcertificate-print.css";
 
-export default function MedicalCertificate({
+export default function PrintMedicalCertificate({
     patient,
     diagnosis,
     comments,
@@ -37,7 +37,7 @@ export default function MedicalCertificate({
                     <img
                         src="/images/garcia-logo.png"
                         alt="Garcia Medical Clinic Logo"
-                        className="mb-1 w-[8rem]"
+                        className="h-20 w-[12rem] object-cover"
                     />
                 </div>
 
@@ -47,7 +47,7 @@ export default function MedicalCertificate({
                     </span>
                 </div>
 
-                <div className="mb-6 text-right font-alice text-lg font-normal">
+                <div className="mb-4 text-right font-alice text-lg font-normal">
                     Date: <span className="underline">{date}</span>
                 </div>
 

@@ -5,7 +5,7 @@ import { useForm } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import { toast } from "react-hot-toast";
 import LoadingIndicator from "../layout/LoadingIndicator";
-import { getUserFullname } from "@/utils/getUserFullname";
+import { getUserFullName } from "@/utils/getUserFullname";
 
 export default function DeleteAccountModal({
     open,
@@ -32,7 +32,7 @@ export default function DeleteAccountModal({
         closeModal();
     }
 
-    const userFullName = getUserFullname(accountToDelete);
+    const userFullName = getUserFullName(accountToDelete);
 
     return (
         <ModalContainer closeModal={closeDeleteModal} open={open}>

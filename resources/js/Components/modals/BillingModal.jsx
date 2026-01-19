@@ -7,7 +7,7 @@ import { CircleCheckIcon } from "lucide-react";
 import axios from "axios";
 import { route } from "ziggy-js";
 import toast from "react-hot-toast";
-import { getUserFullname } from "@/utils/getUserFullname";
+import { getUserFullName } from "@/utils/getUserFullname";
 
 function formatPHP(amount) {
     return `PHP ${Number(amount).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -63,7 +63,7 @@ export default function BillingModal({
     }
 
     const patientFullName = patient.id
-        ? getUserFullname(patient)
+        ? getUserFullName(patient)
         : "WALK IN PATIENT";
 
     const billingStats = [

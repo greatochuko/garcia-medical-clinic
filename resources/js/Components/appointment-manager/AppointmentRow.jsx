@@ -13,7 +13,7 @@ import useAppointments from "@/hooks/useAppointmets";
 import useVitals from "@/hooks/useVitals";
 import { generateVitalsData } from "@/utils/generateVitalsData";
 import axios from "axios";
-import { getUserFullname } from "@/utils/getUserFullname";
+import { getUserFullName } from "@/utils/getUserFullname";
 
 function formatStatus(status) {
     return status
@@ -106,7 +106,7 @@ export function AppointmentRow({
         }
     }
 
-    const patientFullName = getUserFullname(appointment.patient);
+    const patientFullName = getUserFullName(appointment.patient);
 
     let statusClassName = "";
 

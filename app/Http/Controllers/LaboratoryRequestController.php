@@ -157,7 +157,7 @@ class LaboratoryRequestController extends Controller
         // Fetch doctor details
         $doctor = User::leftJoin('doctors', 'users.id', '=', 'doctors.user_id')
             ->where('users.id', $doctor_id)
-            ->select('users.first_name as doctor_name', 'users.last_name as doctor_last_name', 'doctors.license_number', 'doctors.ptr_number')
+            ->select('users.first_name as doctor_name', 'users.last_name as doctor_last_name', 'users.middle_initial as doctor_middle_initial', 'doctors.license_number', 'doctors.ptr_number')
             ->first();
 
         if (!$doctor) {
@@ -197,12 +197,20 @@ class LaboratoryRequestController extends Controller
 
         // Prepare data
         $laboratory = [
-            'patient_name' => $patient->first_name ?? 'N/A',
+            'patient_name' => trim(collect([
+                $patient->first_name,
+                $patient->middle_initial ? $patient->middle_initial . '.' : null,
+                $patient->last_name,
+            ])->filter()->implode(' ')) ?? 'N/A',
             'address' => $patient->address ?? 'N/A',
             'age' => $patient->age ?? 'N/A',
             'sex' => $patient->gender ?? 'N/A',
             'date' => now()->format('F j, Y'),
-            'doctor_name' => ($doctor->doctor_name ?? '') . ' ' . ($doctor->doctor_last_name ?? ''),
+            'doctor_name' => trim(collect([
+                $doctor->doctor_name,
+                $doctor->doctor_middle_initial ? $doctor->doctor_middle_initial . '.' : null,
+                $doctor->doctor_last_name,
+            ])->filter()->implode(' ')) ?: 'N/A',
             'license_no' => $doctor->license_number ?? 'N/A',
             'ptr_no' => $doctor->ptr_number ?? 'N/A',
             'medications' => $medications

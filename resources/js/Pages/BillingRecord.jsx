@@ -3,7 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import Input from "@/Components/layout/Input";
 import Paginator from "@/Components/layout/Paginator";
 import BillingModal from "@/Components/modals/BillingModal";
-import { getUserFullname } from "@/utils/getUserFullname";
+import { getUserFullName } from "@/utils/getUserFullname";
 
 function formatPHP(amount) {
     return `PHP ${Number(amount).toLocaleString("en-PH", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -110,7 +110,7 @@ export default function Billingrecord({ billingData }) {
 function BillingRow({ record, onShowBilling }) {
     const patient = record.patient;
     const patientFullName = patient?.id
-        ? getUserFullname(patient)
+        ? getUserFullName(patient)
         : "Walk-In Patient";
 
     return (

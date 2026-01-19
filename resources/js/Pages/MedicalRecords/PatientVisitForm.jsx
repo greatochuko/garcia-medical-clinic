@@ -9,7 +9,7 @@ import DiagnosticResultsCard from "@/Components/patient-visit-form/DiagnosticRes
 import { router } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import toast from "react-hot-toast";
-import { getUserFullname } from "@/utils/getUserFullname";
+import { getUserFullName } from "@/utils/getUserFullname";
 
 const patientEntries = [
     { id: "chief_complaints", title: "CHIEF COMPLAINT", value: [] },
@@ -113,7 +113,7 @@ export default function PatientVisitForm({
     }, [handleSaveForm, isSaved]);
 
     const doctorFullName = patientVisitRecord.doctor
-        ? getUserFullname(patientVisitRecord.doctor)
+        ? getUserFullName(patientVisitRecord.doctor)
         : "";
 
     const patientVisitDate = new Date(

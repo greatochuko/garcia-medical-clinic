@@ -1,0 +1,17 @@
+@page {
+    size: A6 portrait;
+    margin: 0.2cm 1cm 1cm 1cm; /* top, right, bottom, left */
+    /* margin: 10mm; */
+    /* height: 148mm;
+    width: 105mm; */
+}
+
+.page {
+    /* width: 98mm;
+    height: 74mm; */
+    padding: 10mm;
+    margin: auto;
+    box-sizing: border-box;
+    position: relative;
+    page-break-after: always;
+}

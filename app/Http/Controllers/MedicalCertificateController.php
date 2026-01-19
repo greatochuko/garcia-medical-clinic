@@ -16,8 +16,6 @@ class MedicalCertificateController extends Controller
 {
     public function show($id, $app_id)
     {
-
-
         $result = DB::table('medical_certificate')
             ->leftJoin('patient_records', 'medical_certificate.patient_id', '=', 'patient_records.patient_id')
             ->leftJoin('users', 'medical_certificate.doctor_id', '=', 'users.id')
@@ -26,13 +24,15 @@ class MedicalCertificateController extends Controller
             ->where('medical_certificate.appointment_id', $app_id)
             ->select(
                 'medical_certificate.*',
-                'patient_records.first_name as patient_name',
+                'patient_records.first_name as patient_first_name',
+                'patient_records.middle_initial as patient_middle_initial',
                 'patient_records.last_name as patient_last_name',
                 'patient_records.age',
                 'patient_records.gender as gender',
                 'patient_records.address',
                 'patient_records.last_visit_date',
-                'users.first_name as doctor_name',
+                'users.first_name as doctor_first_name',
+                'users.middle_initial as doctor_middle_initial',
                 'users.last_name as doctor_last_name',
                 'doctors.license_number as doctor_license',
                 'doctors.ptr_number as doctor_ptr'
@@ -44,9 +44,21 @@ class MedicalCertificateController extends Controller
             return response()->json(['message' => 'No certificate found.'], 404);
         }
 
+        $patientName = trim(collect([
+            $result->patient_first_name,
+            $result->patient_middle_initial ? $result->patient_middle_initial . '.' : null,
+            $result->patient_last_name,
+        ])->filter()->implode(' ')) ?: 'N/A';
+
+        $doctorName = trim(collect([
+            $result->doctor_first_name,
+            $result->doctor_middle_initial ? $result->doctor_middle_initial . '.' : null,
+            $result->doctor_last_name,
+        ])->filter()->implode(' ')) ?: 'N/A';
+
         $certificate = [
             'patient' => [
-                'name' => $result->patient_name . $result->patient_last_name,
+                'name' => $patientName,
                 'age' => $result->age,
                 'gender' => $result->gender,
                 'civilStatus' => $result->civilStatus,
@@ -57,14 +69,15 @@ class MedicalCertificateController extends Controller
             'comments' => $result->comments,
             'date' => Carbon::parse($result->created_at)->format('F j, Y'),
             'doctor' => [
-                'name' => $result->doctor_name . $result->doctor_last_name,
+                'name' => $doctorName,
                 'licenseNo' => $result->doctor_license,
                 'ptrNo' => $result->doctor_ptr,
             ],
         ];
 
 
-        return Inertia::render('MedicalCertificate/MedicalCertificate', $certificate);
+
+        return Inertia::render('MedicalCertificate/Print', $certificate);
     }
 
     public function store_medical_certificate(Request $request)

@@ -2,7 +2,7 @@ import React from "react";
 import ModalContainer from "../layout/ModalContainer";
 import XIcon from "../icons/XIcon";
 import LoadingIndicator from "../layout/LoadingIndicator";
-import { getUserFullname } from "@/utils/getUserFullname";
+import { getUserFullName } from "@/utils/getUserFullname";
 
 const viatlSignsFields = [
     {
@@ -78,7 +78,7 @@ export default function VitalsModal({
         closeModal();
     }
 
-    const patientFullName = getUserFullname(patient);
+    const patientFullName = getUserFullName(patient);
 
     return (
         <ModalContainer closeModal={closeVitalsModal} open={open}>

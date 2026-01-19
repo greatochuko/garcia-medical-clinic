@@ -1,10 +1,10 @@
-import { getUserFullname } from "@/utils/getUserFullname";
+import { getUserFullName } from "@/utils/getUserFullname";
 import { Link } from "@inertiajs/react";
 import React from "react";
 import { route } from "ziggy-js";
 
 export default function PatientProfile({ patient, medicalHistory }) {
-    const patientFullName = getUserFullname(patient);
+    const patientFullName = getUserFullName(patient);
 
     const patientInfo = [
         {

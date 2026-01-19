@@ -83,29 +83,31 @@ class BillingController extends Controller
                     $quantity = $prescription['quantity'];
                     $available = $medication->quantity;
 
-                    // Fail if requested amount exceeds available stock
-                    if ($quantity > $available) {
-                        throw new \Exception("Quantity for {$medication->name} exceeds available stock. Requested: {$quantity}, Available: {$available}.");
+                    // if ($quantity > $available) {
+                    //     // Fail if requested amount exceeds available stock
+                    //     throw new \Exception("Quantity for {$medication->name} exceeds available stock. Requested: {$quantity}, Available: {$available}.");
+                    // }
+
+                    if ($quantity <= $available) {
+                        $newTotal = $available - $quantity;
+
+                        // Update medication stock
+                        $medication->update([
+                            'quantity' => $newTotal,
+                            'lastRunDate' => now(),
+                        ]);
+
+                        // Log inventory change
+                        InventoryChange::create([
+                            'medication_id' => $medication->id,
+                            'user_id' => auth()->id(),
+                            'lastRunDate' => now(),
+                            'entryDetails' => 'Pull Out',
+                            'quantity' => $quantity,
+                            'expiryDate' => $prescription['expiryDate'] ?? null,
+                            'newTotal' => $newTotal,
+                        ]);
                     }
-
-                    $newTotal = $available - $quantity;
-
-                    // Update medication stock
-                    $medication->update([
-                        'quantity' => $newTotal,
-                        'lastRunDate' => now(),
-                    ]);
-
-                    // Log inventory change
-                    InventoryChange::create([
-                        'medication_id' => $medication->id,
-                        'user_id' => auth()->id(),
-                        'lastRunDate' => now(),
-                        'entryDetails' => 'Pull Out',
-                        'quantity' => $quantity,
-                        'expiryDate' => $prescription['expiryDate'] ?? null,
-                        'newTotal' => $newTotal,
-                    ]);
                 }
             }
 

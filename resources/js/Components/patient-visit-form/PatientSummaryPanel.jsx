@@ -8,7 +8,7 @@ import { Loader2Icon } from "lucide-react";
 import { CircleCheckIcon } from "lucide-react";
 import { Link, router } from "@inertiajs/react";
 import toast from "react-hot-toast";
-import { getUserFullname } from "@/utils/getUserFullname";
+import { getUserFullName } from "@/utils/getUserFullname";
 
 export default function PatientSummaryPanel({
     appointmentId,
@@ -90,7 +90,7 @@ export default function PatientSummaryPanel({
         }
     });
 
-    const patientFullName = getUserFullname(patient);
+    const patientFullName = getUserFullName(patient);
 
     const vitalSigns = [
         {
@@ -301,78 +301,35 @@ export default function PatientSummaryPanel({
                         )}
                     </div>
                     <div className="flex items-center gap-2 p-4">
-                        <button
-                            onClick={() =>
-                                window.open(
-                                    route("prescriptions.print", {
-                                        id: patient.patient_id,
-                                        app_id: appointmentId,
-                                    }),
-                                    "_blank",
-                                )
-                            }
+                        <PrintLink
+                            href={route("prescriptions.print", {
+                                id: patient.patient_id,
+                                app_id: appointmentId,
+                            })}
                             disabled={!prescriptions.length}
-                            className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
-                        >
-                            <img
-                                src="/assets/icons/prescription-icon.svg"
-                                alt="prescription icon"
-                                className="h-6 w-6 object-contain"
-                                width={24}
-                                height={24}
-                            />
-                            <p className="rounded-sm bg-white px-1.5 text-center text-[10px]">
-                                PRESCR.
-                            </p>
-                        </button>
-                        <button
-                            onClick={() =>
-                                window.open(
-                                    route("laboratory.print", {
-                                        id: patient.patient_id,
-                                        app_id: appointmentId,
-                                    }),
-                                    "_blank",
-                                )
-                            }
+                            icon="/assets/icons/prescription-icon.svg"
+                            label="PRESCR."
+                        />
+
+                        <PrintLink
+                            href={route("laboratory.print", {
+                                id: patient.patient_id,
+                                app_id: appointmentId,
+                            })}
                             disabled={!labRequest.length}
-                            className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
-                        >
-                            <img
-                                src="/assets/icons/lab-icon.svg"
-                                alt="lab icon"
-                                className="h-6 w-6 object-contain"
-                                width={24}
-                                height={24}
-                            />
-                            <p className="rounded-sm bg-white px-1.5 text-center text-[10px]">
-                                LAB REQ
-                            </p>
-                        </button>
-                        <button
-                            onClick={() =>
-                                window.open(
-                                    route("medical-certificate.show", {
-                                        id: patient.patient_id,
-                                        app_id: appointmentId,
-                                    }),
-                                    "_blank",
-                                )
-                            }
+                            icon="/assets/icons/lab-icon.svg"
+                            label="LAB REQ"
+                        />
+
+                        <PrintLink
+                            href={route("medical-certificate.show", {
+                                id: patient.patient_id,
+                                app_id: appointmentId,
+                            })}
                             disabled={!medicalCertificate}
-                            className="flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-accent"
-                        >
-                            <img
-                                src="/assets/icons/certificate-icon.svg"
-                                alt="certificate icon"
-                                className="h-6 w-6 object-contain"
-                                width={24}
-                                height={24}
-                            />
-                            <p className="rounded-sm bg-white px-1.5 text-center text-[10px]">
-                                MED CERT
-                            </p>
-                        </button>
+                            icon="/assets/icons/certificate-icon.svg"
+                            label="MED CERT"
+                        />
                     </div>
                 </div>
             </div>
@@ -384,5 +341,28 @@ export default function PatientSummaryPanel({
                 closing={closing}
             />
         </>
+    );
+}
+
+function PrintLink({ href, disabled = false, icon, label, className = "" }) {
+    return (
+        <a
+            href={disabled ? undefined : href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-disabled={disabled}
+            className={`flex flex-1 flex-col items-center gap-1.5 whitespace-nowrap rounded-md bg-accent p-2 duration-200 hover:bg-accent/90 ${disabled ? "pointer-events-none cursor-not-allowed opacity-60" : ""} ${className} `}
+        >
+            <img
+                src={icon}
+                alt={`${label} icon`}
+                className="h-6 w-6 object-contain"
+                width={24}
+                height={24}
+            />
+            <p className="rounded-sm bg-white px-1.5 text-center text-[10px]">
+                {label}
+            </p>
+        </a>
     );
 }

@@ -136,7 +136,7 @@ export default function MedicalHistoryModal({
                         Cancel
                     </button>
                     <button
-                        disabled={processing || !data.diseases.length}
+                        disabled={processing}
                         onClick={handleSave}
                         className="btn flex items-center gap-2 rounded-md border border-accent bg-accent px-4 py-2 text-white duration-200 hover:bg-accent/90 disabled:pointer-events-none disabled:opacity-50"
                     >

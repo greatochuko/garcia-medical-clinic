@@ -6,7 +6,7 @@ import TextMessage from "./TextMessage";
 import ReceiptMessage from "./ReceiptMessage";
 import axios from "axios";
 import { route } from "ziggy-js";
-import { getUserFullname } from "@/utils/getUserFullname";
+import { getUserFullName } from "@/utils/getUserFullname";
 
 export default function MessageView({
     chatUser,
@@ -16,7 +16,7 @@ export default function MessageView({
     setMessages,
     authUser,
 }) {
-    const userFullName = getUserFullname(chatUser);
+    const userFullName = getUserFullName(chatUser);
     const [firstLoading, setFirstLoading] = useState(true);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({

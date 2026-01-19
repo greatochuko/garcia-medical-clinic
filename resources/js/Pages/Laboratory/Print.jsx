@@ -32,7 +32,7 @@ export default function Print({ laboratory }) {
                         <div className="patient-row">
                             <div className="patient-info">
                                 <div>
-                                    <strong>Patient Name:</strong>{" "}
+                                    <strong>Name:</strong>{" "}
                                     {laboratory?.patient_name}
                                 </div>
                                 <div>

@@ -5,7 +5,7 @@ import { useForm } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import PrescriptionTable from "../patient-visit-form/PrescriptionTable";
 import toast from "react-hot-toast";
-import { getUserFullname } from "@/utils/getUserFullname";
+import { getUserFullName } from "@/utils/getUserFullname";
 
 export default function AddPrescriptionModal({
     closeModal,
@@ -29,7 +29,7 @@ export default function AddPrescriptionModal({
     };
 
     const { data, setData, processing, post } = useForm(initialData);
-    const patientFullName = getUserFullname(patient);
+    const patientFullName = getUserFullName(patient);
 
     function closeVitalsModal() {
         closeModal();

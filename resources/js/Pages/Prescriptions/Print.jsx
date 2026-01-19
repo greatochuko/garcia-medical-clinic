@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Head } from "@inertiajs/react";
+import "../../../css/print-preview.css";
 
 export default function Print({ prescription }) {
     const [imagesLoaded, setImagesLoaded] = useState({
@@ -29,7 +30,8 @@ export default function Print({ prescription }) {
             {pages.map((pageMeds, pageIndex) => (
                 <div
                     key={pageIndex}
-                    className="relative mx-auto box-border h-[85mm] w-[140mm] break-after-page py-[10mm]"
+                    className="relative mx-auto box-border break-after-page p-[10mm]"
+                    // className="page"
                 >
                     {/* Header */}
                     <div className="mb-2 text-center">
@@ -45,7 +47,7 @@ export default function Print({ prescription }) {
                             }
                         />
 
-                        <div className="mb-1 flex justify-between text-sm">
+                        <div className="mb-1 flex justify-between text-[10px]">
                             <div className="flex-1 text-left">
                                 <div>
                                     <strong>Name:</strong>{" "}
@@ -91,7 +93,7 @@ export default function Print({ prescription }) {
                             const globalIndex =
                                 pageIndex * MEDICATIONS_PER_PAGE + index + 1;
                             return (
-                                <div key={index} className="mb-3">
+                                <div key={index} className="mb-3 text-sm">
                                     <div className="flex justify-between font-semibold">
                                         <span>
                                             {globalIndex}. {med.name.name}
@@ -113,21 +115,15 @@ export default function Print({ prescription }) {
 
                     {/* Doctor Signature */}
                     <div className="fixed bottom-[10mm] right-[10mm] box-border w-[55mm] bg-white p-[2mm] text-right text-[9px]">
-                        <hr className="mb-1 border-t border-black" />
-                        <p className="text-[13px] font-bold">
-                            {prescription?.doctor_name}
-                        </p>
-                        <div>
+                        <hr className="mb-2 border-t border-black" />
+                        <p className="font-bold">{prescription?.doctor_name}</p>
+                        <div className="mt-2">
                             <strong>License No.:</strong>{" "}
-                            <span className="text-[13px]">
-                                {prescription?.license_no}
-                            </span>
+                            <span className="">{prescription?.license_no}</span>
                         </div>
                         <div>
                             <strong>PTR No.:</strong>{" "}
-                            <span className="text-[13px]">
-                                {prescription?.ptr_no}
-                            </span>
+                            <span className="">{prescription?.ptr_no}</span>
                         </div>
                     </div>
                 </div>
