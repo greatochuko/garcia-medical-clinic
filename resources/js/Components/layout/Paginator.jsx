@@ -30,6 +30,7 @@ export default function Paginator({
         const page = resolvePage(newPerPage, totalList, currentPage);
         router.visit(route(routeName), {
             data: {
+                ...route().params, // keep existing parameters
                 perPage: newPerPage === 10 ? undefined : newPerPage,
                 page,
             },
@@ -42,6 +43,7 @@ export default function Paginator({
     function gotoPage(page) {
         router.visit(route(routeName), {
             data: {
+                ...route().params, // keep existing parameters
                 page: page === 1 ? undefined : page,
                 perPage: perPage === 10 ? undefined : perPage,
             },
