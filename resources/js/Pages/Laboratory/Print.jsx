@@ -1,6 +1,7 @@
 import { Head } from "@inertiajs/react";
 import React, { useEffect } from "react";
 import "../../../css/laboratory-print.css";
+import "../../../css/print-preview.css";
 
 export default function Print({ laboratory }) {
     useEffect(() => {
@@ -77,7 +78,10 @@ export default function Print({ laboratory }) {
                     {/* Doctor signature */}
                     <div className="doctor-signature">
                         <hr />
-                        <p className="doc-name">{laboratory?.doctor_name}</p>
+                        <p className="doc-name">
+                            {laboratory?.doctor_name}
+                            {laboratory?.license_no ? " MD" : ""}
+                        </p>
                         <div>
                             <strong>License No.:</strong>{" "}
                             {laboratory?.license_no}

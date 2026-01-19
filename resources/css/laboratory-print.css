@@ -1,38 +1,9 @@
-@media print {
-    @page {
-        size: A6 portrait;
-        margin: 0.2cm 1cm 1cm 1cm; /* top, right, bottom, left */
-        /* margin: 10mm; */
-    }
-
-    body {
-        margin: 0;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-
-    header,
-    footer {
-        display: none !important;
-    }
-}
-
 body {
     margin: 0;
     padding: 0;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
     font-family: Arial, sans-serif;
-}
-
-.page {
-    /* width: 108mm; */
-    /* height: 74mm; */
-    padding: 10mm;
-    margin: auto;
-    box-sizing: border-box;
-    position: relative;
-    page-break-after: always;
 }
 
 /* Header */

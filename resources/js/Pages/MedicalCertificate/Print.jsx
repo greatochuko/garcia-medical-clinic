@@ -80,7 +80,7 @@ export default function PrintMedicalCertificate({
                     <div className="text-14px text-center">
                         <div className="mb-2 border-t border-gray-400"></div>
                         <div className="font-montserrat text-base font-bold">
-                            {doctor.name}
+                            {doctor.name} {doctor?.license_no ? " MD" : ""}
                         </div>
                         <div className="font-montserrat text-sm font-bold">
                             <div>LICENSE NO. {doctor.licenseNo}</div>

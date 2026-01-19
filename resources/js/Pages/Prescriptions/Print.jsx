@@ -30,8 +30,8 @@ export default function Print({ prescription }) {
             {pages.map((pageMeds, pageIndex) => (
                 <div
                     key={pageIndex}
-                    className="relative mx-auto box-border break-after-page p-[10mm]"
-                    // className="page"
+                    // className="relative mx-auto box-border break-after-page p-[10mm]"
+                    className="page"
                 >
                     {/* Header */}
                     <div className="mb-2 text-center">
@@ -116,7 +116,10 @@ export default function Print({ prescription }) {
                     {/* Doctor Signature */}
                     <div className="fixed bottom-[10mm] right-[10mm] box-border w-[55mm] bg-white p-[2mm] text-right text-[9px]">
                         <hr className="mb-2 border-t border-black" />
-                        <p className="font-bold">{prescription?.doctor_name}</p>
+                        <p className="font-bold">
+                            {prescription?.doctor_name}{" "}
+                            {prescription?.license_no ? " MD" : ""}
+                        </p>
                         <div className="mt-2">
                             <strong>License No.:</strong>{" "}
                             <span className="">{prescription?.license_no}</span>
