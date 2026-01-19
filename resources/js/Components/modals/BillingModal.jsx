@@ -100,13 +100,15 @@ export default function BillingModal({
     function calculateTotal(prescription) {
         return (
             Number(prescription.medication.price) *
-            Number(prescription.quantity || prescription.amount)
+            Number(prescription.quantity || 0)
         );
     }
 
     function calculateSubtotal() {
         return (
-            (service ? Number(service?.charge) : 0) +
+            (selectedServiceCharge
+                ? Number(selectedServiceCharge?.charge)
+                : 0) +
             prescriptions.reduce((sum, pres) => sum + calculateTotal(pres), 0)
         );
     }
@@ -316,11 +318,14 @@ export default function BillingModal({
                                                 1
                                             </td>
                                             <td className="p-2 text-center">
-                                                {service?.charge || "N/A"}
+                                                {selectedServiceCharge?.charge ||
+                                                    "N/A"}
                                             </td>
                                             <td className="p-2 text-center">
-                                                {service
-                                                    ? formatPHP(service?.charge)
+                                                {selectedServiceCharge
+                                                    ? formatPHP(
+                                                          selectedServiceCharge?.charge,
+                                                      )
                                                     : "N/A"}
                                             </td>
                                         </tr>
@@ -350,7 +355,7 @@ export default function BillingModal({
                                                 <td className="p-2 text-center">
                                                     {readOnly ? (
                                                         prescription.quantity ||
-                                                        prescription.amount
+                                                        0
                                                     ) : (
                                                         <input
                                                             type="number"
@@ -382,8 +387,8 @@ export default function BillingModal({
                                                                 .medication
                                                                 .price,
                                                         ) *
-                                                            (prescription.quantity ||
-                                                                prescription.amount),
+                                                            prescription.quantity ||
+                                                            0,
                                                     )}
                                                 </td>
                                             </tr>
