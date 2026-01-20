@@ -12,11 +12,11 @@ body {
     margin-bottom: 5mm;
 }
 
-.logo {
+/* .logo {
     width: 60mm;
     margin: 0 auto 5mm;
     display: block;
-}
+} */
 
 .patient-row {
     display: flex;
@@ -78,8 +78,8 @@ body {
 /* Doctor Signature */
 .doctor-signature {
     position: fixed;
-    bottom: 10mm;
-    right: 10mm;
+    bottom: 5mm;
+    right: 5mm;
     font-size: 9px;
     text-align: right;
     background: white;

@@ -38,7 +38,8 @@ export default function Print({ prescription }) {
                         <img
                             src="/images/garcia-logo.png"
                             alt="Logo"
-                            className="mx-auto mb-2 block w-[60mm]"
+                            // className="mx-auto mb-2 block w-[60mm]"
+                            className="logo"
                             onLoad={() =>
                                 setImagesLoaded((prev) => ({
                                     ...prev,
@@ -93,7 +94,7 @@ export default function Print({ prescription }) {
                             const globalIndex =
                                 pageIndex * MEDICATIONS_PER_PAGE + index + 1;
                             return (
-                                <div key={index} className="mb-3 text-sm">
+                                <div key={index} className="mb-3 text-xs">
                                     <div className="flex justify-between font-semibold">
                                         <span>
                                             {globalIndex}. {med.name.name}
@@ -114,7 +115,7 @@ export default function Print({ prescription }) {
                     </div>
 
                     {/* Doctor Signature */}
-                    <div className="fixed bottom-[10mm] right-[10mm] box-border w-[55mm] bg-white p-[2mm] text-right text-[9px]">
+                    <div className="fixed bottom-[5mm] right-[5mm] box-border w-[55mm] bg-white p-[2mm] text-right text-[9px]">
                         <hr className="mb-2 border-t border-black" />
                         <p className="font-bold">
                             {prescription?.doctor_name}{" "}
