@@ -304,7 +304,7 @@ export default function PatientSummaryPanel({
                         <PrintLink
                             href={route("prescriptions.print", {
                                 id: patient.patient_id,
-                                app_id: appointmentId,
+                                app_id: appointmentId || "",
                             })}
                             disabled={!prescriptions.length}
                             icon="/assets/icons/prescription-icon.svg"
@@ -314,7 +314,7 @@ export default function PatientSummaryPanel({
                         <PrintLink
                             href={route("laboratory.print", {
                                 id: patient.patient_id,
-                                app_id: appointmentId,
+                                app_id: appointmentId || "",
                             })}
                             disabled={!labRequest.length}
                             icon="/assets/icons/lab-icon.svg"
@@ -324,7 +324,7 @@ export default function PatientSummaryPanel({
                         <PrintLink
                             href={route("medical-certificate.show", {
                                 id: patient.patient_id,
-                                app_id: appointmentId,
+                                app_id: appointmentId || "",
                             })}
                             disabled={!medicalCertificate}
                             icon="/assets/icons/certificate-icon.svg"

@@ -197,10 +197,8 @@ export default function PatientEntryCard({
                                           )}
                                           className="text-sm font-semibold hover:underline"
                                       >
-                                          {
-                                              record.medical_certificate
-                                                  ?.diagnosis
-                                          }
+                                          {record.medical_certificate
+                                              ?.diagnosis || "No Diagnosis"}
                                       </Link>
                                       <p className="text-[#5E8696]">
                                           {record.doctor.first_name},{" "}

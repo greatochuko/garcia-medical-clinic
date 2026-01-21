@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { usePage } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import ModalContainer from "../layout/ModalContainer";
 import { XIcon } from "lucide-react";
 import PaymentModal from "./PaymentModal";
@@ -219,9 +219,17 @@ export default function BillingModal({
                                             className="h-12 w-12 rounded-full"
                                         />
                                         <div className="flex flex-col gap-1">
-                                            <h4 className="font-bold">
+                                            <Link
+                                                href={route(
+                                                    "medicalrecords.view",
+                                                    {
+                                                        id: patient.id,
+                                                    },
+                                                )}
+                                                className="font-bold hover:underline"
+                                            >
                                                 {patientFullName}
-                                            </h4>
+                                            </Link>
                                             <p className="text-xs">
                                                 {patient.age
                                                     ? `${patient.age}, ${patient.gender}`
