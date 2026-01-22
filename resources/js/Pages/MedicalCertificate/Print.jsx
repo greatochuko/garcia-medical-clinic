@@ -83,8 +83,18 @@ export default function PrintMedicalCertificate({
                             {doctor.name} {doctor?.license_no ? " MD" : ""}
                         </div>
                         <div className="font-montserrat text-sm font-bold">
-                            <div>LICENSE NO. {doctor.licenseNo}</div>
-                            <div>PTR NO. {doctor.ptrNo}</div>
+                            <div>
+                                LICENSE NO.{" "}
+                                {doctor.licenseNo || (
+                                    <span className="block w-10 border-b border-black" />
+                                )}
+                            </div>
+                            <div>
+                                PTR NO.{" "}
+                                {doctor.ptrNo || (
+                                    <span className="block w-10 border-b border-black" />
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

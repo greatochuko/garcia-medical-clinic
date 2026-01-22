@@ -211,8 +211,8 @@ class LaboratoryRequestController extends Controller
                 $doctor->doctor_middle_initial ? $doctor->doctor_middle_initial . '.' : null,
                 $doctor->doctor_last_name,
             ])->filter()->implode(' ')) ?: 'N/A',
-            'license_no' => $doctor->license_number ?? 'N/A',
-            'ptr_no' => $doctor->ptr_number ?? 'N/A',
+            'license_no' => $doctor->license_number,
+            'ptr_no' => $doctor->ptr_number,
             'medications' => $medications
         ];
 

@@ -84,10 +84,15 @@ export default function Print({ laboratory }) {
                         </p>
                         <div>
                             <strong>License No.:</strong>{" "}
-                            {laboratory?.license_no}
+                            {laboratory?.license_no || (
+                                <span className="block w-10 border-b border-black" />
+                            )}
                         </div>
                         <div>
-                            <strong>PTR No.:</strong> {laboratory?.ptr_no}
+                            <strong>PTR No.:</strong>{" "}
+                            {laboratory?.ptr_no || (
+                                <span className="block w-10 border-b border-black" />
+                            )}
                         </div>
                     </div>
                 </div>

@@ -10,12 +10,12 @@ export default function Print({ prescription }) {
 
     useEffect(() => {
         if (imagesLoaded.logo && imagesLoaded.rx) {
-            window.print();
+            // window.print();
         }
     }, [imagesLoaded]);
 
     const medications = prescription?.medications || [];
-    const MEDICATIONS_PER_PAGE = 3;
+    const MEDICATIONS_PER_PAGE = 4;
     const pages = [];
 
     // Split medications into chunks
@@ -123,11 +123,21 @@ export default function Print({ prescription }) {
                         </p>
                         <div className="mt-2">
                             <strong>License No.:</strong>{" "}
-                            <span className="">{prescription?.license_no}</span>
+                            {prescription?.license_no ? (
+                                <span className="">
+                                    {prescription.license_no}
+                                </span>
+                            ) : (
+                                <span className="block w-10 border-b border-black" />
+                            )}
                         </div>
-                        <div>
-                            <strong>PTR No.:</strong>{" "}
-                            <span className="">{prescription?.ptr_no}</span>
+                        <div className="flex justify-end">
+                            <strong>PTR No.:</strong>
+                            {prescription?.ptr_no ? (
+                                <span className="">{prescription.ptr_no}</span>
+                            ) : (
+                                <span className="block w-10 border-b border-black" />
+                            )}
                         </div>
                     </div>
                 </div>
