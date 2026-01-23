@@ -286,7 +286,11 @@ class PatientVisitRecordController extends Controller
                     return back()->withErrors(['error' => 'Appointment not found']);
                 }
 
-                $appointment->status = "for_billing";
+                Log::info($appointment->status);
+
+                if ($appointment->status !== 'checked_out') {
+                    $appointment->status = 'for_billing';
+                }
 
                 $appointment->save();
 
@@ -329,11 +333,11 @@ class PatientVisitRecordController extends Controller
 
             $appointment = Appointment::find($record->appointment_id);
 
-            if ($appointment && $appointment->status !== 'for_billing') {
-                return back()->withErrors([
-                    'appointment' => 'Cannot reopen record because the associated appointment has already been billed.',
-                ]);
-            }
+            // if ($appointment && $appointment->status !== 'for_billing') {
+            //     return back()->withErrors([
+            //         'appointment' => 'Cannot reopen record because the associated appointment has already been billed.',
+            //     ]);
+            // }
 
             $user = auth()->user();
 

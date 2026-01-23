@@ -10,7 +10,7 @@ export default function Print({ prescription }) {
 
     useEffect(() => {
         if (imagesLoaded.logo && imagesLoaded.rx) {
-            // window.print();
+            window.print();
         }
     }, [imagesLoaded]);
 
@@ -104,9 +104,12 @@ export default function Print({ prescription }) {
                                         </span>
                                     </div>
                                     <div className="ml-1">
-                                        Sig: {med.quantity} {med.sig.name}{" "}
+                                        Sig: {med.quantity}{" "}
+                                        {med.sig.name.toLowerCase()}{" "}
                                         {med.duration
-                                            ? `for ${med.duration}`
+                                            ? isNaN(Number(med.duration))
+                                                ? `for ${med.duration}`
+                                                : `for ${med.duration} days`
                                             : ""}
                                     </div>
                                 </div>
