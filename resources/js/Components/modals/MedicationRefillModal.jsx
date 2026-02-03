@@ -75,7 +75,11 @@ export default function MedicationRefillModal({
         if (!medication || loading) return;
         setPrescriptions((prev) => [
             ...prev,
-            { id: medication.id + String(prev.length), medication, amount: 1 },
+            {
+                id: medication.id + String(prev.length),
+                medication,
+                quantity: 1,
+            },
         ]);
         setMedication(null);
         setMedicationInput("");
@@ -84,13 +88,13 @@ export default function MedicationRefillModal({
     function handleQuantityChange(id, value) {
         setPrescriptions((prev) =>
             prev.map((p) =>
-                p.id === id ? { ...p, amount: Number(value) || 0 } : p,
+                p.id === id ? { ...p, quantity: Number(value) || 0 } : p,
             ),
         );
     }
 
     function calculateTotal(prescription) {
-        return prescription.medication.price * prescription.amount;
+        return prescription.medication.price * prescription.quantity;
     }
 
     function calculateSubtotal() {
@@ -107,7 +111,7 @@ export default function MedicationRefillModal({
     async function handleNext() {
         for (const prescription of prescriptions) {
             const { name, quantity: availableStock } = prescription.medication;
-            const requested = prescription.amount;
+            const requested = prescription.quantity;
 
             if (requested > availableStock) {
                 toast.error(
@@ -121,28 +125,27 @@ export default function MedicationRefillModal({
     }
 
     async function handleSubmit() {
-        setLoading(true);
-        const patientData = patient
-            ? {
-                  id: patient.id,
-                  patient_id: patient.patient_id,
-                  first_name: patient.first_name,
-                  middle_initial: patient.middle_initial,
-                  last_name: patient.last_name,
-                  age: patient.age,
-                  gender: patient.gender,
-              }
-            : {
-                  id: null,
-                  patient_id: null,
-                  first_name: "",
-                  middle_initial: "",
-                  last_name: "",
-                  age: null,
-                  gender: "",
-              };
-
         try {
+            const patientData = patient
+                ? {
+                      id: patient.id,
+                      patient_id: patient.patient_id,
+                      first_name: patient.first_name,
+                      middle_initial: patient.middle_initial,
+                      last_name: patient.last_name,
+                      age: patient.age,
+                      gender: patient.gender,
+                  }
+                : {
+                      id: null,
+                      patient_id: null,
+                      first_name: "",
+                      middle_initial: "",
+                      last_name: "",
+                      age: null,
+                      gender: "",
+                  };
+
             const data = {
                 patient: patientData,
                 service: {
@@ -157,6 +160,8 @@ export default function MedicationRefillModal({
                 paid: true,
                 amount_paid: cashTendered,
             };
+
+            setLoading(true);
             const res = await axios.post(route("billingrecord.add"), data);
 
             if (res.data.success) {
@@ -328,12 +333,12 @@ export default function MedicationRefillModal({
                                                 </td>
                                                 <td className="p-2 text-center">
                                                     {readOnly ? (
-                                                        prescription.amount
+                                                        prescription.quantity
                                                     ) : (
                                                         <input
                                                             type="number"
                                                             value={
-                                                                prescription.amount
+                                                                prescription.quantity
                                                             }
                                                             min={1}
                                                             max={
@@ -360,7 +365,7 @@ export default function MedicationRefillModal({
                                                     {formatPHP(
                                                         prescription.medication
                                                             .price *
-                                                            prescription.amount,
+                                                            prescription.quantity,
                                                     )}
                                                 </td>
                                             </tr>

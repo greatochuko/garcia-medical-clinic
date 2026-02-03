@@ -223,7 +223,7 @@ export default function BillingModal({
                                                 href={route(
                                                     "medicalrecords.view",
                                                     {
-                                                        id: patient.id,
+                                                        id: patient?.id || "",
                                                     },
                                                 )}
                                                 className="font-bold hover:underline"

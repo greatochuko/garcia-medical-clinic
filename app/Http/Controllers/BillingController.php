@@ -55,7 +55,12 @@ class BillingController extends Controller
         $validated = $request->validate([
             'patient' => 'required|array',
             'service' => 'required|array',
+
             'prescriptions' => 'nullable|array',
+            'prescriptions.*.quantity' => 'required|integer|min:1',
+            'prescriptions.*.medication.id' => 'required|integer|exists:medication_lists,id',
+            'prescriptions.*.expiryDate' => 'nullable|date',
+
             'total' => 'required|numeric',
             'discount' => 'nullable|numeric',
             'final_total' => 'required|numeric',
@@ -64,9 +69,29 @@ class BillingController extends Controller
             'appointment_id' => 'nullable|integer',
         ]);
 
+
         DB::beginTransaction();
 
         try {
+            $prescriptions = collect($request->input('prescriptions', []))
+                ->map(function ($p) {
+                    $med = MedicationList::findOrFail($p['medication']['id']);
+
+                    return [
+                        'medication' => [
+                            'id' => $med->id,
+                            'name' => $med->name,
+                            'category' => $med->category,
+                            'price' => $med->price,
+                        ],
+                        'quantity' => $p['quantity'],
+                    ];
+                })
+                ->values()
+                ->all();
+
+            $validated['prescriptions'] = $prescriptions;
+
             // Create billing record
             $billing = Billing::create($validated);
 
