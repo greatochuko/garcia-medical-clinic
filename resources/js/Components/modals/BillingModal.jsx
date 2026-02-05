@@ -118,7 +118,6 @@ export default function BillingModal({
     const total = subtotal - discount;
 
     async function handleSubmit() {
-        setLoading(true);
         try {
             const data = {
                 patient: {
@@ -143,6 +142,8 @@ export default function BillingModal({
                 appointment_id: appointment.id,
                 amount_paid: cashTendered,
             };
+
+            setLoading(true);
             const res = await axios.post(route("billingrecord.add"), data);
 
             if (res.data.success) {
@@ -159,8 +160,23 @@ export default function BillingModal({
                     "An error occurred while billing client",
             );
             console.error(error?.response?.data?.error || error.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
+    }
+
+    function handleNext() {
+        for (const prescription of prescriptions) {
+            if (prescription.quantity > prescription.medication.quantity) {
+                toast.error(
+                    `You requested ${prescription.quantity} of ${prescription.medication.name}, but only ${prescription.medication.quantity} is available.`,
+                );
+                return;
+            }
+        }
+
+        // all quantities are valid
+        setPaymentModalOpen(true);
     }
 
     return (
@@ -270,6 +286,7 @@ export default function BillingModal({
                                             <th className="min-w-48 p-2 text-left">
                                                 Description
                                             </th>
+                                            <th className="w-20 p-2">Stock</th>
                                             <th className="w-20 p-2">
                                                 Quantity
                                             </th>
@@ -322,6 +339,7 @@ export default function BillingModal({
                                                     </select>
                                                 )}
                                             </td>
+                                            <td className="p-2 text-center"></td>
                                             <td className="p-2 text-center">
                                                 1
                                             </td>
@@ -359,6 +377,12 @@ export default function BillingModal({
                                                             ? `${prescription.dosage} ${prescription.frequency.name} for ${prescription.duration} days - #${parseInt(prescription.amount)}`
                                                             : "No data found"}
                                                     </p>
+                                                </td>
+                                                <td className="p-2 text-center">
+                                                    {
+                                                        prescription.medication
+                                                            .quantity
+                                                    }
                                                 </td>
                                                 <td className="p-2 text-center">
                                                     {readOnly ? (
@@ -459,9 +483,7 @@ export default function BillingModal({
                                         Cancel
                                     </button>
                                     <button
-                                        onClick={() =>
-                                            setPaymentModalOpen(true)
-                                        }
+                                        onClick={handleNext}
                                         className="rounded-md border border-accent bg-accent px-4 py-2 text-xs text-white duration-200 hover:bg-accent/90"
                                     >
                                         Next

@@ -97,32 +97,79 @@ class BillingController extends Controller
 
             // Update prescriptions/inventory logic
             if (!empty($validated['prescriptions'])) {
-                foreach ($validated['prescriptions'] as $prescription) {
-                    $medication = MedicationList::find($prescription['medication']['id']);
 
-                    // Fail if medication not found
-                    if (!$medication) {
-                        throw new \Exception("Medication not found (ID: {$prescription['medication']['id']}).");
+                Log::info('Starting inventory deduction', [
+                    'prescriptions_count' => count($validated['prescriptions']),
+                    'prescriptions' => $validated['prescriptions'],
+                ]);
+
+                foreach ($validated['prescriptions'] as $index => $prescription) {
+
+                    Log::info('Processing prescription', [
+                        'index' => $index,
+                        'raw_prescription' => $prescription,
+                    ]);
+
+                    // Log medication payload shape
+                    Log::info('Prescription medication payload', [
+                        'medication' => $prescription['medication'] ?? null,
+                        'medication_id' => $prescription['medication']['id'] ?? null,
+                    ]);
+
+                    $medicationId = $prescription['medication']['id'] ?? null;
+
+                    if (!$medicationId) {
+                        Log::error('Medication ID missing from prescription', [
+                            'prescription' => $prescription,
+                        ]);
+
+                        throw new \Exception('Medication ID missing from prescription.');
                     }
+
+                    $medication = MedicationList::find($medicationId);
+
+                    if (!$medication) {
+                        Log::error('Medication not found', [
+                            'medication_id' => $medicationId,
+                        ]);
+
+                        throw new \Exception("Medication not found (ID: {$medicationId}).");
+                    }
+
+                    Log::info('Medication found', [
+                        'medication_id' => $medication->id,
+                        'name' => $medication->name,
+                        'available_quantity' => $medication->quantity,
+                    ]);
 
                     $quantity = $prescription['quantity'];
                     $available = $medication->quantity;
 
-                    // if ($quantity > $available) {
-                    //     // Fail if requested amount exceeds available stock
-                    //     throw new \Exception("Quantity for {$medication->name} exceeds available stock. Requested: {$quantity}, Available: {$available}.");
-                    // }
+                    Log::info('Stock check', [
+                        'requested_quantity' => $quantity,
+                        'available_quantity' => $available,
+                    ]);
 
                     if ($quantity <= $available) {
+
                         $newTotal = $available - $quantity;
 
-                        // Update medication stock
+                        Log::info('Updating medication stock', [
+                            'medication_id' => $medication->id,
+                            'old_quantity' => $available,
+                            'deducted' => $quantity,
+                            'new_quantity' => $newTotal,
+                        ]);
+
                         $medication->update([
                             'quantity' => $newTotal,
                             'lastRunDate' => now(),
                         ]);
 
-                        // Log inventory change
+                        Log::info('Medication stock updated successfully', [
+                            'medication_id' => $medication->id,
+                        ]);
+
                         InventoryChange::create([
                             'medication_id' => $medication->id,
                             'user_id' => auth()->id(),
@@ -132,15 +179,30 @@ class BillingController extends Controller
                             'expiryDate' => $prescription['expiryDate'] ?? null,
                             'newTotal' => $newTotal,
                         ]);
+
+                        Log::info('Inventory change logged', [
+                            'medication_id' => $medication->id,
+                            'quantity' => $quantity,
+                            'new_total' => $newTotal,
+                        ]);
+                    } else {
+                        Log::warning('Insufficient stock', [
+                            'medication_id' => $medication->id,
+                            'requested' => $quantity,
+                            'available' => $available,
+                        ]);
                     }
                 }
+
+                Log::info('Finished inventory deduction');
+            } else {
+                Log::info('No prescriptions provided, skipping inventory deduction');
             }
 
             // Mark appointment as checked out if applicable
             if (!empty($validated['appointment_id'])) {
                 $appointment = Appointment::with(['patient', 'patientVisitRecord'])->find($validated['appointment_id']);
                 if ($appointment) {
-                    Log::info('Appointment:', ['appointment' => $appointment]);
 
                     $appointment->update(['status' => 'checked_out']);
 
