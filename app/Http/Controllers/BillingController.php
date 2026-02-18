@@ -57,7 +57,7 @@ class BillingController extends Controller
             'service' => 'required|array',
 
             'prescriptions' => 'nullable|array',
-            'prescriptions.*.quantity' => 'required|integer|min:1',
+            'prescriptions.*.quantity' => 'required|integer|min:0',
             'prescriptions.*.medication.id' => 'required|integer|exists:medication_lists,id',
             'prescriptions.*.expiryDate' => 'nullable|date',
 
