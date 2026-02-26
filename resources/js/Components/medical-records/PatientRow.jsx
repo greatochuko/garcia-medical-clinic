@@ -3,7 +3,11 @@ import DeletePatientModal from "../modals/DeletePatientModal";
 import { Link, router } from "@inertiajs/react";
 import { route } from "ziggy-js";
 
-export default function PatientRow({ patient, removePatientFromList }) {
+export default function PatientRow({
+    patient,
+    removePatientFromList,
+    isSecretary,
+}) {
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
     const lastVisitDate = useMemo(
@@ -51,19 +55,21 @@ export default function PatientRow({ patient, removePatientFromList }) {
                         </Link>
                     </div>
                 </div>
-                <div className="flex min-w-24 flex-[1] items-center justify-center p-4">
-                    <button
-                        onClick={() => setDeleteModalOpen(true)}
-                        className="rounded-md border border-transparent p-2 duration-100 hover:border-accent-400 hover:bg-accent-300"
-                    >
-                        <img
-                            src="/assets/icons/delete-icon.svg"
-                            alt="Edit Icon"
-                            width={16}
-                            height={16}
-                        />
-                    </button>
-                </div>
+                {!isSecretary && (
+                    <div className="flex min-w-24 flex-[1] items-center justify-center p-4">
+                        <button
+                            onClick={() => setDeleteModalOpen(true)}
+                            className="rounded-md border border-transparent p-2 duration-100 hover:border-accent-400 hover:bg-accent-300"
+                        >
+                            <img
+                                src="/assets/icons/delete-icon.svg"
+                                alt="Edit Icon"
+                                width={16}
+                                height={16}
+                            />
+                        </button>
+                    </div>
+                )}
             </div>
             <DeletePatientModal
                 open={deleteModalOpen}

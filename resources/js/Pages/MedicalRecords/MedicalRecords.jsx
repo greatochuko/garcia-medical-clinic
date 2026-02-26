@@ -5,9 +5,11 @@ import MedicalRecordsHeader from "@/Components/medical-records/MedicalRecordsHea
 import PatientTableHeader from "@/Components/medical-records/PatientTableHeader";
 import PatientRow from "@/Components/medical-records/PatientRow";
 
-export default function MedicalRecords({ patientData }) {
+export default function MedicalRecords({ patientData, auth }) {
     const [currentTab, setCurrentTab] = useState("all");
     const patients = patientData.data;
+
+    const isSecretary = auth.user.role === "secretary";
 
     return (
         <AuthenticatedLayout pageTitle="Medical Records">
@@ -21,9 +23,13 @@ export default function MedicalRecords({ patientData }) {
                     />
 
                     <div className="flex w-full flex-col gap-4 overflow-x-auto whitespace-nowrap p-4 text-sm">
-                        <PatientTableHeader />
+                        <PatientTableHeader isSecretary={isSecretary} />
                         {patients.map((patient) => (
-                            <PatientRow key={patient.id} patient={patient} />
+                            <PatientRow
+                                key={patient.id}
+                                patient={patient}
+                                isSecretary={isSecretary}
+                            />
                         ))}
                     </div>
                     <Paginator

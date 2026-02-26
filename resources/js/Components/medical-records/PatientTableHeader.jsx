@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function PatientTableHeader() {
+export default function PatientTableHeader({ isSecretary }) {
     return (
         <div className="flex font-bold">
             <div className="min-w-52 flex-[3.5] p-4 text-left">
@@ -12,7 +12,9 @@ export default function PatientTableHeader() {
             <div className="min-w-[25rem] flex-[3] p-4 text-center">
                 Actions
             </div>
-            <div className="min-w-24 flex-[1] p-4 text-center">Delete</div>
+            {!isSecretary && (
+                <div className="min-w-24 flex-[1] p-4 text-center">Delete</div>
+            )}
         </div>
     );
 }
