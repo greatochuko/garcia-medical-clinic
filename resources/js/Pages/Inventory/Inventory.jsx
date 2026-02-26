@@ -37,7 +37,7 @@ const allCategories = [
     "Antihypertensive",
 ];
 
-export default function Inventory({ medications: medicationList }) {
+export default function Inventory({ auth, medications: medicationList }) {
     const [expandedRowId, setExpandedRowId] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -46,6 +46,9 @@ export default function Inventory({ medications: medicationList }) {
         field: "date",
         type: "desc",
     });
+
+    const isSecretary = auth.user.role === "secretary";
+
     const { processing, post } = useForm();
 
     const medications = useMemo(() => {
@@ -183,30 +186,32 @@ export default function Inventory({ medications: medicationList }) {
                             <h1 className="text-center text-sm font-bold">
                                 INVENTORY OVERVIEW
                             </h1>
-                            <button
-                                onClick={handleInventoryRunCheck}
-                                disabled={processing}
-                                className="absolute bottom-0 left-1/2 flex w-fit -translate-x-1/2 translate-y-1/2 items-center gap-2 rounded-md border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300 sm:left-auto sm:right-4 sm:translate-x-0 md:rounded-lg"
-                            >
-                                <img
-                                    src="/assets/icons/plus-icon.svg"
-                                    alt="plus icon"
-                                    width={14}
-                                    height={14}
-                                    className="h-3 w-3 sm:h-3.5 sm:w-3.5"
-                                />
-                                {processing ? (
-                                    <>
-                                        <Loader2Icon
-                                            size={14}
-                                            className="animate-spin"
-                                        />{" "}
-                                        Running...
-                                    </>
-                                ) : (
-                                    "Inventory Run Check"
-                                )}
-                            </button>
+                            {!isSecretary && (
+                                <button
+                                    onClick={handleInventoryRunCheck}
+                                    disabled={processing}
+                                    className="absolute bottom-0 left-1/2 flex w-fit -translate-x-1/2 translate-y-1/2 items-center gap-2 rounded-md border-2 border-dashed border-accent bg-accent-200 p-2 text-xs text-accent duration-200 hover:bg-accent-300 sm:left-auto sm:right-4 sm:translate-x-0 md:rounded-lg"
+                                >
+                                    <img
+                                        src="/assets/icons/plus-icon.svg"
+                                        alt="plus icon"
+                                        width={14}
+                                        height={14}
+                                        className="h-3 w-3 sm:h-3.5 sm:w-3.5"
+                                    />
+                                    {processing ? (
+                                        <>
+                                            <Loader2Icon
+                                                size={14}
+                                                className="animate-spin"
+                                            />{" "}
+                                            Running...
+                                        </>
+                                    ) : (
+                                        "Inventory Run Check"
+                                    )}
+                                </button>
+                            )}
                         </div>
                         <div className="grid grid-cols-2 gap-4 border-b-8 border-accent-200 p-4 sm:grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] sm:gap-6 lg:gap-8">
                             {inventoryStats.map((stat) => (
@@ -455,7 +460,9 @@ export default function Inventory({ medications: medicationList }) {
                                                     )}
                                                 </span>
                                             </th>
-                                            <th className="w-[10%] p-4"></th>
+                                            {!isSecretary && (
+                                                <th className="w-[10%] p-4"></th>
+                                            )}
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-black/10">
@@ -517,31 +524,35 @@ export default function Inventory({ medications: medicationList }) {
                                                             },
                                                         )}
                                                     </td>
-                                                    <td className="p-4 text-center">
-                                                        <button
-                                                            onClick={() => {
-                                                                if (
-                                                                    expandedRowId ===
-                                                                    med.id
-                                                                ) {
-                                                                    setExpandedRowId(
-                                                                        "",
-                                                                    );
-                                                                } else {
-                                                                    setExpandedRowId(
-                                                                        med.id,
-                                                                    );
-                                                                }
-                                                            }}
-                                                            className={`rounded-md border border-transparent p-1 duration-200 hover:border-accent-300 hover:bg-accent-200`}
-                                                        >
-                                                            <LuChevronDown
-                                                                size={18}
-                                                                strokeWidth={3}
-                                                                className={`duration-200 ${expandedRowId === med.id ? "rotate-180" : ""}`}
-                                                            />
-                                                        </button>
-                                                    </td>
+                                                    {!isSecretary && (
+                                                        <td className="p-4 text-center">
+                                                            <button
+                                                                onClick={() => {
+                                                                    if (
+                                                                        expandedRowId ===
+                                                                        med.id
+                                                                    ) {
+                                                                        setExpandedRowId(
+                                                                            "",
+                                                                        );
+                                                                    } else {
+                                                                        setExpandedRowId(
+                                                                            med.id,
+                                                                        );
+                                                                    }
+                                                                }}
+                                                                className={`rounded-md border border-transparent p-1 duration-200 hover:border-accent-300 hover:bg-accent-200`}
+                                                            >
+                                                                <LuChevronDown
+                                                                    size={18}
+                                                                    strokeWidth={
+                                                                        3
+                                                                    }
+                                                                    className={`duration-200 ${expandedRowId === med.id ? "rotate-180" : ""}`}
+                                                                />
+                                                            </button>
+                                                        </td>
+                                                    )}
                                                 </tr>
 
                                                 {expandedRowId === med.id && (
