@@ -16,6 +16,10 @@ class SettingsController extends Controller
 {
     public function medication()
     {
+        if (auth()->user()->role === 'secretary') {
+            return redirect('/')->with('error', 'Unauthorized access.');
+        }
+
         $medications = MedicationList::all();
 
         return Inertia::render('Settings/Medication', ['medications' => $medications]);
@@ -23,6 +27,10 @@ class SettingsController extends Controller
 
     public function services()
     {
+        if (auth()->user()->role === 'secretary') {
+            return redirect('/')->with('error', 'Unauthorized access.');
+        }
+
         $services = ServiceCharge::orderBy('created_at', 'desc')->get()->map(function ($service) {
             return [
                 'id' => $service->id,
@@ -38,6 +46,10 @@ class SettingsController extends Controller
 
     public function frequency_index()
     {
+        if (auth()->user()->role === 'secretary') {
+            return redirect('/')->with('error', 'Unauthorized access.');
+        }
+
         $frequencies = FrequencyList::orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Settings/Frequency', ['frequencies' => $frequencies]);
@@ -45,6 +57,10 @@ class SettingsController extends Controller
 
     public function plan_index()
     {
+        if (auth()->user()->role === 'secretary') {
+            return redirect('/')->with('error', 'Unauthorized access.');
+        }
+
         $plans = Plan::orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Settings/Plan', ['plans' => $plans]);
@@ -52,6 +68,10 @@ class SettingsController extends Controller
 
     public function physical_exam_index()
     {
+        if (auth()->user()->role === 'secretary') {
+            return redirect('/')->with('error', 'Unauthorized access.');
+        }
+
         $physicalExams = PhysicalExam::orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Settings/PhysicalExam', ['physicalExams' => $physicalExams]);
@@ -59,6 +79,11 @@ class SettingsController extends Controller
 
     public function accounts_index()
     {
+
+        if (auth()->user()->role === 'secretary') {
+            return redirect('/')->with('error', 'Unauthorized access.');
+        }
+
         if (auth()->user()->role !== 'admin') {
             return redirect('/settings')->with('error', 'Unauthorized access.');
         }
